@@ -1,9 +1,19 @@
 package main;
 
-import frontend.Frontend;
+import model.UserProfile;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import servlets.AdministrationServlet;
+import servlets.LogoutServlet;
+import servlets.SignInServlet;
+import servlets.SignUpServlet;
+import utils.AccountService;
+
+import javax.servlet.Servlet;
 
 
 /**
@@ -11,13 +21,50 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 
 public class Main {
+
+    public static final int API_VERSION = 1;
+
     public static void main(String[] args) throws Exception {
-        Frontend frontend = new Frontend();
-        Server server = new Server(8080);
+
+        if (args.length != 1) {
+            System.out.append("Use port as the first argument");
+            System.exit(1);
+        }
+
+        String portString = args[0];
+        int port = Integer.valueOf(portString);
+        System.out.append("Starting at port: ").append(portString).append('\n');
+
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        server.setHandler(context);
-        context.addServlet(new ServletHolder(frontend), "/");
+
+        AccountService accountService = new AccountService();
+        accountService.signUp(new UserProfile("Alexandr", "Udalov", "sashaudalv@gmail.com", "1234", true));
+
+        SignInServlet signInServlet = new SignInServlet(accountService);
+        SignUpServlet signUpServlet = new SignUpServlet(accountService);
+        LogoutServlet logoutServlet = new LogoutServlet(accountService);
+        AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
+
+        addServlet(context, signInServlet, "/auth/signin");
+        addServlet(context, signUpServlet, "/auth/signup");
+        addServlet(context, logoutServlet, "/logout");
+        addServlet(context, administrationServlet, "/admin");
+
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        resourceHandler.setResourceBase("public_html");
+
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resourceHandler, context});
+
+        Server server = new Server(port);
+        server.setHandler(handlers);
+
         server.start();
         server.join();
+    }
+
+    private static void addServlet(ServletContextHandler context, Servlet servlet, String endpoint) {
+        context.addServlet(new ServletHolder(servlet), "/api/v" + API_VERSION + endpoint);
     }
 }

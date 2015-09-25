@@ -8,6 +8,33 @@
     <artifactId>newgame-server</artifactId>
     <version>1.0</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <org.eclipse.jetty.version>9.3.0.M2</org.eclipse.jetty.version>
+        <org.freemaker.version>2.3.21</org.freemaker.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
     <dependencies>
 
         <dependency>
@@ -41,6 +68,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>
