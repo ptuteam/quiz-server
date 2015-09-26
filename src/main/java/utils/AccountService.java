@@ -10,8 +10,8 @@ import java.util.Map;
  */
 public class AccountService {
 
-    Map<String, UserProfile> usersMap = new HashMap<>();
-    Map<String, UserProfile> sessionsMap = new HashMap<>();
+    private Map<String, UserProfile> usersMap = new HashMap<>();
+    private Map<String, UserProfile> sessionsMap = new HashMap<>();
 
     public void signIn(String sessionId, UserProfile user) {
         if (sessionsMap.containsKey(sessionId)) {
