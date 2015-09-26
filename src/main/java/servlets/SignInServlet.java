@@ -32,7 +32,7 @@ public class SignInServlet extends HttpServlet {
         String sessionId = request.getSession().getId();
         String msg = "";
 
-        Map < String, Object > pageVariables = new HashMap<>();
+        Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("url", PAGE_URL);
 
         if (accountService.isLogged(sessionId)) {

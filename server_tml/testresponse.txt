@@ -1,0 +1,4 @@
+{
+    message: "${msg}",
+    type: "${type}"
+}
