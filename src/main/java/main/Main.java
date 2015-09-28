@@ -45,10 +45,10 @@ public class Main {
         LogoutServlet logoutServlet = new LogoutServlet(accountService);
         AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
 
-        addServlet(context, signInServlet, "/auth/signin");
-        addServlet(context, signUpServlet, "/auth/signup");
-        addServlet(context, logoutServlet, "/logout");
-        addServlet(context, administrationServlet, "/admin");
+        context.addServlet(new ServletHolder(signInServlet), SignInServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(signUpServlet), SignUpServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(logoutServlet), LogoutServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(administrationServlet), AdministrationServlet.PAGE_URL);
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
@@ -62,9 +62,5 @@ public class Main {
 
         server.start();
         server.join();
-    }
-
-    private static void addServlet(ServletContextHandler context, Servlet servlet, String endpoint) {
-        context.addServlet(new ServletHolder(servlet), "/api/v" + API_VERSION + endpoint);
     }
 }
