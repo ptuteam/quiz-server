@@ -22,14 +22,16 @@ public class AccountServiceTest {
 
     @Test
     public void testSignUp() throws Exception {
-        boolean result = accountService.signUp(new UserProfile("qwe", "Qwe", "qwe@email.com", "psw"));
-        assertTrue(result);
+        accountService.signUp(new UserProfile("qwe", "Qwe", "qwe@email.com", "psw"));
+        UserProfile result = accountService.getUser("qwe@email.com");
+        assertNotNull(result);
     }
 
     @Test
     public void testSignUpError() throws Exception {
-        boolean result = accountService.signUp(new UserProfile("qwe", "Qwe", "test@email.com", "psw"));
-        assertFalse(result);
+        accountService.signUp(new UserProfile("qwe", "Qwe", "test@email.com", "psw"));
+        UserProfile user = accountService.getUser("test@email.com");
+        assertNotEquals(user.getFirstName(), "qwe");
     }
 
     @Test
@@ -38,12 +40,5 @@ public class AccountServiceTest {
         accountService.signIn(sessionId, userProfile);
         boolean result = accountService.isLogged(sessionId);
         assertTrue(result);
-    }
-
-    @Test
-    public void testIsNotLogged() throws Exception {
-        String sessionId = "session";
-        boolean result = accountService.isLogged(sessionId);
-        assertFalse(result);
     }
 }

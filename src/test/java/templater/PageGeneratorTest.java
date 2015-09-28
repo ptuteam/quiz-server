@@ -21,7 +21,7 @@ public class PageGeneratorTest {
         String expectedResult = "{\n" +
                 "    message: \"Test message\",\n" +
                 "    type: \"test\"\n" +
-                "}";
+                '}';
         assertEquals(expectedResult, result);
     }
 }

@@ -25,6 +25,7 @@ public class AdministrationServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
@@ -35,7 +36,7 @@ public class AdministrationServlet extends HttpServlet {
 
         if (accountService.isLogged(sessionId)) {
 
-            if(accountService.getSession(sessionId).isAdministrator()) {
+            if (accountService.getSession(sessionId).isAdministrator()) {
 
                 pageVariables.put("usersCount", accountService.getUsersCount());
                 pageVariables.put("loggedUsersCount", accountService.getLoggedUsersCount());
@@ -45,12 +46,20 @@ public class AdministrationServlet extends HttpServlet {
                 String timeString = request.getParameter("shutdown");
 
                 if (timeString != null) {
-                    int timeMS = Integer.valueOf(timeString);
-                    System.out.print("Server will be down after: "+ timeMS + " ms");
+
+                    int timeMS = 0;
+
+                    try {
+                        timeMS = Integer.valueOf(timeString);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.print("Server will be down after: " + timeMS + " ms");
 
                     try {
                         Thread.sleep(timeMS);
-                    } catch (InterruptedException e) {
+                    } catch (IllegalArgumentException | InterruptedException e) {
                         e.printStackTrace();
                     }
 

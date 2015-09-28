@@ -25,6 +25,7 @@ public class LogoutServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
@@ -35,16 +36,17 @@ public class LogoutServlet extends HttpServlet {
 
             accountService.logout(sessionId);
             response.getWriter().println(PageGenerator.getPage("logoutresponse.txt", pageVariables));
+            response.setStatus(HttpServletResponse.SC_OK);
 
         } else {
 
-            pageVariables.put("code", 403);
+            pageVariables.put("code", HttpServletResponse.SC_FORBIDDEN);
             pageVariables.put("description", "You have not been logged");
             response.getWriter().println(PageGenerator.getPage("errorresponse.txt", pageVariables));
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         }
 
         response.setContentType("text/html;charset=utf-8");
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

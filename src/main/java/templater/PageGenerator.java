@@ -16,9 +16,9 @@ import java.util.Map;
 
 public class PageGenerator {
     private static final String HTML_DIR = "server_tml";
-    @SuppressWarnings("deprecation")
-    private static final Configuration CFG = new Configuration();
+    private static final Configuration CFG = new Configuration(Configuration.VERSION_2_3_20);
 
+    @SuppressWarnings("ObjectToString")
     public static String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {

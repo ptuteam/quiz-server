@@ -26,6 +26,7 @@ public class SignUpServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
@@ -38,6 +39,7 @@ public class SignUpServlet extends HttpServlet {
 
     }
 
+    @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
 
@@ -57,7 +59,7 @@ public class SignUpServlet extends HttpServlet {
             response.getWriter().println(PageGenerator.getPage("signupresponse.txt", pageVariables));
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            pageVariables.put("code", 403);
+            pageVariables.put("code", HttpServletResponse.SC_FORBIDDEN);
             pageVariables.put("description", "User with same email already exists.");
 
             response.getWriter().println(PageGenerator.getPage("errorresponse.txt", pageVariables));

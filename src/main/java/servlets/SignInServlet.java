@@ -26,15 +26,16 @@ public class SignInServlet extends HttpServlet {
         this.accountService = accountService;
     }
 
+    @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
         String sessionId = request.getSession().getId();
-        String msg = "";
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("url", PAGE_URL);
 
+        String msg = "";
         if (accountService.isLogged(sessionId)) {
             msg = "You are already logged.";
         }
@@ -47,6 +48,7 @@ public class SignInServlet extends HttpServlet {
 
     }
 
+    @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
 
@@ -57,11 +59,9 @@ public class SignInServlet extends HttpServlet {
 
         String sessionId = request.getSession().getId();
 
-        UserProfile user;
-
         if (accountService.getUser(email) != null) {
 
-            user = accountService.getUser(email);
+            UserProfile user = accountService.getUser(email);
 
             if (user.getPassword().equals(password)) {
                 accountService.signIn(sessionId, user);
@@ -73,7 +73,7 @@ public class SignInServlet extends HttpServlet {
 
             } else {
 
-                pageVariables.put("code", 401);
+                pageVariables.put("code", HttpServletResponse.SC_UNAUTHORIZED);
                 pageVariables.put("description", "The pair login - password is wrong.");
                 response.getWriter().println(PageGenerator.getPage("errorresponse.txt", pageVariables));
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -82,7 +82,7 @@ public class SignInServlet extends HttpServlet {
 
         } else {
 
-            pageVariables.put("code", 401);
+            pageVariables.put("code", HttpServletResponse.SC_UNAUTHORIZED);
             pageVariables.put("description", "There is no user with this email.");
             response.getWriter().println(PageGenerator.getPage("errorresponse.txt", pageVariables));
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

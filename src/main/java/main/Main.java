@@ -22,15 +22,24 @@ public class Main {
 
     public static final int API_VERSION = 1;
 
+    @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
 
         if (args.length != 1) {
-            System.out.append("Use port as the first argument");
+            System.out.append("Use port as the first argument\n");
             System.exit(1);
         }
 
         String portString = args[0];
-        int port = Integer.valueOf(portString);
+        int port = 0;
+
+        try {
+            port = Integer.valueOf(portString);
+        } catch (NumberFormatException e) {
+            System.out.append("Using port must be numeric value\n");
+            System.exit(1);
+        }
+
         System.out.append("Starting at port: ").append(portString).append('\n');
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
