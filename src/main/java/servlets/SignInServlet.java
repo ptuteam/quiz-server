@@ -20,7 +20,7 @@ public class SignInServlet extends HttpServlet {
 
     public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/auth/signin";
 
-    AccountService accountService;
+    private final AccountService accountService;
 
     public SignInServlet(AccountService accountService) {
         this.accountService = accountService;

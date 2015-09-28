@@ -19,7 +19,7 @@ public class AdministrationServlet extends HttpServlet {
 
     public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/admin";
 
-    AccountService accountService;
+    private final AccountService accountService;
 
     public AdministrationServlet(AccountService accountService) {
         this.accountService = accountService;

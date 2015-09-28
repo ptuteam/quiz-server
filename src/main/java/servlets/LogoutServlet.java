@@ -19,7 +19,7 @@ public class LogoutServlet extends HttpServlet {
 
     public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/logout";
 
-    AccountService accountService;
+    private final AccountService accountService;
 
     public LogoutServlet(AccountService accountService) {
         this.accountService = accountService;
