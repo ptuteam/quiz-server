@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class AdministrationServlet extends HttpServlet {
 
-    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/logout";
+    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/admin";
 
     AccountService accountService;
 
