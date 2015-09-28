@@ -13,8 +13,6 @@ import servlets.SignInServlet;
 import servlets.SignUpServlet;
 import utils.AccountService;
 
-import javax.servlet.Servlet;
-
 
 /**
  * alex on 10.09.15.
