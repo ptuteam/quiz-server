@@ -1,4 +1,0 @@
-{
-    status: ${code},
-    error: "${description}"
-}
