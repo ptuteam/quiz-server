@@ -4,26 +4,28 @@ package model;
  * alex on 18.09.15.
  */
 public class UserProfile {
+    private static final String ADMINISTATOR_EMAILS = "sashaudalv@gmail.com";
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private boolean isAdministrator = false;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+    private final String avatarUrl;
+    private int score = 0;
+    private boolean isGuest = false;
 
-    public UserProfile(String firstName, String lastName, String email, String password) {
+    public UserProfile(String firstName, String lastName, String email, String avatarUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
+        this.avatarUrl = avatarUrl;
     }
 
-    public UserProfile(String firstName, String lastName, String email, String password, boolean isAdministrator) {
+    public UserProfile(String firstName, String lastName, String email, String avatarUrl, boolean isGuest) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
-        this.isAdministrator = isAdministrator;
+        this.avatarUrl = avatarUrl;
+        this.isGuest = isGuest;
     }
 
     public String getFirstName() {
@@ -38,11 +40,23 @@ public class UserProfile {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isAdministrator() {
+        return ADMINISTATOR_EMAILS.contains(email);
     }
 
-    public boolean isAdministrator() {
-        return isAdministrator;
+    public boolean isGuest() {
+        return isGuest;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 }

@@ -1,17 +1,17 @@
 package main;
 
-import model.UserProfile;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import servlets.AdministrationServlet;
-import servlets.LogoutServlet;
-import servlets.SignInServlet;
-import servlets.SignUpServlet;
+import servlets.*;
 import utils.AccountService;
+import utils.AccountServiceImpl;
+import utils.ConfigGeneral;
+
+import java.net.InetSocketAddress;
 
 
 /**
@@ -24,38 +24,27 @@ public class Main {
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
+        ConfigGeneral.loadConfig();
 
-        if (args.length != 1) {
-            System.out.append("Use port as the first argument\n");
-            System.exit(1);
-        }
-
-        String portString = args[0];
-        int port = 0;
-
-        try {
-            port = Integer.valueOf(portString);
-        } catch (NumberFormatException e) {
-            System.out.append("Using port must be numeric value\n");
-            System.exit(1);
-        }
-
-        System.out.append("Starting at port: ").append(portString).append('\n');
+        System.out.println(String.format("Starting at port: %d\n", ConfigGeneral.getPort()));
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-        AccountService accountService = new AccountService();
-        accountService.signUp(new UserProfile("Alexandr", "Udalov", "sashaudalv@gmail.com", "1234", true));
+        AccountService accountService = new AccountServiceImpl();
 
         SignInServlet signInServlet = new SignInServlet(accountService);
-        SignUpServlet signUpServlet = new SignUpServlet(accountService);
+        GuestSignInServlet guestSignInServlet = new GuestSignInServlet(accountService);
         LogoutServlet logoutServlet = new LogoutServlet(accountService);
         AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
+        UserServlet userServlet = new UserServlet(accountService);
+        ScoresServlet scoresServlet = new ScoresServlet(accountService);
 
         context.addServlet(new ServletHolder(signInServlet), SignInServlet.PAGE_URL);
-        context.addServlet(new ServletHolder(signUpServlet), SignUpServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(guestSignInServlet), GuestSignInServlet.PAGE_URL);
         context.addServlet(new ServletHolder(logoutServlet), LogoutServlet.PAGE_URL);
         context.addServlet(new ServletHolder(administrationServlet), AdministrationServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(userServlet), UserServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(scoresServlet), ScoresServlet.PAGE_URL);
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
@@ -64,7 +53,7 @@ public class Main {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resourceHandler, context});
 
-        Server server = new Server(port);
+        Server server = new Server(new InetSocketAddress(ConfigGeneral.getHost(), ConfigGeneral.getPort()));
         server.setHandler(handlers);
 
         server.start();

@@ -1,6 +1,5 @@
 package servlets;
 
-import main.Main;
 import templater.PageGenerator;
 import utils.AccountService;
 
@@ -17,7 +16,7 @@ import java.util.Map;
  */
 public class AdministrationServlet extends HttpServlet {
 
-    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/admin";
+    public static final String PAGE_URL = "/admin";
 
     private final AccountService accountService;
 
@@ -36,12 +35,7 @@ public class AdministrationServlet extends HttpServlet {
 
         if (accountService.isLogged(sessionId)) {
 
-            if (accountService.getSession(sessionId).isAdministrator()) {
-
-                pageVariables.put("usersCount", accountService.getUsersCount());
-                pageVariables.put("loggedUsersCount", accountService.getLoggedUsersCount());
-                response.getWriter().println(PageGenerator.getPage("admin.html", pageVariables));
-                response.setStatus(HttpServletResponse.SC_OK);
+            if (accountService.getUserBySession(sessionId).isAdministrator()) {
 
                 String timeString = request.getParameter("shutdown");
 
@@ -50,37 +44,48 @@ public class AdministrationServlet extends HttpServlet {
                     int timeMS = 0;
 
                     try {
-                        timeMS = Integer.valueOf(timeString);
+                        timeMS = Integer.parseInt(timeString);
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
 
-                    System.out.print("Server will be down after: " + timeMS + " ms");
+                    System.out.print("Server will be down after: " + timeMS + " ms\n");
 
-                    try {
-                        Thread.sleep(timeMS);
-                    } catch (IllegalArgumentException | InterruptedException e) {
-                        e.printStackTrace();
+                    if (timeMS > 0) {
+                        try {
+                            Thread.sleep(timeMS);
+                        } catch (IllegalArgumentException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    System.out.print("\nShutdown");
+                    System.out.print("Shutdown");
                     System.exit(0);
                 }
+
+                pageVariables.put("usersCount", accountService.getUsersCount());
+                pageVariables.put("loggedUsersCount", accountService.getLoggedUsersCount());
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("text/html;charset=utf-8");
+                response.getWriter().println(PageGenerator.getPage("admin.html", pageVariables));
 
             } else {
                 msg = "You don't have rights of administrator.";
                 pageVariables.put("msg", msg);
-                response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
+
+                response.setContentType("text/html;charset=utf-8");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
             }
 
         } else {
             msg = "You are not authorised.";
             pageVariables.put("msg", msg);
-            response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
 
-        response.setContentType("text/html;charset=utf-8");
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
+        }
     }
 }

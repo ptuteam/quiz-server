@@ -2,54 +2,22 @@ package utils;
 
 import model.UserProfile;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
 /**
- * alex on 25.09.15.
+ * alex on 24.10.15.
  */
-public class AccountService {
+public interface AccountService {
 
-    private final Map<String, UserProfile> usersMap = new HashMap<>();
-    private final Map<String, UserProfile> sessionsMap = new HashMap<>();
+    void signIn(String sessionId, UserProfile user);
+    boolean signUp(UserProfile user);
+    void logout(String sessionId);
+    boolean isLogged(String sessionId);
+    UserProfile getUser(String email);
+    boolean isUserExist(String email);
+    UserProfile getUserBySession(String sessionId);
+    int getUsersCount();
+    int getLoggedUsersCount();
+    Collection<UserProfile> getUsers();
 
-    public void signIn(String sessionId, UserProfile user) {
-        if (sessionsMap.containsKey(sessionId)) {
-            sessionsMap.remove(sessionId);
-        }
-        sessionsMap.put(sessionId, user);
-    }
-
-    public boolean signUp(UserProfile user) {
-        if (usersMap.containsKey(user.getEmail())) {
-            return false;
-        }
-
-        usersMap.put(user.getEmail(), user);
-        return true;
-    }
-
-    public void logout(String sessionId) {
-        sessionsMap.remove(sessionId);
-    }
-
-    public boolean isLogged(String sessionId) {
-        return sessionsMap.containsKey(sessionId);
-    }
-
-    public UserProfile getUser(String email) {
-        return usersMap.get(email);
-    }
-
-    public UserProfile getSession(String sessionId) {
-        return sessionsMap.get(sessionId);
-    }
-
-    public int getUsersCount() {
-        return usersMap.size();
-    }
-
-    public int getLoggedUsersCount() {
-        return sessionsMap.size();
-    }
 }

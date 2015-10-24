@@ -1,11 +1,9 @@
 package servlets;
 
 import com.google.gson.JsonObject;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import main.Main;
 import model.UserProfile;
 import utils.AccountService;
-import utils.AuthHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,15 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * alex on 25.09.15.
+ * alex on 21.10.15.
  */
-public class SignInServlet extends HttpServlet {
+public class UserServlet extends HttpServlet {
 
-    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/auth/signin";
+    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/user/get";
 
     private final AccountService accountService;
 
-    public SignInServlet(AccountService accountService) {
+    public UserServlet(AccountService accountService) {
         this.accountService = accountService;
     }
 
@@ -30,39 +28,14 @@ public class SignInServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
-        String code = request.getParameter("code");
-
-        if (code == null) {
-            response.sendRedirect("/#login");
-        }
-
         JsonObject jsonObject = new JsonObject();
         String sessionId = request.getSession().getId();
 
         if (accountService.isLogged(sessionId)) {
-            accountService.logout(sessionId);
-        }
 
-        UserProfile user = null;
-
-        try {
-            user = AuthHelper.getUserFromSocial(code);
-        } catch (UnirestException | NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        if (user != null) {
-
-            if (accountService.isUserExist(user.getEmail())) {
-                user = accountService.getUser(user.getEmail());
-            } else {
-                accountService.signUp(user);
-            }
-
-            accountService.signIn(sessionId, user);
+            UserProfile user = accountService.getUserBySession(sessionId);
 
             JsonObject userObject = new JsonObject();
-
             userObject.addProperty("first_name", user.getFirstName());
             userObject.addProperty("last_name", user.getLastName());
             userObject.addProperty("email", user.getEmail());
@@ -76,10 +49,10 @@ public class SignInServlet extends HttpServlet {
 
         } else {
 
-            jsonObject.addProperty("code", HttpServletResponse.SC_BAD_REQUEST);
-            jsonObject.addProperty("description", "Sorry, we could not get your profile from google+");
+            jsonObject.addProperty("code", HttpServletResponse.SC_FORBIDDEN);
+            jsonObject.addProperty("description", "You have not been logged");
 
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         }
 

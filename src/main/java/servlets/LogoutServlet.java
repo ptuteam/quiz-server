@@ -1,7 +1,7 @@
 package servlets;
 
+import com.google.gson.JsonObject;
 import main.Main;
-import templater.PageGenerator;
 import utils.AccountService;
 
 import javax.servlet.ServletException;
@@ -9,15 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * alex on 25.09.15.
  */
 public class LogoutServlet extends HttpServlet {
 
-    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/logout";
+    public static final String PAGE_URL = "/api/v" + Main.API_VERSION + "/user/logout";
 
     private final AccountService accountService;
 
@@ -29,24 +27,29 @@ public class LogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
-        Map<String, Object> pageVariables = new HashMap<>();
         String sessionId = request.getSession().getId();
+        JsonObject jsonObject = new JsonObject();
 
         if (accountService.isLogged(sessionId)) {
 
             accountService.logout(sessionId);
-            response.getWriter().println(PageGenerator.getPage("logoutresponse.txt", pageVariables));
+
+            jsonObject.addProperty("code", HttpServletResponse.SC_OK);
+            jsonObject.addProperty("description", "You have been logged out");
+
             response.setStatus(HttpServletResponse.SC_OK);
 
         } else {
 
-            pageVariables.put("code", HttpServletResponse.SC_FORBIDDEN);
-            pageVariables.put("description", "You have not been logged");
-            response.getWriter().println(PageGenerator.getPage("errorresponse.txt", pageVariables));
+            jsonObject.addProperty("code", HttpServletResponse.SC_FORBIDDEN);
+            jsonObject.addProperty("description", "You have not been logged");
+
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         }
 
-        response.setContentType("text/html;charset=utf-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.getWriter().println(jsonObject.toString());
     }
 }
