@@ -43,6 +43,7 @@ public class LogoutServletTest {
 
         verify(request, atLeastOnce()).getSession();
         assertTrue(stringWriter.toString().contains("You have been logged out"));
+        assertFalse(accountService.isLogged("session"));
     }
 
     @Test

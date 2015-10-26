@@ -2,6 +2,7 @@ package servlets;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import utils.AccountService;
 import utils.AccountServiceImpl;
 
 import javax.servlet.ServletContext;
@@ -22,6 +23,7 @@ import static org.junit.Assert.*;
 public class SignInServletTest extends Mockito  {
     private final static HttpServletRequest request = mock(HttpServletRequest.class);
     private final static HttpServletResponse response = mock(HttpServletResponse.class);
+    private final static AccountService accountService = new AccountServiceImpl();
 
     @Test
     public void testSignIn() throws Exception {
@@ -35,11 +37,12 @@ public class SignInServletTest extends Mockito  {
         when(request.getSession()).thenReturn(getNewSession());
         when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
 
-        SignInServlet signInServlet = new SignInServlet(new AccountServiceImpl());
+        SignInServlet signInServlet = new SignInServlet(accountService);
         signInServlet.doGet(request, response);
 
         verify(request, atLeastOnce()).getParameter("code");
         assertTrue(stringWriter.toString().contains("Sorry, we could not get your profile from google+"));
+        assertFalse(accountService.isLogged("session"));
     }
 
     // return HttpSession with Id="session"
