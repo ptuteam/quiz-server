@@ -3,6 +3,7 @@ package servlets;
 import model.UserProfile;
 import org.junit.Assert;
 import org.junit.Test;
+import utils.AccountService;
 import utils.AccountServiceImpl;
 
 import javax.servlet.ServletContext;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class LogoutServletTest {
     private final static HttpServletRequest request = mock(HttpServletRequest.class);
     private final static HttpServletResponse response = mock(HttpServletResponse.class);
-    private final static AccountServiceImpl accountService = new AccountServiceImpl();
+    private final static AccountService accountService = new AccountServiceImpl();
 
     @Test
     public void testLogout() throws Exception {

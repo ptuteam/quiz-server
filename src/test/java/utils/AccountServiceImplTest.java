@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  * alex on 27.09.15.
  */
 public class AccountServiceImplTest {
-    private AccountServiceImpl accountService;
+    private AccountService accountService;
     private UserProfile user;
 
     @Before
