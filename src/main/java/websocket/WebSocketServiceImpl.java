@@ -20,14 +20,14 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Override
     public void notifyStartGame(Collection<Player> players) {
         for (Player player : players) {
-            player.getConnection().startGame(players);
+            player.getConnection().onStartGame(players);
         }
     }
 
     @Override
     public void notifyGameOver(Collection<Player> players, Player winner) {
         for (Player player : players) {
-            player.getConnection().gameOver(winner);
+            player.getConnection().onGameOver(winner);
         }
     }
 

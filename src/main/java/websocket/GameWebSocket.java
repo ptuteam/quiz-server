@@ -32,7 +32,7 @@ public class GameWebSocket {
         this.roomManager = roomManager;
     }
 
-    public void startGame(Collection<Player> players) {
+    public void onStartGame(Collection<Player> players) {
         try {
             JsonObject jsonStart = new JsonObject();
             jsonStart.addProperty("code", "1");
@@ -59,7 +59,7 @@ public class GameWebSocket {
         }
     }
 
-    public void gameOver(Player winner) {
+    public void onGameOver(Player winner) {
         try {
             JsonObject jsonStart = new JsonObject();
             jsonStart.addProperty("code", "3");
