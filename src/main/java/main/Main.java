@@ -1,5 +1,6 @@
 package main;
 
+import game.RoomManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -10,6 +11,9 @@ import servlets.*;
 import utils.AccountService;
 import utils.AccountServiceImpl;
 import utils.ConfigGeneral;
+import websocket.WebSocketGameServlet;
+import websocket.WebSocketService;
+import websocket.WebSocketServiceImpl;
 
 import java.net.InetSocketAddress;
 
@@ -31,6 +35,8 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
         AccountService accountService = new AccountServiceImpl();
+        WebSocketService webSocketService = new WebSocketServiceImpl();
+        RoomManager roomManager = new RoomManager(webSocketService);
 
         SignInServlet signInServlet = new SignInServlet(accountService);
         GuestSignInServlet guestSignInServlet = new GuestSignInServlet(accountService);
@@ -38,6 +44,7 @@ public class Main {
         AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
         UserServlet userServlet = new UserServlet(accountService);
         ScoresServlet scoresServlet = new ScoresServlet(accountService);
+        WebSocketGameServlet webSocketGameServlet = new WebSocketGameServlet(accountService, roomManager);
 
         context.addServlet(new ServletHolder(signInServlet), SignInServlet.PAGE_URL);
         context.addServlet(new ServletHolder(guestSignInServlet), GuestSignInServlet.PAGE_URL);
@@ -45,6 +52,7 @@ public class Main {
         context.addServlet(new ServletHolder(administrationServlet), AdministrationServlet.PAGE_URL);
         context.addServlet(new ServletHolder(userServlet), UserServlet.PAGE_URL);
         context.addServlet(new ServletHolder(scoresServlet), ScoresServlet.PAGE_URL);
+        context.addServlet(new ServletHolder(webSocketGameServlet), WebSocketGameServlet.PAGE_URL);
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
