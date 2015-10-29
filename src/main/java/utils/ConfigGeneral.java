@@ -9,9 +9,9 @@ import java.util.Properties;
  */
 public class ConfigGeneral {
 
-    public static final String SERVER_CONFIG_FILE = "cfg/server.properties";
-    public static final String MECHANICS_CONFIG_FILE = "data/mechanics.xml";
-    public static final String SOCIALS_CONFIG_FILE = "cfg/socials.properties";
+    public static final String SERVER_CONFIG_FILE = "configuration/cfg/server.properties";
+    public static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
+    public static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
 
     private static int s_port;
     private static String s_host;
