@@ -12,15 +12,20 @@ public class ConfigGeneral {
     public static final String SERVER_CONFIG_FILE = "configuration/cfg/server.properties";
     public static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
     public static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
+    public static final int MS_IN_MINUTE = 60 * 1000;
 
     private static int s_port;
     private static String s_host;
 
     private static int s_roomsCount;
     private static int s_maxPlayersPerRoom;
-    private static int s_minPlayers;
+    private static int s_minPlayersPerRoom;
     private static int s_pointsPerQuestion;
     private static int s_timePerQuestionMS;
+    private static int s_timeForWaitingStartGame;
+    private static int s_timeForWaitingNewRoundStart;
+    private static int s_maxGameTimeMinutes;
+    private static int s_minRoundsPerGameCount;
 
     private static String s_clientID;
     private static String s_clientSecret;
@@ -41,9 +46,13 @@ public class ConfigGeneral {
         fileInputStream.close();
         s_roomsCount = Integer.valueOf(properties.getProperty("roomsCount"));
         s_maxPlayersPerRoom = Integer.valueOf(properties.getProperty("maxPlayersPerRoom"));
-        s_minPlayers = Integer.valueOf(properties.getProperty("minPlayers"));
+        s_minPlayersPerRoom = Integer.valueOf(properties.getProperty("minPlayersPerRoom"));
         s_pointsPerQuestion = Integer.valueOf(properties.getProperty("pointsPerQuestion"));
         s_timePerQuestionMS = Integer.valueOf(properties.getProperty("timePerQuestionMS"));
+        s_timeForWaitingStartGame = Integer.valueOf(properties.getProperty("timeForWaitingStartGame"));
+        s_timeForWaitingNewRoundStart = Integer.valueOf(properties.getProperty("timeForWaitingNewRoundStart"));
+        s_maxGameTimeMinutes = Integer.valueOf(properties.getProperty("maxGameTimeMinutes"));
+        s_minRoundsPerGameCount = Integer.valueOf(properties.getProperty("minRoundsPerGameCount"));
 
         fileInputStream = new FileInputStream(SOCIALS_CONFIG_FILE);
         properties.load(fileInputStream);
@@ -75,12 +84,28 @@ public class ConfigGeneral {
         return s_maxPlayersPerRoom;
     }
 
-    public static int getMinPlayers() {
-        return s_minPlayers;
+    public static int getMinPlayersPerRoom() {
+        return s_minPlayersPerRoom;
     }
 
     public static int getPointsPerQuestion() {
         return s_pointsPerQuestion;
+    }
+
+    public static int getTimeForWaitingStartGame() {
+        return s_timeForWaitingStartGame;
+    }
+
+    public static int getTimeForWaitingNewRoundStart() {
+        return s_timeForWaitingNewRoundStart;
+    }
+
+    public static int getMaxGameTimeMS() {
+        return s_maxGameTimeMinutes * MS_IN_MINUTE;
+    }
+
+    public static int getMinRoundsPerGameCount() {
+        return s_minRoundsPerGameCount;
     }
 
     public static String getClientID() {
