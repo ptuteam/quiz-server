@@ -50,15 +50,17 @@ public class ScoresServletTest {
             scoresServlet.doGet(request, response);
 
             assertTrue(stringWriter.toString().contains(
-                    "\"first_name\":\"first1\"," +
-                            "\"last_name\":\"last1\"," +
-                            "\"avatar\":\"avatar1\"," +
-                            "\"score\":1"));
+                            "\"first_name\":\"first1\"," +
+                                    "\"last_name\":\"last1\"," +
+                                    "\"avatar\":\"avatar1\"," +
+                                    "\"score\":1")
+            );
             assertTrue(stringWriter.toString().contains(
-                    "\"first_name\":\"first2\"," +
-                            "\"last_name\":\"last2\"," +
-                            "\"avatar\":\"avatar2\"," +
-                            "\"score\":2"));
+                            "\"first_name\":\"first2\"," +
+                                    "\"last_name\":\"last2\"," +
+                                    "\"avatar\":\"avatar2\"," +
+                                    "\"score\":2")
+            );
         }
     }
 }
