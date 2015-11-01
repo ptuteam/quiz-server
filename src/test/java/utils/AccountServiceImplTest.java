@@ -25,39 +25,34 @@ public class AccountServiceImplTest {
 
     @Test
     public void testSignUp() throws Exception {
-        accountService.signUp(new UserProfile("qwe", "Qwe", "qwe@email.com", "avatarUrl"));
-        UserProfile result = accountService.getUser("qwe@email.com");
+        UserProfile result = accountService.getUser("test@email.com");
         assertNotNull(result);
+        assertEquals(accountService.getUser("test@email.com").getFirstName(), "test");
     }
 
     @Test
     public void testSignUpError() throws Exception {
-        accountService.signUp(new UserProfile("qwe", "Qwe", "test@email.com", "avatarUrl"));
-        UserProfile user = accountService.getUser("test@email.com");
-        assertNotEquals("qwe", user.getFirstName());
+        assertFalse(accountService.signUp(new UserProfile("qwe", "Qwe", "test@email.com", "avatarUrl")));
+        UserProfile userProfile = accountService.getUser("test@email.com");
+        assertNotEquals("qwe", userProfile.getFirstName());
     }
 
     @Test
     public void testIsLogged() throws Exception {
-        String sessionId = "session";
-        accountService.signIn(sessionId, user);
-        boolean result = accountService.isLogged(sessionId);
+        boolean result = accountService.isLogged("session");
         assertTrue(result);
     }
 
     @Test
     public void testLogout() throws Exception {
-        UserProfile temp = new UserProfile("qwe", "Qwe", "qwe@email.com", "avatarUrl", true);
-        accountService.signUp(temp);
-        String sessionId = "session";
-        accountService.signIn(sessionId, temp);
-        accountService.logout(sessionId);
+        accountService.logout("session");
+        assertFalse(accountService.isLogged("session"));
     }
 
     @Test
     public void testGetUserBySession() throws Exception {
-        UserProfile user = accountService.getUserBySession("session");
-        assertEquals("test@email.com", user.getEmail());
+        UserProfile userProfile = accountService.getUserBySession("session");
+        assertEquals("test@email.com", userProfile.getEmail());
     }
 
     @Test
@@ -74,5 +69,6 @@ public class AccountServiceImplTest {
     public void testGetUsers() throws Exception {
         Collection<UserProfile> users = accountService.getUsers();
         assertEquals(accountService.getUsersCount(), users.size());
+        assertTrue(users.contains(user));
     }
 }
