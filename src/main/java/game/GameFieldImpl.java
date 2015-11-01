@@ -7,12 +7,9 @@ import websocket.WebSocketService;
  * alex on 22.10.15.
  */
 public class GameFieldImpl implements GameField {
-    private static final int START_IDLE_TIME = 5 * 1000;
-    private static final int GAME_TIME = 5 * 60 * 1000;
-    private static final int STEP_TIME = 5 * 100;
 
     private boolean playing;
-    private int nextQuestion;
+    private int currentRound;
 
     private final WebSocketService webSocketService;
     private final GameSession session;
@@ -22,27 +19,37 @@ public class GameFieldImpl implements GameField {
     public GameFieldImpl(WebSocketService webSocketService, GameSession session) {
         this.webSocketService = webSocketService;
         this.session = session;
-        nextQuestion = 0;
+        currentRound = 0;
+    }
+
+    private void newRoundStart() {
+        ++currentRound;
+        webSocketService.notifyNewRound(session.getPlayers(), currentRound);
+        try {
+            Thread.sleep(ConfigGeneral.getTimeForWaitingNewRoundStartMS());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        askQuestion();
     }
 
     @Override
     public void checkPlayerAnswer(Player player, String answer) {
-        if (questionHelper.checkAnswer(nextQuestion, answer)) {
+        if (questionHelper.checkAnswer(currentRound % QuestionHelper.QUESTIONS_COUNT, answer)) {
+            webSocketService.notifyOnCorrectAnswer(player, true);
             increasePlayerScore(player);
-        }
-        nextQuestion++;
-        if (nextQuestion < QuestionHelper.QUESTIONS_COUNT) {
-            askNextQuestion();
+        } else {
+            webSocketService.notifyOnCorrectAnswer(player, false);
         }
     }
 
-    private void askNextQuestion() {
-        webSocketService.notifyNewQuestion(session.getPlayers(), questionHelper.getQuestionWithAnswersJson(nextQuestion));
+    private void askQuestion() {
+        webSocketService.notifyNewQuestion(session.getPlayers(), questionHelper.getQuestionWithAnswersJson(currentRound % QuestionHelper.QUESTIONS_COUNT));
     }
 
     private void increasePlayerScore(Player player) {
         session.increaseScore(player.getUserProfile(), ConfigGeneral.getPointsPerQuestion());
-        webSocketService.notifyNewScore(session.getPlayers(), player);
+        webSocketService.notifyNewScores(session.getPlayers());
     }
 
     @Override
@@ -51,7 +58,7 @@ public class GameFieldImpl implements GameField {
         webSocketService.notifyStartGame(session.getPlayers());
         new Thread(() -> {
             try {
-                Thread.sleep(START_IDLE_TIME);
+                Thread.sleep(ConfigGeneral.getTimeForWaitingStartGameMS());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -60,20 +67,23 @@ public class GameFieldImpl implements GameField {
     }
 
     private void run() {
-        askNextQuestion();
         while (playing) {
-            gmStep();
+            gameStep();
             try {
-                Thread.sleep(STEP_TIME);
+                Thread.sleep(ConfigGeneral.getTimePerQuestionMS());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            webSocketService.notifyNewScores(session.getPlayers());
         }
     }
 
-    private void gmStep() {
-        if (session.getSessionTime() > GAME_TIME || nextQuestion > QuestionHelper.QUESTIONS_COUNT - 1) {
+    private void gameStep() {
+        if (session.getSessionTime() > ConfigGeneral.getMaxGameTimeMS() ||
+                (currentRound + 1 > ConfigGeneral.getMinRoundsPerGameCount() && session.getWinner() != null)) {
             gameOver();
+        } else {
+            newRoundStart();
         }
     }
 

@@ -45,7 +45,9 @@ public class Room {
     public void connectUser(UserProfile userProfile, GameWebSocket gameWebSocket) {
         Player player = new Player(userProfile);
         player.setConnection(gameWebSocket);
+        webSocketService.notifyNewPlayerConnect(getPlayers(), player);
         playerByUser.put(userProfile, player);
+        webSocketService.notifyAboutPlayersInRoom(player, getPlayers());
         if (playerByUser.size() == ConfigGeneral.getMaxPlayersPerRoom()) {
             startGame();
         }
@@ -54,7 +56,7 @@ public class Room {
     public void disconnectUser(UserProfile userProfile) {
         webSocketService.notifyPlayerDisconnect(getPlayers(), getPlayerByUser(userProfile));
         playerByUser.remove(userProfile);
-        if (playerByUser.size() <= 1) {
+        if (playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
             gameField.gameOver();
         }
     }

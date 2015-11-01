@@ -39,7 +39,16 @@ public class GameSession {
             }
         }
 
-        return winner != null ? winner : null;
+        int count = 0;
+        if (winner != null) {
+            for (Player player : getPlayers()) {
+                if (player.getScore() == winner.getScore()) {
+                    ++count;
+                }
+            }
+        }
+
+        return count > 1 ? null : winner;
     }
 
     public void stopGame() {

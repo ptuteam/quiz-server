@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import game.Player;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * alex on 24.10.15.
@@ -11,9 +13,14 @@ import java.util.Collection;
 public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
-    public void notifyNewScore(Collection<Player> players, Player playerWithNewScore) {
+    public void notifyNewScores(Collection<Player> players) {
+        Map<String, Integer> scoreMap = new HashMap<>();
         for (Player player : players) {
-            player.getConnection().onChangeScore(playerWithNewScore);
+            scoreMap.put(player.getUserEmail(), player.getScore());
+        }
+
+        for (Player player : players) {
+            player.getConnection().onNewScores(scoreMap);
         }
     }
 
@@ -43,5 +50,29 @@ public class WebSocketServiceImpl implements WebSocketService {
         for (Player player : players) {
             player.getConnection().onEnemyDisconnect(disconnectedPlayer);
         }
+    }
+
+    @Override
+    public void notifyNewRound(Collection<Player> players, int round) {
+        for (Player player : players) {
+            player.getConnection().onNewRoundStart(round);
+        }
+    }
+
+    @Override
+    public void notifyNewPlayerConnect(Collection<Player> players, Player newPlayer) {
+        for (Player player : players) {
+            player.getConnection().onNewPlayerConnect(newPlayer);
+        }
+    }
+
+    @Override
+    public void notifyOnCorrectAnswer(Player player, boolean correct) {
+        player.getConnection().onCorrectAnswer(correct);
+    }
+
+    @Override
+    public void notifyAboutPlayersInRoom(Player player, Collection<Player> players) {
+        player.getConnection().listPlayersInRoom(players);
     }
 }

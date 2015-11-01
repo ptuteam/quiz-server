@@ -9,7 +9,7 @@ import java.util.Collection;
  * alex on 22.10.15.
  */
 public interface WebSocketService {
-    void notifyNewScore(Collection<Player> players, Player playerWithNewScore);
+    void notifyNewScores(Collection<Player> players);
 
     void notifyStartGame(Collection<Player> players);
 
@@ -18,4 +18,12 @@ public interface WebSocketService {
     void notifyNewQuestion(Collection<Player> players, JsonObject questionObject);
 
     void notifyPlayerDisconnect(Collection<Player> players, Player disconnectedPlayer);
+
+    void notifyNewRound(Collection<Player> players, int round);
+
+    void notifyNewPlayerConnect(Collection<Player> players, Player newPlayer);
+
+    void notifyOnCorrectAnswer(Player player, boolean correct);
+
+    void notifyAboutPlayersInRoom(Player player, Collection<Player> players);
 }

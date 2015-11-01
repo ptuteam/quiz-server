@@ -15,6 +15,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -32,14 +33,51 @@ public class GameWebSocket {
         this.roomManager = roomManager;
     }
 
+    @SuppressWarnings("unused")
+    @OnWebSocketConnect
+    public void onOpen(Session session) {
+        mySession = session;
+        room = roomManager.connectUser(userProfile, this);
+        if (room == null) {
+            onNoEmptyRooms();
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @OnWebSocketMessage
+    public void onMessage(String data) {
+        JsonObject message = new JsonParser().parse(data).getAsJsonObject();
+        try {
+            if (room.getState() == Room.States.PLAYING) {
+                switch (message.get("code").getAsInt()) {
+                    case 6:
+                        room.checkAnswer(userProfile, message.get("answer").getAsString());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @OnWebSocketClose
+    public void onClose(int statusCode, String reason) {
+        if (room != null) {
+            room.disconnectUser(userProfile);
+        }
+    }
+
     public void onStartGame(Collection<Player> players) {
         try {
-            JsonObject jsonStart = new JsonObject();
-            jsonStart.addProperty("code", "1");
-            jsonStart.addProperty("description", "start");
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "1");
+            message.addProperty("description", "start");
 
             JsonArray usersArray = new JsonArray();
-            jsonStart.add("players", usersArray);
+            message.add("players", usersArray);
 
             for (Player player : players) {
                 UserProfile user = player.getUserProfile();
@@ -53,7 +91,26 @@ public class GameWebSocket {
 
                 usersArray.add(userObject);
             }
-            mySession.getRemote().sendString(jsonStart.toString());
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onNewScores(Map<String, Integer> scoresMap) {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "2");
+            message.addProperty("description", "new players scores");
+            JsonArray playersArray = new JsonArray();
+            message.add("players", playersArray);
+            for (Map.Entry<String, Integer> entry : scoresMap.entrySet()) {
+                JsonObject player = new JsonObject();
+                player.addProperty("email", entry.getKey());
+                player.addProperty("score", entry.getValue());
+                playersArray.add(player);
+            }
+            mySession.getRemote().sendString(message.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,58 +118,11 @@ public class GameWebSocket {
 
     public void onGameOver(Player winner) {
         try {
-            JsonObject jsonStart = new JsonObject();
-            jsonStart.addProperty("code", "3");
-            jsonStart.addProperty("description", "finish");
-            jsonStart.addProperty("winner", winner.getUserEmail());
-            mySession.getRemote().sendString(jsonStart.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @OnWebSocketMessage
-    public void onMessage(String data) {
-        JsonObject jsonObject = new JsonParser().parse(data).getAsJsonObject();
-        switch (jsonObject.get("code").getAsInt()) {
-            case 6:
-                room.checkAnswer(userProfile, jsonObject.get("answer").getAsString());
-                break;
-            default:
-                break;
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @OnWebSocketConnect
-    public void onOpen(Session session) {
-        mySession = session;
-        room = roomManager.connectUser(userProfile, this);
-        if (room == null) {
-             onNoEmptyRooms();
-        }
-    }
-
-    public void onNoEmptyRooms() {
-        try {
-            JsonObject jsonStart = new JsonObject();
-            jsonStart.addProperty("code", "7");
-            jsonStart.addProperty("description", "No empty rooms");
-            mySession.getRemote().sendString(jsonStart.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onChangeScore(Player player) {
-        try {
-            JsonObject jsonStart = new JsonObject();
-            jsonStart.addProperty("code", "2");
-            jsonStart.addProperty("description", "player onChange score");
-            jsonStart.addProperty("player", player.getUserEmail());
-            jsonStart.addProperty("new_score", player.getScore());
-            mySession.getRemote().sendString(jsonStart.toString());
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "3");
+            message.addProperty("description", "finish");
+            message.addProperty("winner", winner.getUserEmail());
+            mySession.getRemote().sendString(message.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -120,11 +130,11 @@ public class GameWebSocket {
 
     public void onEnemyDisconnect(Player enemy) {
         try {
-            JsonObject jsonStart = new JsonObject();
-            jsonStart.addProperty("code", "4");
-            jsonStart.addProperty("description", "player disconnect");
-            jsonStart.addProperty("player", enemy.getUserEmail());
-            mySession.getRemote().sendString(jsonStart.toString());
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "4");
+            message.addProperty("description", "player disconnect");
+            message.addProperty("player", enemy.getUserEmail());
+            mySession.getRemote().sendString(message.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,9 +150,83 @@ public class GameWebSocket {
         }
     }
 
-    @SuppressWarnings("unused")
-    @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
-        room.disconnectUser(userProfile);
+    public void onNoEmptyRooms() {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "7");
+            message.addProperty("description", "no empty rooms");
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onNewPlayerConnect(Player newPlayer) {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "8");
+            message.addProperty("description", "new player connect");
+            JsonObject playerObject = new JsonObject();
+            playerObject.addProperty("email", newPlayer.getUserProfile().getEmail());
+            playerObject.addProperty("first_name", newPlayer.getUserProfile().getFirstName());
+            playerObject.addProperty("last_name", newPlayer.getUserProfile().getLastName());
+            playerObject.addProperty("avatar", newPlayer.getUserProfile().getAvatarUrl());
+            playerObject.addProperty("score", newPlayer.getScore());
+            message.add("player", playerObject);
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onNewRoundStart(int round) {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "9");
+            message.addProperty("description", "new round start");
+            message.addProperty("round", round);
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onCorrectAnswer(boolean correct) {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "10");
+            message.addProperty("description", "is answer correct?");
+            message.addProperty("correct", correct);
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void listPlayersInRoom(Collection<Player> players) {
+        try {
+            JsonObject message = new JsonObject();
+            message.addProperty("code", "11");
+            message.addProperty("description", "players in room");
+
+            JsonArray usersArray = new JsonArray();
+            message.add("players", usersArray);
+
+            for (Player player : players) {
+                UserProfile user = player.getUserProfile();
+
+                JsonObject userObject = new JsonObject();
+                userObject.addProperty("email", user.getEmail());
+                userObject.addProperty("first_name", user.getFirstName());
+                userObject.addProperty("last_name", user.getLastName());
+                userObject.addProperty("avatar", user.getAvatarUrl());
+                userObject.addProperty("score", player.getScore());
+
+                usersArray.add(userObject);
+            }
+            mySession.getRemote().sendString(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
