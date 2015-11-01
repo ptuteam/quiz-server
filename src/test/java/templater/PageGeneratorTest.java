@@ -14,14 +14,19 @@ public class PageGeneratorTest {
 
     @Test
     public void testGetPage() throws Exception {
+        PageGenerator pageGenerator = new PageGenerator();
+
         Map<String, Object> pageVariables = new HashMap<>();
+
         pageVariables.put("msg", "Test message");
         pageVariables.put("type", "test");
-        String result = PageGenerator.getPage("testresponse.txt", pageVariables);
+        String result = pageGenerator.getPage("testresponse.txt", pageVariables);
+
         String expectedResult = "{\n" +
                 "    message: \"Test message\",\n" +
                 "    type: \"test\"\n" +
                 '}';
+
         assertEquals(expectedResult, result);
     }
 }
