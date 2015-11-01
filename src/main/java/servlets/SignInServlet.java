@@ -1,9 +1,9 @@
 package servlets;
 
-import com.google.gson.JsonObject;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import main.Main;
 import model.UserProfile;
+import templater.PageGenerator;
 import utils.AccountService;
 import utils.AuthHelper;
 
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * alex on 25.09.15.
@@ -36,7 +38,6 @@ public class SignInServlet extends HttpServlet {
             response.sendRedirect("/#login");
         }
 
-        JsonObject jsonObject = new JsonObject();
         String sessionId = request.getSession().getId();
 
         if (accountService.isLogged(sessionId)) {
@@ -51,6 +52,8 @@ public class SignInServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        Map<String, Object> pageVariables = new HashMap<>();
+
         if (user != null) {
 
             if (accountService.isUserExist(user.getEmail())) {
@@ -61,30 +64,14 @@ public class SignInServlet extends HttpServlet {
 
             accountService.signIn(sessionId, user);
 
-            JsonObject userObject = new JsonObject();
-
-            userObject.addProperty("first_name", user.getFirstName());
-            userObject.addProperty("last_name", user.getLastName());
-            userObject.addProperty("email", user.getEmail());
-            userObject.addProperty("avatar", user.getAvatarUrl());
-            userObject.addProperty("score", user.getScore());
-
-            jsonObject.addProperty("code", HttpServletResponse.SC_OK);
-            jsonObject.add("user", userObject);
-
-            response.setStatus(HttpServletResponse.SC_OK);
+            pageVariables.put("authSuccess", "true");
 
         } else {
-
-            jsonObject.addProperty("code", HttpServletResponse.SC_BAD_REQUEST);
-            jsonObject.addProperty("description", "Sorry, we could not get your profile from google+");
-
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
+            pageVariables.put("authSuccess", "false");
         }
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
-        response.getWriter().println(jsonObject);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/html");
+        response.getWriter().write(PageGenerator.getPage("social_signin_popup.html", pageVariables));
     }
 }

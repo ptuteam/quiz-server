@@ -1,8 +1,8 @@
 package servlets;
 
-import com.google.gson.JsonObject;
 import main.Main;
 import model.UserProfile;
+import templater.PageGenerator;
 import utils.AccountService;
 import utils.AuthHelper;
 
@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * alex on 13.10.15.
@@ -27,7 +29,7 @@ public class GuestSignInServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
+                      HttpServletResponse response) throws ServletException, IOException {
 
         String sessionId = request.getSession().getId();
 
@@ -43,16 +45,11 @@ public class GuestSignInServlet extends HttpServlet {
 
         accountService.signIn(sessionId, guest);
 
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("first_name", guest.getFirstName());
-        jsonObject.addProperty("last_name", guest.getLastName());
-        jsonObject.addProperty("email", guest.getEmail());
-        jsonObject.addProperty("avatar", guest.getAvatarUrl());
-        jsonObject.addProperty("score", guest.getScore());
+        Map<String, Object> pageVariables = new HashMap<>();
+        pageVariables.put("authSuccess", "true");
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(jsonObject);
+        response.setContentType("text/html");
+        response.getWriter().write(PageGenerator.getPage("social_signin_popup.html", pageVariables));
     }
 }
