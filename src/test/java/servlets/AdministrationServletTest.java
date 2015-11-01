@@ -27,7 +27,7 @@ public class AdministrationServletTest {
     private HttpSession session;
 
     @Rule
-    private final ExpectedSystemExit exit = ExpectedSystemExit.none();
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Before
     public void setUp() {
