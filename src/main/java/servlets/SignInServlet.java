@@ -35,43 +35,46 @@ public class SignInServlet extends HttpServlet {
         String code = request.getParameter("code");
 
         if (code == null) {
+
             response.sendRedirect("/#login");
-        }
-
-        String sessionId = request.getSession().getId();
-
-        if (accountService.isLogged(sessionId)) {
-            accountService.logout(sessionId);
-        }
-
-        UserProfile user = null;
-
-        try {
-            user = AuthHelper.getUserFromSocial(code);
-        } catch (UnirestException | NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        Map<String, Object> pageVariables = new HashMap<>();
-
-        if (user != null) {
-
-            if (accountService.isUserExist(user.getEmail())) {
-                user = accountService.getUser(user.getEmail());
-            } else {
-                accountService.signUp(user);
-            }
-
-            accountService.signIn(sessionId, user);
-
-            pageVariables.put("authSuccess", "true");
 
         } else {
-            pageVariables.put("authSuccess", "false");
-        }
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html");
-        response.getWriter().write(PageGenerator.getPage("social_signin_popup.html", pageVariables));
+            String sessionId = request.getSession().getId();
+
+            if (accountService.isLogged(sessionId)) {
+                accountService.logout(sessionId);
+            }
+
+            UserProfile user = null;
+
+            try {
+                user = AuthHelper.getUserFromSocial(code);
+            } catch (UnirestException | NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, Object> pageVariables = new HashMap<>();
+
+            if (user != null) {
+
+                if (accountService.isUserExist(user.getEmail())) {
+                    user = accountService.getUser(user.getEmail());
+                } else {
+                    accountService.signUp(user);
+                }
+
+                accountService.signIn(sessionId, user);
+
+                pageVariables.put("authSuccess", "true");
+
+            } else {
+                pageVariables.put("authSuccess", "false");
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("text/html");
+            response.getWriter().write(PageGenerator.getPage("social_signin_popup.html", pageVariables));
+        }
     }
 }
