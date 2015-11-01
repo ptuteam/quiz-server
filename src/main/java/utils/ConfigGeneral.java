@@ -22,8 +22,8 @@ public class ConfigGeneral {
     private static int s_minPlayersPerRoom;
     private static int s_pointsPerQuestion;
     private static int s_timePerQuestionMS;
-    private static int s_timeForWaitingStartGame;
-    private static int s_timeForWaitingNewRoundStart;
+    private static int s_timeForWaitingStartGameMS;
+    private static int s_timeForWaitingNewRoundStartMS;
     private static int s_maxGameTimeMinutes;
     private static int s_minRoundsPerGameCount;
 
@@ -49,8 +49,8 @@ public class ConfigGeneral {
         s_minPlayersPerRoom = Integer.valueOf(properties.getProperty("minPlayersPerRoom"));
         s_pointsPerQuestion = Integer.valueOf(properties.getProperty("pointsPerQuestion"));
         s_timePerQuestionMS = Integer.valueOf(properties.getProperty("timePerQuestionMS"));
-        s_timeForWaitingStartGame = Integer.valueOf(properties.getProperty("timeForWaitingStartGame"));
-        s_timeForWaitingNewRoundStart = Integer.valueOf(properties.getProperty("timeForWaitingNewRoundStart"));
+        s_timeForWaitingStartGameMS = Integer.valueOf(properties.getProperty("timeForWaitingStartGameMS"));
+        s_timeForWaitingNewRoundStartMS = Integer.valueOf(properties.getProperty("timeForWaitingNewRoundStartMS"));
         s_maxGameTimeMinutes = Integer.valueOf(properties.getProperty("maxGameTimeMinutes"));
         s_minRoundsPerGameCount = Integer.valueOf(properties.getProperty("minRoundsPerGameCount"));
 
@@ -92,12 +92,12 @@ public class ConfigGeneral {
         return s_pointsPerQuestion;
     }
 
-    public static int getTimeForWaitingStartGame() {
-        return s_timeForWaitingStartGame;
+    public static int getTimeForWaitingStartGameMS() {
+        return s_timeForWaitingStartGameMS;
     }
 
-    public static int getTimeForWaitingNewRoundStart() {
-        return s_timeForWaitingNewRoundStart;
+    public static int getTimeForWaitingNewRoundStartMS() {
+        return s_timeForWaitingNewRoundStartMS;
     }
 
     public static int getMaxGameTimeMS() {
