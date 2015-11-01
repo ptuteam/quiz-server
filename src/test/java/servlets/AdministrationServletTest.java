@@ -26,6 +26,7 @@ public class AdministrationServletTest {
     private AccountService accountService;
     private HttpSession session;
 
+    @SuppressWarnings("PublicField")
     @Rule
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
