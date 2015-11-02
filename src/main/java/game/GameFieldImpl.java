@@ -49,7 +49,6 @@ public class GameFieldImpl implements GameField {
 
     private void increasePlayerScore(Player player) {
         session.increaseScore(player.getUserProfile(), ConfigGeneral.getPointsPerQuestion());
-        webSocketService.notifyNewScores(session.getPlayers());
     }
 
     @Override
