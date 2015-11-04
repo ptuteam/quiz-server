@@ -23,7 +23,10 @@ public class GameWebSocketCreator implements WebSocketCreator {
     @Override
     public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
         String sessionId = request.getHttpServletRequest().getSession().getId();
-        UserProfile user = accountService.getUserBySession(sessionId);
-        return new GameWebSocket(user, roomManager);
+        if (accountService.isLogged(sessionId)) {
+            UserProfile user = accountService.getUserBySession(sessionId);
+            return new GameWebSocket(user, roomManager);
+        }
+        return null;
     }
 }
