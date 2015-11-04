@@ -3,6 +3,8 @@ package game;
 import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import websocket.GameWebSocket;
+import websocket.WebSocketServiceImpl;
 
 import static org.junit.Assert.*;
 
@@ -29,13 +31,12 @@ public class PlayerTest {
     }
 
     @Test
-    public void testSetConnection() throws Exception {
+    public void testConnection() throws Exception {
+        RoomManager roomManager = new RoomManager(new WebSocketServiceImpl());
+        GameWebSocket gameWebSocket = new GameWebSocket(player.getUserProfile(), roomManager);
 
-    }
-
-    @Test
-    public void testGetConnection() throws Exception {
-
+        player.setConnection(gameWebSocket);
+        assertEquals(gameWebSocket, player.getConnection());
     }
 
     @Test
