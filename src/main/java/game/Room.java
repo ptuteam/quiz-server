@@ -78,6 +78,10 @@ public class Room {
         return playerByUser.values();
     }
 
+    public int getPlayersCount() {
+        return playerByUser.size();
+    }
+
     public void checkAnswer(UserProfile userProfile, String answer) {
         gameField.checkPlayerAnswer(getPlayerByUser(userProfile), answer);
     }

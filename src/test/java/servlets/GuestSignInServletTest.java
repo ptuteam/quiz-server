@@ -1,9 +1,15 @@
 package servlets;
 
+import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import utils.AccountService;
 import utils.AccountServiceImpl;
+import utils.AuthHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,6 +27,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ AuthHelper.class })
 public class GuestSignInServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -37,6 +46,8 @@ public class GuestSignInServletTest {
     @Test
     public void testGuestSignIn() throws ServletException, IOException {
         try (StringWriter stringWriter = new StringWriter()) {
+            PowerMockito.mockStatic(AuthHelper.class);
+            PowerMockito.when(AuthHelper.getGuestUser()).thenReturn(new UserProfile("first", "last", "email", "avatar", true));
             when(session.getId()).thenReturn("session");
             when(request.getSession()).thenReturn(session);
             when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
@@ -45,6 +56,7 @@ public class GuestSignInServletTest {
 
             assertTrue(accountService.isLogged("session"));
             assertTrue(accountService.getUserBySession("session").isGuest());
+            assertEquals(accountService.getUserBySession("session").getEmail(), "email");
         }
     }
 }

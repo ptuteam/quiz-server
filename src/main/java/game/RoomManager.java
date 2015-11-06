@@ -1,5 +1,7 @@
 package game;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import model.UserProfile;
 import utils.ConfigGeneral;
 import websocket.GameWebSocket;
@@ -46,5 +48,20 @@ public class RoomManager {
         } else {
             return null;
         }
+    }
+
+    public JsonObject getRoomsInforamtion() {
+        JsonObject jsonObject = new JsonObject();
+        JsonArray roomsArray = new JsonArray();
+        jsonObject.add("rooms", roomsArray);
+
+        rooms.stream().filter(room -> room.getState() == Room.States.WATING).forEach(room -> {
+            JsonObject roomObject = new JsonObject();
+            roomObject.addProperty("id", "someId");
+            roomObject.addProperty("playersCount", room.getPlayersCount());
+            roomsArray.add(roomObject);
+        });
+
+        return jsonObject;
     }
 }
