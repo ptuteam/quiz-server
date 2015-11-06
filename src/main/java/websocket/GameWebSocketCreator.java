@@ -14,8 +14,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
     private final AccountService accountService;
     private final RoomManager roomManager;
 
-    public GameWebSocketCreator(AccountService accountService,
-                                RoomManager roomManager) {
+    public GameWebSocketCreator(AccountService accountService, RoomManager roomManager) {
         this.accountService = accountService;
         this.roomManager = roomManager;
     }
@@ -25,7 +24,9 @@ public class GameWebSocketCreator implements WebSocketCreator {
         String sessionId = request.getHttpServletRequest().getSession().getId();
         if (accountService.isLogged(sessionId)) {
             UserProfile user = accountService.getUserBySession(sessionId);
-            return new GameWebSocket(user, roomManager);
+            GameWebSocket webSocket = new GameWebSocket(user, roomManager);
+            accountService.setWebSocketBySession(sessionId, webSocket);
+            return webSocket;
         }
         return null;
     }

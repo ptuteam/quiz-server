@@ -1,6 +1,7 @@
 package utils;
 
 import model.UserProfile;
+import websocket.GameWebSocket;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final Map<String, UserProfile> usersMap = new HashMap<>();
     private final Map<String, UserProfile> sessionsMap = new HashMap<>();
+    private final Map<String, GameWebSocket> socketMap = new HashMap<>();
 
     @Override
     public void signIn(String sessionId, UserProfile user) {
@@ -39,6 +41,11 @@ public class AccountServiceImpl implements AccountService {
             usersMap.remove(user.getEmail());
         }
         sessionsMap.remove(sessionId);
+
+        if (socketMap.containsKey(sessionId)) {
+            socketMap.get(sessionId).onClose(0, "You has been logout!");
+            socketMap.remove(sessionId);
+        }
     }
 
     @Override
@@ -74,5 +81,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Collection<UserProfile> getUsers() {
         return usersMap.values();
+    }
+
+    @Override
+    public void setWebSocketBySession(String session, GameWebSocket gameWebSocket) {
+        socketMap.put(session, gameWebSocket);
     }
 }
