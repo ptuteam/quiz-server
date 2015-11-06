@@ -8,10 +8,10 @@ import game.Room;
 import game.RoomManager;
 import model.UserProfile;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.WebSocketException;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.io.IOException;
@@ -39,7 +39,6 @@ public class GameWebSocket {
     public void onOpen(Session session) {
         mySession = session;
         room = roomManager.connectUser(userProfile, this);
-
         if (room == null) {
             onNoEmptyRooms();
         }
@@ -72,15 +71,6 @@ public class GameWebSocket {
         }
     }
 
-    @SuppressWarnings("unused")
-    @OnWebSocketError
-    public void onError(Throwable error) {
-        error.printStackTrace();
-        if (room != null) {
-            room.disconnectUser(userProfile);
-        }
-    }
-
     public void onStartGame(Collection<Player> players) {
         try {
             JsonObject message = new JsonObject();
@@ -103,7 +93,7 @@ public class GameWebSocket {
                 usersArray.add(userObject);
             }
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -122,7 +112,7 @@ public class GameWebSocket {
                 playersArray.add(player);
             }
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -134,7 +124,7 @@ public class GameWebSocket {
             message.addProperty("description", "finish");
             message.addProperty("winner", winner.getUserEmail());
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -146,7 +136,7 @@ public class GameWebSocket {
             message.addProperty("description", "player disconnect");
             message.addProperty("player", enemy.getUserEmail());
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -156,7 +146,7 @@ public class GameWebSocket {
             questionObject.addProperty("code", "5");
             questionObject.addProperty("description", "new question");
             mySession.getRemote().sendString(questionObject.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -167,7 +157,7 @@ public class GameWebSocket {
             message.addProperty("code", "7");
             message.addProperty("description", "no empty rooms");
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -185,7 +175,7 @@ public class GameWebSocket {
             playerObject.addProperty("score", newPlayer.getScore());
             message.add("player", playerObject);
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -197,7 +187,7 @@ public class GameWebSocket {
             message.addProperty("description", "new round start");
             message.addProperty("round", round);
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -209,7 +199,7 @@ public class GameWebSocket {
             message.addProperty("description", "is answer correct?");
             message.addProperty("correct", correct);
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
@@ -236,7 +226,7 @@ public class GameWebSocket {
                 usersArray.add(userObject);
             }
             mySession.getRemote().sendString(message.toString());
-        } catch (IOException e) {
+        } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
     }
