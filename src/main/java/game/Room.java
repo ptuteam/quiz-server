@@ -57,7 +57,7 @@ public class Room {
         Player disconnectedPlayer  = getPlayerByUser(userProfile);
         playerByUser.remove(userProfile);
         webSocketService.notifyPlayerDisconnect(getPlayers(), disconnectedPlayer);
-        if (playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
+        if (state == States.PLAYING && playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
             gameField.gameOver();
         }
     }
