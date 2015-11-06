@@ -56,16 +56,16 @@ public class RoomTest {
     @Test
     public void testConnectUser() throws Exception {
         room.connectUser(user, webSocket);
-        assertEquals(room.getPlayers().size(), 1);
+        assertEquals(room.getPlayersCount(), 1);
     }
 
     @Test
     public void testDisconnectUser() throws Exception {
         room.connectUser(user, webSocket);
-        assertEquals(room.getPlayers().size(), 1);
+        assertEquals(room.getPlayersCount(), 1);
 
         room.disconnectUser(user);
-        assertEquals(room.getPlayers().size(), 0);
+        assertEquals(room.getPlayersCount(), 0);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class RoomTest {
         assertEquals(Room.States.PLAYING, room.getState());
         room.gameOver();
         assertEquals(Room.States.WATING, room.getState());
-        assertEquals(0, room.getPlayers().size());
+        assertEquals(0, room.getPlayersCount());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class RoomTest {
         room.connectUser(user, webSocket);
         Player player = room.getPlayerByUser(user);
         assertTrue(room.getPlayers().contains(player));
-        assertEquals(room.getPlayers().size(), 1);
+        assertEquals(room.getPlayersCount(), 1);
     }
 
     @Test
@@ -104,5 +104,14 @@ public class RoomTest {
         room.startGame();
         room.checkAnswer(user, "answer");
         verify(gameField, atLeastOnce()).checkPlayerAnswer(room.getPlayerByUser(user), "answer");
+    }
+
+    @Test
+    public void testGetPlayersCount() {
+        room.connectUser(user, webSocket);
+        assertEquals(room.getPlayersCount(), 1);
+
+        room.connectUser(new UserProfile("d", "d", "d", "d"), webSocket);
+        assertEquals(room.getPlayersCount(), 2);
     }
 }
