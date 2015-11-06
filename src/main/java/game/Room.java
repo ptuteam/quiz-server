@@ -54,8 +54,9 @@ public class Room {
     }
 
     public void disconnectUser(UserProfile userProfile) {
-        webSocketService.notifyPlayerDisconnect(getPlayers(), getPlayerByUser(userProfile));
+        Player disconnectedPlayer  = getPlayerByUser(userProfile);
         playerByUser.remove(userProfile);
+        webSocketService.notifyPlayerDisconnect(getPlayers(), disconnectedPlayer);
         if (playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
             gameField.gameOver();
         }
