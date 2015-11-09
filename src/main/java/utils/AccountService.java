@@ -4,6 +4,7 @@ import model.UserProfile;
 import websocket.GameWebSocket;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * alex on 24.10.15.
@@ -20,6 +21,7 @@ public interface AccountService {
     int getUsersCount();
     int getLoggedUsersCount();
     Collection<UserProfile> getUsers();
+    List<UserProfile> getTopUsers(int count);
     void setWebSocketBySession(String session, GameWebSocket gameWebSocket);
 
 }

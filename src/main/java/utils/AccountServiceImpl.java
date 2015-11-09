@@ -3,9 +3,7 @@ package utils;
 import model.UserProfile;
 import websocket.GameWebSocket;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * alex on 25.09.15.
@@ -81,6 +79,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Collection<UserProfile> getUsers() {
         return usersMap.values();
+    }
+
+    @Override
+    public List<UserProfile> getTopUsers(int count) {
+        List<UserProfile> topUsers = new ArrayList<>(getUsers());
+        Collections.sort(topUsers, (o1, o2) -> -Integer.valueOf(o1.getScore()).compareTo(o2.getScore()));
+        topUsers = topUsers.isEmpty() ? topUsers : topUsers.subList(0, topUsers.size() > count ? count : topUsers.size());
+        return topUsers;
     }
 
     @Override

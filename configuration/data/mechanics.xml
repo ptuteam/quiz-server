@@ -11,5 +11,6 @@
     <entry key="timeForWaitingNewRoundStartMS">3000</entry>
     <entry key="maxGameTimeMinutes">9</entry>
     <entry key="minRoundsPerGameCount">5</entry>
+    <entry key="ratingUsersCount">10</entry>
 
 </properties>

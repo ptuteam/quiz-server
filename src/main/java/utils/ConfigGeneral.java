@@ -26,6 +26,7 @@ public class ConfigGeneral {
     private static int s_timeForWaitingNewRoundStartMS;
     private static int s_maxGameTimeMinutes;
     private static int s_minRoundsPerGameCount;
+    private static int s_ratingUsersCount;
 
     private static String s_clientID;
     private static String s_clientSecret;
@@ -53,6 +54,7 @@ public class ConfigGeneral {
         s_timeForWaitingNewRoundStartMS = Integer.valueOf(properties.getProperty("timeForWaitingNewRoundStartMS"));
         s_maxGameTimeMinutes = Integer.valueOf(properties.getProperty("maxGameTimeMinutes"));
         s_minRoundsPerGameCount = Integer.valueOf(properties.getProperty("minRoundsPerGameCount"));
+        s_ratingUsersCount = Integer.valueOf(properties.getProperty("ratingUsersCount"));
 
         fileInputStream = new FileInputStream(SOCIALS_CONFIG_FILE);
         properties.load(fileInputStream);
@@ -106,6 +108,10 @@ public class ConfigGeneral {
 
     public static int getMinRoundsPerGameCount() {
         return s_minRoundsPerGameCount;
+    }
+
+    public static int getRatingUsersCount() {
+        return s_ratingUsersCount;
     }
 
     public static String getClientID() {

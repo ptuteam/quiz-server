@@ -47,6 +47,7 @@ public class ConfigGeneralTest {
         when(properties.getProperty("clientSecret")).thenReturn("13");
         when(properties.getProperty("redirectUrl")).thenReturn("14");
         when(properties.getProperty("grantType")).thenReturn("15");
+        when(properties.getProperty("ratingUsersCount")).thenReturn("16");
 
         ConfigGeneral.loadConfig();
     }
@@ -132,5 +133,10 @@ public class ConfigGeneralTest {
     @Test
     public void testGetGrantType() throws Exception {
         assertEquals(ConfigGeneral.getGrantType(), "15");
+    }
+
+    @Test
+    public void testGetRatingUsersCount() throws Exception {
+        assertEquals(ConfigGeneral.getRatingUsersCount(), 16);
     }
 }

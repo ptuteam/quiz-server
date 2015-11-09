@@ -3,8 +3,13 @@ package servlets;
 import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import utils.AccountService;
 import utils.AccountServiceImpl;
+import utils.ConfigGeneral;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,6 +26,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ScoresServlet.class, ConfigGeneral.class})
 public class ScoresServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -27,6 +35,8 @@ public class ScoresServletTest {
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getRatingUsersCount()).thenReturn(3);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();
@@ -36,9 +46,18 @@ public class ScoresServletTest {
         user1.setScore(1);
         UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
         user2.setScore(2);
+        UserProfile user3 = new UserProfile("first3", "last3", "email3", "avatar3");
+        user3.setScore(0);
+        UserProfile user4 = new UserProfile("first4", "last4", "email4", "avatar4");
+        user4.setScore(4);
+        UserProfile user5 = new UserProfile("first5", "last5", "email5", "avatar5");
+        user5.setScore(5);
 
         accountService.signUp(user1);
         accountService.signUp(user2);
+        accountService.signUp(user3);
+        accountService.signUp(user4);
+        accountService.signUp(user5);
     }
 
     @Test
@@ -50,16 +69,34 @@ public class ScoresServletTest {
             scoresServlet.doGet(request, response);
 
             assertTrue(stringWriter.toString().contains(
-                            "\"first_name\":\"first1\"," +
-                                    "\"last_name\":\"last1\"," +
-                                    "\"avatar\":\"avatar1\"," +
-                                    "\"score\":1")
+                            "\"first_name\":\"first4\"," +
+                                    "\"last_name\":\"last4\"," +
+                                    "\"avatar\":\"avatar4\"," +
+                                    "\"score\":4")
+            );
+            assertTrue(stringWriter.toString().contains(
+                            "\"first_name\":\"first5\"," +
+                                    "\"last_name\":\"last5\"," +
+                                    "\"avatar\":\"avatar5\"," +
+                                    "\"score\":5")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first2\"," +
                                     "\"last_name\":\"last2\"," +
                                     "\"avatar\":\"avatar2\"," +
                                     "\"score\":2")
+            );
+            assertFalse(stringWriter.toString().contains(
+                            "\"first_name\":\"first1\"," +
+                                    "\"last_name\":\"last1\"," +
+                                    "\"avatar\":\"avatar1\"," +
+                                    "\"score\":1")
+            );
+            assertFalse(stringWriter.toString().contains(
+                            "\"first_name\":\"first3\"," +
+                                    "\"last_name\":\"last3\"," +
+                                    "\"avatar\":\"avatar3\"," +
+                                    "\"score\":0")
             );
         }
     }

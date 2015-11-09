@@ -4,7 +4,9 @@ import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -70,5 +72,34 @@ public class AccountServiceImplTest {
         Collection<UserProfile> users = accountService.getUsers();
         assertEquals(accountService.getUsersCount(), users.size());
         assertTrue(users.contains(user));
+    }
+
+    @Test
+    public void testGetTopUsers() throws Exception {
+        UserProfile user1 = new UserProfile("first1", "last1", "email1", "avatar1");
+        user1.setScore(1);
+        UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
+        user2.setScore(2);
+        UserProfile user3 = new UserProfile("first3", "last3", "email3", "avatar3");
+        user3.setScore(0);
+        UserProfile user4 = new UserProfile("first4", "last4", "email4", "avatar4");
+        user4.setScore(4);
+        UserProfile user5 = new UserProfile("first5", "last5", "email5", "avatar5");
+        user5.setScore(5);
+
+        accountService.signUp(user1);
+        accountService.signUp(user2);
+        accountService.signUp(user3);
+        accountService.signUp(user4);
+        accountService.signUp(user5);
+
+        List<UserProfile> actual =  accountService.getTopUsers(3);
+
+        List<UserProfile> expected = new ArrayList<>();
+        expected.add(user5);
+        expected.add(user4);
+        expected.add(user2);
+
+        assertEquals(expected, actual);
     }
 }
