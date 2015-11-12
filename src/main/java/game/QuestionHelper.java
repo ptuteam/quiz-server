@@ -52,8 +52,22 @@ public class QuestionHelper {
     }
 
     public boolean checkAnswer(int questionId, String answer) {
-//        String question = questionsArray.get(questionId);
-//        String correctAnswer = answersByQuestions.get(question);
-        return true; /*Objects.equals(correctAnswer, answer);*/
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+
+            AnswersDAO answersDAO = new AnswersDAO(connection);
+            String correctAnswer = answersDAO.getCorrectByQuestionId(questionId).getText();
+
+            if (connection != null) {
+                connection.close();
+            }
+
+            return Objects.equals(correctAnswer, answer);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

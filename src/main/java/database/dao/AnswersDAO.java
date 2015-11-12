@@ -46,5 +46,20 @@ public class AnswersDAO {
         });
     }
 
+    public AnswersDataSet getCorrectByQuestionId(int questionId) throws SQLException {
+        String query =  "SELECT *" +
+                        " FROM answer" +
+                        " WHERE question_id = " + questionId +
+                        " AND is_correct = true;";
 
+        TExecutor exec = new TExecutor();
+        return exec.execQuery(connection, query, result -> {
+            result.next();
+            return new AnswersDataSet(
+                    result.getInt("id"),
+                    result.getString("text"),
+                    result.getInt("question_id"),
+                    result.getBoolean("is_correct"));
+        });
+    }
 }
