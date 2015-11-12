@@ -30,6 +30,7 @@ import static org.junit.Assert.assertFalse;
 /**
  * Created by Dima on 25.10.2015.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AuthHelper.class })
 public class SignInServletTest extends Mockito {

@@ -1,7 +1,7 @@
 package websocket;
 
-import com.google.gson.JsonObject;
 import game.Player;
+import game.Question;
 
 import java.util.Collection;
 
@@ -15,7 +15,7 @@ public interface WebSocketService {
 
     void notifyGameOver(Collection<Player> players, Player winner);
 
-    void notifyNewQuestion(Collection<Player> players, JsonObject questionObject);
+    void notifyNewQuestion(Collection<Player> players, Question question);
 
     void notifyPlayerDisconnect(Collection<Player> players, Player disconnectedPlayer);
 

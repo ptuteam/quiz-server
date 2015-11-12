@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * alex on 06.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(MockitoJUnitRunner.class)
 public class GameSessionTest {
 
@@ -33,7 +34,7 @@ public class GameSessionTest {
     private GameSession gameSession;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(player1.getUserProfile()).thenReturn(new UserProfile("1", "1", "1", "1"));
         when(player2.getUserProfile()).thenReturn(new UserProfile("2", "2", "2", "2"));
         Map<UserProfile, Player> map = new HashMap<>();

@@ -1,9 +1,9 @@
 package websocket;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import game.Player;
+import game.Question;
 import game.Room;
 import game.RoomManager;
 import model.UserProfile;
@@ -13,10 +13,16 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.messages.Message;
+import websocket.messages.NewScoresMessage;
+import websocket.messages.SimpleMessage;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,6 +30,18 @@ import java.util.Map;
  */
 @WebSocket
 public class GameWebSocket {
+    private static final int CODE_START = 1;
+    private static final int CODE_UPDATE_SCORES = 2;
+    private static final int CODE_GAME_OVER = 3;
+    private static final int CODE_ENEMY_DISCONNECT = 4;
+    private static final int CODE_NEW_QUESTION = 5;
+    private static final int CODE_PLAYER_ANSWER = 6;
+    private static final int CODE_NO_EMPTY_ROOMS = 7;
+    private static final int CODE_NEW_PLAYER_CONNECT = 8;
+    private static final int CODE_NEW_ROUND_START = 9;
+    private static final int CODE_ANSWER_CORRECTNESS_RESPONSE = 10;
+    private static final int CODE_LIST_PLAYERS_IN_ROOM = 11;
+
     private final UserProfile userProfile;
     private Session mySession;
     private Room room;
@@ -51,7 +69,7 @@ public class GameWebSocket {
         try {
             if (room.getState() == Room.States.PLAYING) {
                 switch (message.get("code").getAsInt()) {
-                    case 6:
+                    case CODE_PLAYER_ANSWER:
                         room.checkAnswer(userProfile, message.get("answer").getAsString());
                         break;
                     default:
@@ -71,163 +89,107 @@ public class GameWebSocket {
         }
     }
 
-    public void onStartGame(Collection<Player> players) {
+    private void sendMessage(Message message) {
         try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "1");
-            message.addProperty("description", "start");
-
-            JsonArray usersArray = new JsonArray();
-            message.add("players", usersArray);
-
-            for (Player player : players) {
-                UserProfile user = player.getUserProfile();
-
-                JsonObject userObject = new JsonObject();
-                userObject.addProperty("email", user.getEmail());
-                userObject.addProperty("first_name", user.getFirstName());
-                userObject.addProperty("last_name", user.getLastName());
-                userObject.addProperty("avatar", user.getAvatarUrl());
-                userObject.addProperty("score", player.getScore());
-
-                usersArray.add(userObject);
-            }
-            mySession.getRemote().sendString(message.toString());
+            mySession.getRemote().sendString(message.getAsString());
         } catch (IOException | WebSocketException e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void onStartGame(Collection<Player> players) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_START);
+        parameters.put("description", "start");
+        parameters.put("players", players);
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
     public void onNewScores(Map<String, Integer> scoresMap) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "2");
-            message.addProperty("description", "new players scores");
-            JsonArray playersArray = new JsonArray();
-            message.add("players", playersArray);
-            for (Map.Entry<String, Integer> entry : scoresMap.entrySet()) {
-                JsonObject player = new JsonObject();
-                player.addProperty("email", entry.getKey());
-                player.addProperty("score", entry.getValue());
-                playersArray.add(player);
-            }
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_UPDATE_SCORES);
+        parameters.put("description", "new players scores");
+
+        sendMessage(new NewScoresMessage(parameters, scoresMap));
     }
 
+    @SuppressWarnings("Duplicates")
     public void onGameOver(Player winner) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "3");
-            message.addProperty("description", "finish");
-            message.addProperty("winner", winner.getUserEmail());
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_GAME_OVER);
+        parameters.put("description", "finish");
+        parameters.put("winner", winner.getUserEmail());
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
+    @SuppressWarnings("Duplicates")
     public void onEnemyDisconnect(Player enemy) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "4");
-            message.addProperty("description", "player disconnect");
-            message.addProperty("player", enemy.getUserEmail());
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_ENEMY_DISCONNECT);
+        parameters.put("description", "player disconnect");
+        parameters.put("player", enemy.getUserEmail());
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
-    public void onNewQuestionAsk(JsonObject questionObject) {
-        try {
-            questionObject.addProperty("code", "5");
-            questionObject.addProperty("description", "new question");
-            mySession.getRemote().sendString(questionObject.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+    public void onNewQuestionAsk(Question question) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_NEW_QUESTION);
+        parameters.put("description", "new question");
+        parameters.put("question", question.getText());
+        parameters.put("answers", question.getAnswers());
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
     public void onNoEmptyRooms() {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "7");
-            message.addProperty("description", "no empty rooms");
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_NO_EMPTY_ROOMS);
+        parameters.put("description", "no empty rooms");
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
     public void onNewPlayerConnect(Player newPlayer) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "8");
-            message.addProperty("description", "new player connect");
-            JsonObject playerObject = new JsonObject();
-            playerObject.addProperty("email", newPlayer.getUserProfile().getEmail());
-            playerObject.addProperty("first_name", newPlayer.getUserProfile().getFirstName());
-            playerObject.addProperty("last_name", newPlayer.getUserProfile().getLastName());
-            playerObject.addProperty("avatar", newPlayer.getUserProfile().getAvatarUrl());
-            playerObject.addProperty("score", newPlayer.getScore());
-            message.add("player", playerObject);
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_NEW_PLAYER_CONNECT);
+        parameters.put("description", "new player connect");
+        parameters.put("player", newPlayer.getUserProfile());
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
+    @SuppressWarnings("Duplicates")
     public void onNewRoundStart(int round) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "9");
-            message.addProperty("description", "new round start");
-            message.addProperty("round", round);
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_NEW_ROUND_START);
+        parameters.put("description", "new round start");
+        parameters.put("round", round);
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
+    @SuppressWarnings("Duplicates")
     public void onCorrectAnswer(boolean correct) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "10");
-            message.addProperty("description", "is answer correct?");
-            message.addProperty("correct", correct);
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_ANSWER_CORRECTNESS_RESPONSE);
+        parameters.put("description", "is answer correct?");
+        parameters.put("correct", correct);
+
+        sendMessage(new SimpleMessage(parameters));
     }
 
     public void listPlayersInRoom(Collection<Player> players) {
-        try {
-            JsonObject message = new JsonObject();
-            message.addProperty("code", "11");
-            message.addProperty("description", "players in room");
+        List<UserProfile> users = players.stream().map(Player::getUserProfile).collect(Collectors.toList());
 
-            JsonArray usersArray = new JsonArray();
-            message.add("players", usersArray);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_LIST_PLAYERS_IN_ROOM);
+        parameters.put("description", "players in room");
+        parameters.put("players", users);
 
-            for (Player player : players) {
-                UserProfile user = player.getUserProfile();
-
-                JsonObject userObject = new JsonObject();
-                userObject.addProperty("email", user.getEmail());
-                userObject.addProperty("first_name", user.getFirstName());
-                userObject.addProperty("last_name", user.getLastName());
-                userObject.addProperty("avatar", user.getAvatarUrl());
-                userObject.addProperty("score", player.getScore());
-
-                usersArray.add(userObject);
-            }
-            mySession.getRemote().sendString(message.toString());
-        } catch (IOException | WebSocketException e) {
-            e.printStackTrace();
-        }
+        sendMessage(new SimpleMessage(parameters));
     }
 }

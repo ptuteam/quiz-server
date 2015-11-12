@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 /**
  * alex on 06.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigGeneral.class, GameFieldImpl.class})
 public class GameFieldImplTest {

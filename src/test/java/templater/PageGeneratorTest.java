@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 /**
  * alex on 26.09.15.
  */
+@SuppressWarnings("unused")
 public class PageGeneratorTest {
 
     @Test

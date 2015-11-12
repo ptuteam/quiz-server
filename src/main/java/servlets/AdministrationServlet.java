@@ -29,7 +29,7 @@ public class AdministrationServlet extends HttpServlet {
                       HttpServletResponse response) throws ServletException, IOException {
 
         String sessionId = request.getSession().getId();
-        String msg;
+        String templateFile;
 
         Map<String, Object> pageVariables = new HashMap<>();
 
@@ -65,27 +65,22 @@ public class AdministrationServlet extends HttpServlet {
 
                 pageVariables.put("usersCount", accountService.getUsersCount());
                 pageVariables.put("loggedUsersCount", accountService.getLoggedUsersCount());
-
+                templateFile = "admin.html";
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.setContentType("text/html;charset=utf-8");
-                response.getWriter().println(PageGenerator.getPage("admin.html", pageVariables));
 
             } else {
-                msg = "You don't have rights of administrator.";
-                pageVariables.put("msg", msg);
-
-                response.setContentType("text/html;charset=utf-8");
+                pageVariables.put("msg", "You don't have rights of administrator.");
+                templateFile = "accessdenied.html";
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
             }
 
         } else {
-            msg = "You are not authorised.";
-            pageVariables.put("msg", msg);
-
-            response.setContentType("text/html;charset=utf-8");
+            pageVariables.put("msg", "You are not authorised.");
+            templateFile = "accessdenied.html";
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println(PageGenerator.getPage("accessdenied.html", pageVariables));
         }
+
+        response.setContentType("text/html;charset=utf-8");
+        response.getWriter().println(PageGenerator.getPage(templateFile, pageVariables));
     }
 }

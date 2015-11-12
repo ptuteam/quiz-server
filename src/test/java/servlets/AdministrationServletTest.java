@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by dima on 01.11.15.
  */
+@SuppressWarnings("unused")
 public class AdministrationServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;

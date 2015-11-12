@@ -44,7 +44,7 @@ public class GameFieldImpl implements GameField {
     }
 
     private void askQuestion() {
-        webSocketService.notifyNewQuestion(session.getPlayers(), questionHelper.getQuestionWithAnswersJson(currentRound % QuestionHelper.QUESTIONS_COUNT));
+        webSocketService.notifyNewQuestion(session.getPlayers(), questionHelper.getQuestion(currentRound % QuestionHelper.QUESTIONS_COUNT));
     }
 
     private void increasePlayerScore(Player player) {

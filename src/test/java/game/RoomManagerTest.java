@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 /**
  * alex on 06.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigGeneral.class})
 public class RoomManagerTest {

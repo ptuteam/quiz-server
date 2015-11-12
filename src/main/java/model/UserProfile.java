@@ -11,13 +11,10 @@ public class UserProfile {
     private final String email;
     private final String avatarUrl;
     private int score = 0;
-    private boolean isGuest = false;
+    private final boolean isGuest;
 
     public UserProfile(String firstName, String lastName, String email, String avatarUrl) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.avatarUrl = avatarUrl;
+        this(firstName, lastName, email, avatarUrl, false);
     }
 
     public UserProfile(String firstName, String lastName, String email, String avatarUrl, boolean isGuest) {

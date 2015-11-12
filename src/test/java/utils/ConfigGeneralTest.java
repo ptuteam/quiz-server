@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * alex on 05.11.15.
  */
-@SuppressWarnings("MagicNumber")
+@SuppressWarnings({"MagicNumber", "unused"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigGeneral.class})
 public class ConfigGeneralTest {

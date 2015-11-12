@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by dima on 04.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Room.class })
 public class RoomTest {

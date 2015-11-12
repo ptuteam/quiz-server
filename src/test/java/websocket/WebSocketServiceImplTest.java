@@ -1,7 +1,7 @@
 package websocket;
 
-import com.google.gson.JsonObject;
 import game.Player;
+import game.Question;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +16,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by dima on 03.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(MockitoJUnitRunner.class)
 public class WebSocketServiceImplTest {
 
@@ -75,10 +76,10 @@ public class WebSocketServiceImplTest {
 
     @Test
     public void testNotifyNewQuestion() throws Exception {
-        JsonObject questionObject = new JsonObject();
-        webSocketService.notifyNewQuestion(players, questionObject);
-        verify(webSocket1, atMost(1)).onNewQuestionAsk(questionObject);
-        verify(webSocket2, atMost(1)).onNewQuestionAsk(questionObject);
+        Question question = mock(Question.class);
+        webSocketService.notifyNewQuestion(players, question);
+        verify(webSocket1, atMost(1)).onNewQuestionAsk(question);
+        verify(webSocket2, atMost(1)).onNewQuestionAsk(question);
     }
 
     @Test

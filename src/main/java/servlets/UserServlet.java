@@ -1,8 +1,11 @@
 package servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import main.Main;
 import model.UserProfile;
+import model.UserProfileSerialiser;
 import utils.AccountService;
 
 import javax.servlet.ServletException;
@@ -35,15 +38,12 @@ public class UserServlet extends HttpServlet {
 
             UserProfile user = accountService.getUserBySession(sessionId);
 
-            JsonObject userObject = new JsonObject();
-            userObject.addProperty("first_name", user.getFirstName());
-            userObject.addProperty("last_name", user.getLastName());
-            userObject.addProperty("email", user.getEmail());
-            userObject.addProperty("avatar", user.getAvatarUrl());
-            userObject.addProperty("score", user.getScore());
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(UserProfile.class, new UserProfileSerialiser());
+            Gson gson = builder.create();
 
             jsonObject.addProperty("code", HttpServletResponse.SC_OK);
-            jsonObject.add("user", userObject);
+            jsonObject.add("user", gson.toJsonTree(user));
 
             response.setStatus(HttpServletResponse.SC_OK);
 

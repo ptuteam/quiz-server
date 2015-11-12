@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AuthHelper.class })
 public class GuestSignInServletTest {

@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Dima on 26.10.2015.
  */
+@SuppressWarnings("unused")
 public class LogoutServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;

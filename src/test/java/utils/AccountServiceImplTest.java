@@ -13,12 +13,13 @@ import static org.junit.Assert.*;
 /**
  * alex on 27.09.15.
  */
+@SuppressWarnings("unused")
 public class AccountServiceImplTest {
     private AccountService accountService;
     private UserProfile user;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         accountService = new AccountServiceImpl();
         user = new UserProfile("test", "Test", "test@email.com", "avatarUrl");
         accountService.signUp(user);

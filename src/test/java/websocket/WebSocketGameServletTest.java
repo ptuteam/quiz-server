@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*;
 /**
  * alex on 06.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({WebSocketGameServlet.class})
 public class WebSocketGameServletTest {

@@ -1,7 +1,7 @@
 package websocket;
 
-import com.google.gson.JsonObject;
 import game.Player;
+import game.Question;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,9 +39,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyNewQuestion(Collection<Player> players, JsonObject questionObject) {
+    public void notifyNewQuestion(Collection<Player> players, Question question) {
         for (Player player : players) {
-            player.getConnection().onNewQuestionAsk(questionObject);
+            player.getConnection().onNewQuestionAsk(question);
         }
     }
 

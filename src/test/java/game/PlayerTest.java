@@ -11,12 +11,13 @@ import static org.junit.Assert.*;
 /**
  * Created by dima on 02.11.15.
  */
+@SuppressWarnings("unused")
 public class PlayerTest {
 
     private Player player;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         player = new Player(new UserProfile("first", "last", "email", "avatar"));
     }
 

@@ -1,8 +1,5 @@
 package game;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.util.*;
 
 /**
@@ -86,16 +83,10 @@ public class QuestionHelper {
         questionsArray = new ArrayList<>(questions.keySet());
     }
 
-    public JsonObject getQuestionWithAnswersJson(int questionId) {
+    public Question getQuestion(int questionId) {
         String question = questionsArray.get(questionId);
-        JsonObject jsonObject = new JsonObject();
-        JsonArray answersArray = new JsonArray();
-        jsonObject.addProperty("question", question);
-        jsonObject.add("answers", answersArray);
-        for (String answer : questions.get(question)) {
-            answersArray.add(answer);
-        }
-        return jsonObject;
+        String[] answers = questions.get(question);
+        return new Question(question, answers);
     }
 
     public boolean checkAnswer(int questionId, String answer) {

@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by dima on 04.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(MockitoJUnitRunner.class)
 public class GameWebSocketCreatorTest {
 
@@ -41,7 +42,7 @@ public class GameWebSocketCreatorTest {
     private RoomManager roomManager;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         accountService = new AccountServiceImpl();
         roomManager = new RoomManager(new WebSocketServiceImpl());
         when(request.getHttpServletRequest()).thenReturn(httpRequest);

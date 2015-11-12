@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ScoresServlet.class, ConfigGeneral.class})
 public class ScoresServletTest {
@@ -71,31 +72,26 @@ public class ScoresServletTest {
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first4\"," +
                                     "\"last_name\":\"last4\"," +
-                                    "\"avatar\":\"avatar4\"," +
                                     "\"score\":4")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first5\"," +
                                     "\"last_name\":\"last5\"," +
-                                    "\"avatar\":\"avatar5\"," +
                                     "\"score\":5")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first2\"," +
                                     "\"last_name\":\"last2\"," +
-                                    "\"avatar\":\"avatar2\"," +
                                     "\"score\":2")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first1\"," +
                                     "\"last_name\":\"last1\"," +
-                                    "\"avatar\":\"avatar1\"," +
                                     "\"score\":1")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first3\"," +
                                     "\"last_name\":\"last3\"," +
-                                    "\"avatar\":\"avatar3\"," +
                                     "\"score\":0")
             );
         }

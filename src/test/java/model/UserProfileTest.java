@@ -5,13 +5,14 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unused")
 public class UserProfileTest {
 
     private UserProfile user1;
     private UserProfile user2;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         user1 = new UserProfile("first1", "last1", "sashaudalv@gmail.com", "avatar1");
         user2 = new UserProfile("first2", "last2", "email2", "avatar2", true);
     }

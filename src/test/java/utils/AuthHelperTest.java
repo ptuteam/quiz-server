@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 /**
  * alex on 02.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AuthHelper.class, Unirest.class, ConfigGeneral.class})
 public class AuthHelperTest {
@@ -36,7 +37,8 @@ public class AuthHelperTest {
         when(ConfigGeneral.getRedirectUrl()).thenReturn("redirect");
         when(ConfigGeneral.getGrantType()).thenReturn("grant");
 
-        @SuppressWarnings("unchecked") HttpResponse<String> response = mock(HttpResponse.class);
+        @SuppressWarnings("unchecked")
+        HttpResponse<String> response = mock(HttpResponse.class);
         when(response.getBody()).thenReturn(
                 '{' +
                         "\"access_token\": 123," + ' ' +
