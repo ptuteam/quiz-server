@@ -42,7 +42,6 @@ public class ScoresServlet extends HttpServlet {
             JsonObject userJsonObject = new JsonObject();
             userJsonObject.addProperty("first_name", user.getFirstName());
             userJsonObject.addProperty("last_name", user.getLastName());
-            userJsonObject.addProperty("avatar", user.getAvatarUrl());
             userJsonObject.addProperty("score", user.getScore());
             jsonArray.add(userJsonObject);
         });
