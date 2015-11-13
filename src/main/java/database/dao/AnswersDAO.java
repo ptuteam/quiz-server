@@ -1,7 +1,6 @@
 package database.dao;
 
-import database.dataSets.AnswersDataSet;
-import database.dataSets.QuestionsDataSet;
+import database.data.AnswersDataSet;
 import database.executor.TExecutor;
 
 import java.sql.Connection;

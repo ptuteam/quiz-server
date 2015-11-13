@@ -1,23 +1,23 @@
-package database.dataSets;
+package database.data;
 
 /**
  * Created by dima on 12.11.15.
  */
 public class AnswersDataSet {
-    private int id;
+    private int answerId;
     private String text;
     private int questionId;
     private boolean isCorrect;
 
-    public AnswersDataSet(int id, String text, int questionId, boolean isCorrect) {
-        this.id = id;
+    public AnswersDataSet(int answerId, String text, int questionId, boolean isCorrect) {
+        this.answerId = answerId;
         this.text = text;
         this.questionId = questionId;
         this.isCorrect = isCorrect;
     }
 
     public int getId() {
-        return id;
+        return answerId;
     }
 
     public String getText() {

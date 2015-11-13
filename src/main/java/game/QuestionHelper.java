@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import database.connection.DatabaseConnection;
 import database.dao.AnswersDAO;
 import database.dao.QuestionsDAO;
-import database.dataSets.AnswersDataSet;
-import database.dataSets.QuestionsDataSet;
+import database.data.AnswersDataSet;
+import database.data.QuestionsDataSet;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +31,7 @@ public class QuestionHelper {
 
             // get answer
             AnswersDAO answersDAO = new AnswersDAO(connection);
-            ArrayList<AnswersDataSet> answers = answersDAO.getByQuestionId(questionId);
+            List<AnswersDataSet> answers = answersDAO.getByQuestionId(questionId);
 
             JsonArray answerArray = new JsonArray();
             jsonObject.add("answers", answerArray);

@@ -1,6 +1,6 @@
 package database.dao;
 
-import database.dataSets.QuestionsDataSet;
+import database.data.QuestionsDataSet;
 import database.executor.TExecutor;
 
 import java.sql.Connection;
@@ -17,6 +17,7 @@ public class QuestionsDAO {
     // column names
     private static final String COL_ID = "id";
     private static final String COL_TEXT = "text";
+    private static final String COL_TYPE = "type";
 
     public QuestionsDAO(Connection connection) {
         this.connection = connection;
@@ -30,7 +31,9 @@ public class QuestionsDAO {
         TExecutor exec = new TExecutor();
         return exec.execQuery(connection, query, result -> {
             result.next();
-            return new QuestionsDataSet(result.getInt(COL_ID), result.getString(COL_TEXT));
+            return new QuestionsDataSet(result.getInt(COL_ID),
+                    result.getString(COL_TEXT),
+                    result.getInt(COL_TYPE));
         });
     }
 }
