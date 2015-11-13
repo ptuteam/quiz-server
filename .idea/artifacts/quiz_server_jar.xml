@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="quiz-server:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/quiz_server_jar</output-path>
+    <root id="archive" name="quiz-server.jar">
+      <element id="module-output" name="quiz-server" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.3.0.M2/jetty-http-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-rewrite/9.3.0.M2/jetty-rewrite-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-security/9.3.0.M2/jetty-security-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-xml/9.3.0.M2/jetty-xml-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/freemarker/freemarker/2.3.21/freemarker-2.3.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-server/9.3.0.M2/jetty-server-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-servlets/9.3.0.M2/jetty-servlets-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-io/9.3.0.M2/jetty-io-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-util/9.3.0.M2/jetty-util-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-servlet/9.3.0.M2/jetty-servlet-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-webapp/9.3.0.M2/jetty-webapp-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-continuation/9.3.0.M2/jetty-continuation-9.3.0.M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-client/9.3.0.M2/jetty-client-9.3.0.M2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
