@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * Created by dima on 12.11.15.
  */
 public class QuestionsDAO {
-    private Connection connection;
+    private final Connection connection;
 
     private static final String TABLE_NAME = "question";
 

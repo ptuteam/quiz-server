@@ -5,9 +5,9 @@ package database.data;
  */
 public class QuestionsDataSet {
 
-    private int questionId;
-    private String text;
-    private int type;
+    private final int questionId;
+    private final String text;
+    private final int type;
 
     public QuestionsDataSet(int questionId, String text, int type) {
         this.questionId = questionId;

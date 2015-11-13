@@ -13,17 +13,13 @@ public class DatabaseConnection {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
 
-            StringBuilder url = new StringBuilder();
-
-            url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("quiz_db?").             //db name
-                    append("user=quiz_user&").      //login
-                    append("password=secret");      //password
-
-            return DriverManager.getConnection(url.toString());
+            return DriverManager.getConnection(
+                    "jdbc:mysql://" +
+                            "localhost:" +
+                            "3306/" +
+                            "quiz_db?" +
+                            "user=quiz_user&" +
+                            "password=secret");
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -12,13 +12,16 @@ import java.sql.Statement;
  */
 public class TExecutor {
     public <T> T execQuery(Connection connection, String query, TResultHandler<T> handler) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.execute(query);
-        ResultSet result = stmt.getResultSet();
-        T value = handler.handle(result);
+        T value;
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(query);
+            try (ResultSet result = stmt.getResultSet()) {
+                value = handler.handle(result);
 
-        result.close();
-        stmt.close();
+                result.close();
+            }
+            stmt.close();
+        }
 
         return value;
     }
