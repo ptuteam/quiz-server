@@ -14,7 +14,6 @@ public class QuestionsDAO {
 
     private static final String TABLE_NAME = "question";
 
-    // column names
     private static final String COL_ID = "id";
     private static final String COL_TEXT = "text";
     private static final String COL_TYPE = "type";
