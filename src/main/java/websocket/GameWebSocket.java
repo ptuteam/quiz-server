@@ -140,6 +140,7 @@ public class GameWebSocket {
         parameters.put("code", CODE_NEW_QUESTION);
         parameters.put("description", "new question");
         parameters.put("question", question.getText());
+        parameters.put("type", question.getType());
         parameters.put("answers", question.getAnswers());
 
         sendMessage(new SimpleMessage(parameters));
