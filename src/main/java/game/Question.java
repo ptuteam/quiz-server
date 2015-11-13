@@ -7,10 +7,12 @@ public class Question {
 
     private final String text;
     private final String[] answers;
+    private final int type;
 
-    public Question(String text, String[] answers) {
+    public Question(String text, int type, String[] answers) {
         this.text = text;
         this.answers = answers;
+        this.type = type;
     }
 
     public String getText() {
@@ -19,5 +21,9 @@ public class Question {
 
     public String[] getAnswers() {
         return answers;
+    }
+
+    public int getType() {
+        return type;
     }
 }
