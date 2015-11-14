@@ -24,6 +24,7 @@ public class AnswersDAO {
         this.connection = connection;
     }
 
+    @SuppressWarnings("unused")
     public AnswersDataSet get(int id) throws SQLException {
         String query = "SELECT *" +
                 " FROM " + TABLE_NAME +

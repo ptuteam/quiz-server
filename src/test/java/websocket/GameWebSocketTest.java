@@ -138,9 +138,10 @@ public class GameWebSocketTest {
         Question question = mock(Question.class);
         when(question.getText()).thenReturn("que");
         when(question.getAnswers()).thenReturn(new String[]{"1", "2", "3", "4"});
+        when(question.getType()).thenReturn(1);
         gameWebSocket.onNewQuestionAsk(question);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":\"que\"," +
-                "\"answers\":[\"1\",\"2\",\"3\",\"4\"],\"description\":\"new question\"}");
+                "\"answers\":[\"1\",\"2\",\"3\",\"4\"],\"description\":\"new question\",\"type\":1}");
     }
 
     @Test

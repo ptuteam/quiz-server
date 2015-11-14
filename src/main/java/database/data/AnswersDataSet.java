@@ -16,6 +16,7 @@ public class AnswersDataSet {
         this.isCorrect = isCorrect;
     }
 
+    @SuppressWarnings("unused")
     public int getId() {
         return answerId;
     }
@@ -24,10 +25,12 @@ public class AnswersDataSet {
         return text;
     }
 
+    @SuppressWarnings("unused")
     public int getQuestionId() {
         return questionId;
     }
 
+    @SuppressWarnings("unused")
     public boolean isCorrect() {
         return isCorrect;
     }

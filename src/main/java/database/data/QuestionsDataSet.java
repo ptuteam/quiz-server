@@ -15,6 +15,7 @@ public class QuestionsDataSet {
         this.type = type;
     }
 
+    @SuppressWarnings("unused")
     public int getQuestionId() {
         return questionId;
     }
