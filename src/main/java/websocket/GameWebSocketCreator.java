@@ -24,9 +24,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
         String sessionId = request.getHttpServletRequest().getSession().getId();
         if (accountService.isLogged(sessionId)) {
             UserProfile user = accountService.getUserBySession(sessionId);
-            GameWebSocket webSocket = new GameWebSocket(user, roomManager);
-            accountService.setWebSocketBySession(sessionId, webSocket);
-            return webSocket;
+            return new GameWebSocket(user, roomManager);
         }
         return null;
     }
