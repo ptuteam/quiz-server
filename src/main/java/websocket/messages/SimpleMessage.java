@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import game.Player;
 import game.PlayerSerialiser;
+import game.Question;
+import game.QuestionSerialiser;
 import model.UserProfile;
 import model.UserProfileSerialiser;
 
@@ -26,6 +28,7 @@ public class SimpleMessage implements Message {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(UserProfile.class, new UserProfileSerialiser());
         builder.registerTypeAdapter(Player.class, new PlayerSerialiser());
+        builder.registerTypeAdapter(Question.class, new QuestionSerialiser());
         Gson gson = builder.create();
         return gson.toJsonTree(parameters).getAsJsonObject();
     }

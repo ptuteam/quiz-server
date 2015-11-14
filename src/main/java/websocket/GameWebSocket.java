@@ -135,13 +135,12 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
+    @SuppressWarnings("Duplicates")
     public void onNewQuestionAsk(Question question) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_NEW_QUESTION);
         parameters.put("description", "new question");
-        parameters.put("question", question.getText());
-        parameters.put("type", question.getType());
-        parameters.put("answers", question.getAnswers());
+        parameters.put("question", question);
 
         sendMessage(new SimpleMessage(parameters));
     }

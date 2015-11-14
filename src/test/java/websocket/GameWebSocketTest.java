@@ -134,14 +134,19 @@ public class GameWebSocketTest {
     }
 
     @Test
-    public void testOnNewQuestionAsk() throws IOException {
-        Question question = mock(Question.class);
-        when(question.getText()).thenReturn("que");
-        when(question.getAnswers()).thenReturn(new String[]{"1", "2", "3", "4"});
-        when(question.getType()).thenReturn(1);
+    public void testOnNewQuestionAskType1() throws IOException {
+        Question question = new Question("que", 1, new String[]{"1", "2", "3", "4"});
         gameWebSocket.onNewQuestionAsk(question);
-        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":\"que\"," +
-                "\"answers\":[\"1\",\"2\",\"3\",\"4\"],\"description\":\"new question\",\"type\":1}");
+        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":" +
+                "{\"type\":1,\"title\":\"que\",\"answers\":[\"1\",\"2\",\"3\",\"4\"]},\"description\":\"new question\"}");
+    }
+
+    @Test
+    public void testOnNewQuestionAskType2() throws IOException {
+        Question question = new Question("que", 2, null);
+        gameWebSocket.onNewQuestionAsk(question);
+        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":" +
+                "{\"type\":2,\"title\":\"que\"},\"description\":\"new question\"}");
     }
 
     @Test

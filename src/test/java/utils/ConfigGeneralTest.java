@@ -29,7 +29,6 @@ public class ConfigGeneralTest {
 
     private static final int MS_IN_MINUTE = 60 * 1000;
 
-    @SuppressWarnings("OverlyBroadThrowsClause")
     @Before
     public void setUp() throws Exception {
         PowerMockito.whenNew(Properties.class).withNoArguments().thenReturn(properties);

@@ -1,5 +1,7 @@
 package database.connection;
 
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -20,6 +22,9 @@ public class DatabaseConnection {
                             "quiz_db?" +
                             "user=quiz_user&" +
                             "password=secret");
+        } catch (CommunicationsException e) {
+            System.out.println("Communication to mysql occurred. Maybe you have not installed mysql server.");
+            e.printStackTrace();
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }

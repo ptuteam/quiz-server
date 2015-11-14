@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * alex on 26.10.15.
  */
 public class QuestionHelper {
-    public static final int QUESTIONS_COUNT = 5;
+    public static final int QUESTIONS_COUNT = 15;
 
     public Question getQuestion(int questionId) {
 
@@ -44,7 +44,7 @@ public class QuestionHelper {
             }
 
             return new Question(question.getText(), question.getType(), answers);
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -64,9 +64,10 @@ public class QuestionHelper {
 
             return Objects.equals(correctAnswer, answer);
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 }

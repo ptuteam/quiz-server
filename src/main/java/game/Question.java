@@ -5,18 +5,18 @@ package game;
  */
 public class Question {
 
-    private final String text;
+    private final String title;
     private final String[] answers;
     private final int type;
 
-    public Question(String text, int type, String[] answers) {
-        this.text = text;
+    public Question(String title, int type, String[] answers) {
+        this.title = title;
         this.answers = answers;
         this.type = type;
     }
 
-    public String getText() {
-        return text;
+    public String getTitle() {
+        return title;
     }
 
     public String[] getAnswers() {
