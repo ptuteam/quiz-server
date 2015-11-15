@@ -12,13 +12,10 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void notifyNewScores(Collection<Player> players) {
-        Map<String, Integer> scoreMap = new HashMap<>();
         for (Player player : players) {
-            scoreMap.put(player.getUserEmail(), player.getScore());
-        }
-
-        for (Player player : players) {
-            player.getConnection().onNewScores(scoreMap);
+            Set<Player> opponents = new HashSet<>(players);
+            opponents.remove(player);
+            player.getConnection().onNewScores(player, opponents);
         }
     }
 

@@ -107,12 +107,12 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
-    public void onNewScores(Map<String, Integer> scoresMap) {
+    public void onNewScores(Player player, Collection<Player> opponents) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_UPDATE_SCORES);
         parameters.put("description", "new players scores");
 
-        sendMessage(new NewScoresMessage(parameters, scoresMap));
+        sendMessage(new NewScoresMessage(parameters, player, opponents));
     }
 
     @SuppressWarnings("Duplicates")

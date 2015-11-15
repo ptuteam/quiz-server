@@ -56,8 +56,8 @@ public class WebSocketServiceImplTest {
         when(player2.getScore()).thenReturn(4);
 
         webSocketService.notifyNewScores(players);
-        verify(webSocket1, atMost(1)).onNewScores(anyMapOf(String.class, Integer.class));
-        verify(webSocket2, atMost(1)).onNewScores(anyMapOf(String.class, Integer.class));
+        verify(webSocket1, atMost(1)).onNewScores(any(Player.class), anyCollectionOf(Player.class));
+        verify(webSocket2, atMost(1)).onNewScores(any(Player.class), anyCollectionOf(Player.class));
     }
 
     @Test

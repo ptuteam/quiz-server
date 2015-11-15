@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -94,7 +94,7 @@ public class GameWebSocketTest {
 
     @Test
     public void testOnStartGame() throws IOException {
-        Set<Player> opponents = new HashSet<>();
+        List<Player> opponents = new ArrayList<>();
         Player player1 = new Player(new UserProfile("first1", "last1", "email1", "avatar1"));
         player1.increaseScore(5);
         Player player2 = new Player(new UserProfile("first2", "last2", "email2", "avatar2"));
@@ -104,22 +104,22 @@ public class GameWebSocketTest {
         opponents.add(player2);
         opponents.add(player3);
         gameWebSocket.onStartGame(player1, opponents);
-        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":1,\"opponents\":" +
-                "[{\"first_name\":\"first3\",\"last_name\":\"last3\",\"email\":\"email3\"," +
-                "\"avatar\":\"avatar3\",\"score\":10},{\"first_name\":\"first2\",\"last_name\":" +
-                "\"last2\",\"email\":\"email2\",\"avatar\":\"avatar2\",\"score\":7}],\"description\":" +
-                "\"start\",\"player\":{\"first_name\":\"first1\",\"last_name\":\"last1\",\"email\":\"email1\"," +
-                "\"avatar\":\"avatar1\",\"score\":5}}");
+        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":1,\"opponents\":[{\"first_name\":" +
+                "\"first2\",\"last_name\":\"last2\",\"email\":\"email2\",\"avatar\":\"avatar2\",\"score\":7}," +
+                "{\"first_name\":\"first3\",\"last_name\":\"last3\",\"email\":\"email3\",\"avatar\":\"avatar3\"," +
+                "\"score\":10}],\"description\":\"start\",\"player\":{\"first_name\":\"first1\",\"last_name\":" +
+                "\"last1\",\"email\":\"email1\",\"avatar\":\"avatar1\",\"score\":5}}");
     }
 
     @Test
     public void testOnNewScores() throws IOException {
-        Map<String, Integer> scoreMap = new HashMap<>();
-        scoreMap.put("email1", 0);
-        scoreMap.put("email2", 2);
-        gameWebSocket.onNewScores(scoreMap);
+        Player player = new Player(new UserProfile("first1", "last1", "email1", "avatar1"));
+        List<Player> opponents = new ArrayList<>();
+        opponents.add(new Player(new UserProfile("first2", "last2", "email2", "avatar2")));
+        opponents.get(0).increaseScore(5);
+        gameWebSocket.onNewScores(player, opponents);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":2,\"description\":\"new players scores\"," +
-                "\"players\":[{\"email\":\"email2\",\"score\":2},{\"email\":\"email1\",\"score\":0}]}");
+                "\"player\":{\"email\":\"email1\",\"score\":0},\"opponents\":[{\"email\":\"email2\",\"score\":5}]}");
     }
 
     @Test
