@@ -3,9 +3,7 @@ package websocket;
 import game.Player;
 import game.Question;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * alex on 24.10.15.
@@ -27,7 +25,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Override
     public void notifyStartGame(Collection<Player> players) {
         for (Player player : players) {
-            player.getConnection().onStartGame(players);
+            Set<Player> opponents = new HashSet<>(players);
+            opponents.remove(player);
+            player.getConnection().onStartGame(player, opponents);
         }
     }
 

@@ -94,15 +94,22 @@ public class GameWebSocketTest {
 
     @Test
     public void testOnStartGame() throws IOException {
-        Set<Player> players = new HashSet<>();
-        Player player = new Player(new UserProfile("first", "last", "email", "avatar"));
-        player.setConnection(gameWebSocket);
-        player.increaseScore(5);
-        players.add(player);
-        gameWebSocket.onStartGame(players);
-        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":1,\"players\":" +
-                "[{\"first_name\":\"first\",\"last_name\":\"last\",\"email\":\"email\"," +
-                "\"avatar\":\"avatar\",\"score\":5}],\"description\":\"start\"}");
+        Set<Player> opponents = new HashSet<>();
+        Player player1 = new Player(new UserProfile("first1", "last1", "email1", "avatar1"));
+        player1.increaseScore(5);
+        Player player2 = new Player(new UserProfile("first2", "last2", "email2", "avatar2"));
+        player2.increaseScore(7);
+        Player player3 = new Player(new UserProfile("first3", "last3", "email3", "avatar3"));
+        player3.increaseScore(10);
+        opponents.add(player2);
+        opponents.add(player3);
+        gameWebSocket.onStartGame(player1, opponents);
+        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":1,\"opponents\":" +
+                "[{\"first_name\":\"first3\",\"last_name\":\"last3\",\"email\":\"email3\"," +
+                "\"avatar\":\"avatar3\",\"score\":10},{\"first_name\":\"first2\",\"last_name\":" +
+                "\"last2\",\"email\":\"email2\",\"avatar\":\"avatar2\",\"score\":7}],\"description\":" +
+                "\"start\",\"player\":{\"first_name\":\"first1\",\"last_name\":\"last1\",\"email\":\"email1\"," +
+                "\"avatar\":\"avatar1\",\"score\":5}}");
     }
 
     @Test

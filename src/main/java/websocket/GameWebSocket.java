@@ -97,12 +97,12 @@ public class GameWebSocket {
         }
     }
 
-    @SuppressWarnings("Duplicates")
-    public void onStartGame(Collection<Player> players) {
+    public void onStartGame(Player player, Collection<Player> opponents) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_START);
         parameters.put("description", "start");
-        parameters.put("players", players);
+        parameters.put("player", player);
+        parameters.put("opponents", opponents);
 
         sendMessage(new SimpleMessage(parameters));
     }

@@ -63,8 +63,8 @@ public class WebSocketServiceImplTest {
     @Test
     public void testNotifyStartGame() throws Exception {
         webSocketService.notifyStartGame(players);
-        verify(webSocket1, atMost(1)).onStartGame(players);
-        verify(webSocket2, atMost(1)).onStartGame(players);
+        verify(webSocket1, atMost(1)).onStartGame(player1, players);
+        verify(webSocket2, atMost(1)).onStartGame(player2, players);
     }
 
     @Test
