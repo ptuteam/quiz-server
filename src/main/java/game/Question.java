@@ -8,11 +8,13 @@ public class Question {
     private final String title;
     private final String[] answers;
     private final int type;
+    private final String correctAnswer;
 
-    public Question(String title, int type, String[] answers) {
+    public Question(String title, int type, String[] answers, String correctAnswer) {
         this.title = title;
         this.answers = answers;
         this.type = type;
+        this.correctAnswer = correctAnswer;
     }
 
     public String getTitle() {
@@ -25,5 +27,9 @@ public class Question {
 
     public int getType() {
         return type;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
     }
 }

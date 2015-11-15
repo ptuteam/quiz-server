@@ -13,11 +13,11 @@ import java.util.ArrayList;
 public class AnswersDAO {
     private final Connection connection;
 
-    private static final String TABLE_NAME = "answer";
+    private static final String TABLE_NAME = "answers";
 
     private static final String COL_ID = "id";
-    private static final String COL_TEXT = "text";
-    private static final String COL_QUESTION_ID = "question_id";
+    private static final String COL_TEXT = "answer";
+    private static final String COL_QUESTION_ID = "q_id";
     private static final String COL_IS_CORRECT = "is_correct";
 
     public AnswersDAO(Connection connection) {

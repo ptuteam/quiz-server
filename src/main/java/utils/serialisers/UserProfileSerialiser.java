@@ -1,9 +1,10 @@
-package model;
+package utils.serialisers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import model.UserProfile;
 
 import java.lang.reflect.Type;
 

@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import game.Player;
-import game.PlayerSerialiser;
 import game.Question;
-import game.QuestionSerialiser;
 import model.UserProfile;
-import model.UserProfileSerialiser;
+import utils.serialisers.PlayerSerialiser;
+import utils.serialisers.QuestionSerialiser;
+import utils.serialisers.UserProfileSerialiser;
 
 import java.util.Map;
 

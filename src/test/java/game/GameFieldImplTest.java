@@ -41,7 +41,7 @@ public class GameFieldImplTest {
     public void testCheckPlayerCorrectAnswer() throws Exception {
         QuestionHelper questionHelper = mock(QuestionHelper.class);
         PowerMockito.whenNew(QuestionHelper.class).withNoArguments().thenReturn(questionHelper);
-        when(questionHelper.checkAnswer(anyInt(), anyString())).thenReturn(true);
+        when(questionHelper.checkAnswer(any(Question.class), anyString())).thenReturn(true);
 
         gameField = new GameFieldImpl(webSocketService, session);
 
@@ -61,7 +61,7 @@ public class GameFieldImplTest {
     public void testCheckPlayerIncorrectAnswer() throws Exception {
         QuestionHelper questionHelper = mock(QuestionHelper.class);
         PowerMockito.whenNew(QuestionHelper.class).withNoArguments().thenReturn(questionHelper);
-        when(questionHelper.checkAnswer(anyInt(), anyString())).thenReturn(false);
+        when(questionHelper.checkAnswer(any(Question.class), anyString())).thenReturn(false);
 
         gameField = new GameFieldImpl(webSocketService, session);
 

@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import main.Main;
 import model.UserProfile;
-import model.UserProfileSerialiser;
+import utils.serialisers.UserProfileSerialiser;
 import utils.AccountService;
 
 import javax.servlet.ServletException;

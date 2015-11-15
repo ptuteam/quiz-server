@@ -135,7 +135,7 @@ public class GameWebSocketTest {
 
     @Test
     public void testOnNewQuestionAskType1() throws IOException {
-        Question question = new Question("que", 1, new String[]{"1", "2", "3", "4"});
+        Question question = new Question("que", 1, new String[]{"1", "2", "3", "4"}, "1");
         gameWebSocket.onNewQuestionAsk(question);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":" +
                 "{\"type\":1,\"title\":\"que\",\"answers\":[\"1\",\"2\",\"3\",\"4\"]},\"description\":\"new question\"}");
@@ -143,7 +143,7 @@ public class GameWebSocketTest {
 
     @Test
     public void testOnNewQuestionAskType2() throws IOException {
-        Question question = new Question("que", 2, null);
+        Question question = new Question("que", 2, null, "1");
         gameWebSocket.onNewQuestionAsk(question);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":5,\"question\":" +
                 "{\"type\":2,\"title\":\"que\"},\"description\":\"new question\"}");

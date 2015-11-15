@@ -8,42 +8,54 @@ import database.data.QuestionsDataSet;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * alex on 26.10.15.
  */
 public class QuestionHelper {
-    public static final int QUESTIONS_COUNT = 15;
 
-    public Question getQuestion(int questionId) {
-
+    public Question getRandomQuestion() {
         try {
+
             Connection connection = DatabaseConnection.getConnection();
 
             QuestionsDAO questionsDAO = new QuestionsDAO(connection);
-            QuestionsDataSet question = questionsDAO.get(questionId);
+            QuestionsDataSet question = questionsDAO.getRandom();
 
-            String[] answers;
+            AnswersDAO answersDAO = new AnswersDAO(connection);
+
+            String[] answers = null;
+            String correctAnswer = null;
 
             if (question.getType() == 1) {
-                AnswersDAO answersDAO = new AnswersDAO(connection);
 
-                List<String> answersList = answersDAO.getByQuestionId(questionId).stream()
-                        .map(AnswersDataSet::getText).collect(Collectors.toList());
+                List<String> answersList = new ArrayList<>();
+                for (AnswersDataSet a : answersDAO.getByQuestionId(question.getQuestionId())) {
+                    answersList.add(a.getText());
+                    if (a.isCorrect()) {
+                        correctAnswer = a.getText();
+                    }
+                }
 
                 answers = new String[answersList.size()];
                 answers = answersList.toArray(answers);
+
             } else {
-                answers = null;
+
+                AnswersDataSet answer = answersDAO.getCorrectByQuestionId(question.getQuestionId());
+                correctAnswer = answer.getText();
+
             }
 
             if (connection != null) {
                 connection.close();
             }
 
-            return new Question(question.getText(), question.getType(), answers);
+            return new Question(question.getTitle(), question.getType(), answers, correctAnswer);
+
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
@@ -51,23 +63,7 @@ public class QuestionHelper {
         return null;
     }
 
-    public boolean checkAnswer(int questionId, String answer) {
-        try {
-            Connection connection = DatabaseConnection.getConnection();
-
-            AnswersDAO answersDAO = new AnswersDAO(connection);
-            String correctAnswer = answersDAO.getCorrectByQuestionId(questionId).getText();
-
-            if (connection != null) {
-                connection.close();
-            }
-
-            return Objects.equals(correctAnswer, answer);
-
-        } catch (SQLException | NullPointerException e) {
-            e.printStackTrace();
-        }
-
-        return false;
+    public boolean checkAnswer(Question question, String answer) {
+        return Objects.equals(question.getCorrectAnswer(), answer);
     }
 }

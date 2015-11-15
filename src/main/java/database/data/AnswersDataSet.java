@@ -4,6 +4,7 @@ package database.data;
  * Created by dima on 12.11.15.
  */
 public class AnswersDataSet {
+
     private final int answerId;
     private final String text;
     private final int questionId;
@@ -30,7 +31,6 @@ public class AnswersDataSet {
         return questionId;
     }
 
-    @SuppressWarnings("unused")
     public boolean isCorrect() {
         return isCorrect;
     }

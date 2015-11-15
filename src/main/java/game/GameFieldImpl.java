@@ -10,6 +10,7 @@ public class GameFieldImpl implements GameField {
 
     private boolean playing;
     private int currentRound;
+    private Question currentQuestion;
 
     private final WebSocketService webSocketService;
     private final GameSession session;
@@ -35,7 +36,7 @@ public class GameFieldImpl implements GameField {
 
     @Override
     public void checkPlayerAnswer(Player player, String answer) {
-        if (questionHelper.checkAnswer(currentRound % QuestionHelper.QUESTIONS_COUNT + 1, answer)) {
+        if (questionHelper.checkAnswer(currentQuestion, answer)) {
             webSocketService.notifyOnCorrectAnswer(player, true);
             increasePlayerScore(player);
         } else {
@@ -44,7 +45,8 @@ public class GameFieldImpl implements GameField {
     }
 
     private void askQuestion() {
-        webSocketService.notifyNewQuestion(session.getPlayers(), questionHelper.getQuestion(currentRound % QuestionHelper.QUESTIONS_COUNT + 1));
+        currentQuestion = questionHelper.getRandomQuestion();
+        webSocketService.notifyNewQuestion(session.getPlayers(), currentQuestion);
     }
 
     private void increasePlayerScore(Player player) {

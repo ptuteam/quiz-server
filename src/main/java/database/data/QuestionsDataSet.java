@@ -6,22 +6,21 @@ package database.data;
 public class QuestionsDataSet {
 
     private final int questionId;
-    private final String text;
+    private final String title;
     private final int type;
 
-    public QuestionsDataSet(int questionId, String text, int type) {
+    public QuestionsDataSet(int questionId, String title, int type) {
         this.questionId = questionId;
-        this.text = text;
+        this.title = title;
         this.type = type;
     }
 
-    @SuppressWarnings("unused")
     public int getQuestionId() {
         return questionId;
     }
 
-    public String getText() {
-        return text;
+    public String getTitle() {
+        return title;
     }
 
     public int getType() {
