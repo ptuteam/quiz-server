@@ -7,14 +7,14 @@ import utils.ConfigGeneral;
 import websocket.GameWebSocket;
 import websocket.WebSocketService;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * alex on 23.10.15.
  */
 public class RoomManager {
-    private final Set<Room> rooms = new HashSet<>();
+    private final List<Room> rooms = new ArrayList<>();
     private final WebSocketService webSocketService;
 
     public RoomManager(WebSocketService webSocketService) {

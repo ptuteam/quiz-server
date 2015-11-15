@@ -10,9 +10,9 @@ import java.util.*;
 public class GameSession {
     private final long startTime;
     private final Room room;
-    private Map<UserProfile, Player> players = new HashMap<>();
+    private Map<String, Player> players = new HashMap<>();
 
-    public GameSession(Map<UserProfile, Player> players, Room room) {
+    public GameSession(Map<String, Player> players, Room room) {
         startTime = new Date().getTime();
         this.players = players;
         this.room = room;
@@ -23,7 +23,7 @@ public class GameSession {
     }
 
     public void increaseScore(UserProfile user, int value) {
-        players.get(user).increaseScore(value);
+        players.get(user.getEmail()).increaseScore(value);
     }
 
     public long getSessionTime() {

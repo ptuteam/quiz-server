@@ -36,10 +36,12 @@ public class GameSessionTest {
     @Before
     public void setUp() {
         when(player1.getUserProfile()).thenReturn(new UserProfile("1", "1", "1", "1"));
+        when(player1.getUserEmail()).thenReturn("1");
         when(player2.getUserProfile()).thenReturn(new UserProfile("2", "2", "2", "2"));
-        Map<UserProfile, Player> map = new HashMap<>();
-        map.put(player1.getUserProfile(), player1);
-        map.put(player2.getUserProfile(), player2);
+        when(player2.getUserEmail()).thenReturn("2");
+        Map<String, Player> map = new HashMap<>();
+        map.put(player1.getUserEmail(), player1);
+        map.put(player2.getUserEmail(), player2);
         gameSession = new GameSession(map, room);
     }
 

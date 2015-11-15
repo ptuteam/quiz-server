@@ -19,7 +19,7 @@ public class Room {
         PLAYING
     }
 
-    private final Map<UserProfile, Player> playerByUser = new HashMap<>();
+    private final Map<String, Player> playerByUser = new HashMap<>();
     private States state = States.WATING;
     GameSession session;
     GameField gameField;
@@ -35,8 +35,8 @@ public class Room {
     }
 
     public Player getPlayerByUser(UserProfile user) {
-        if (playerByUser.containsKey(user)) {
-            return playerByUser.get(user);
+        if (playerByUser.containsKey(user.getEmail())) {
+            return playerByUser.get(user.getEmail());
         } else {
             return null;
         }
@@ -46,7 +46,7 @@ public class Room {
         Player player = new Player(userProfile);
         player.setConnection(gameWebSocket);
         webSocketService.notifyNewPlayerConnect(getPlayers(), player);
-        playerByUser.put(userProfile, player);
+        playerByUser.put(userProfile.getEmail(), player);
         webSocketService.notifyAboutPlayersInRoom(player, getPlayers());
         if (playerByUser.size() == ConfigGeneral.getMaxPlayersPerRoom()) {
             startGame();
@@ -54,11 +54,13 @@ public class Room {
     }
 
     public void disconnectUser(UserProfile userProfile) {
-        Player disconnectedPlayer  = getPlayerByUser(userProfile);
-        playerByUser.remove(userProfile);
-        webSocketService.notifyPlayerDisconnect(getPlayers(), disconnectedPlayer);
-        if (state == States.PLAYING && playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
-            gameField.gameOver();
+        Player disconnectedPlayer = getPlayerByUser(userProfile);
+        if (disconnectedPlayer != null) {
+            playerByUser.remove(userProfile.getEmail());
+            webSocketService.notifyPlayerDisconnect(getPlayers(), disconnectedPlayer);
+            if (state == States.PLAYING && playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
+                gameField.gameOver();
+            }
         }
     }
 
