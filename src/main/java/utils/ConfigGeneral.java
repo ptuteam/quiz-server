@@ -112,6 +112,8 @@ public class ConfigGeneral {
             dbPassword = properties.getProperty("dbPassword", "password=secret");
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + DATABASE_CONFIG_FILE);
+            System.out.println("You must have next variables in this file:");
+            System.out.println("dbType, dbHostName, dbPort, dbName, dbLogin, dbPassword");
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
