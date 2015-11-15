@@ -1,6 +1,7 @@
 package database.connection;
 
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import utils.ConfigGeneral;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -16,12 +17,12 @@ public class DatabaseConnection {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
 
             return DriverManager.getConnection(
-                    "jdbc:mysql://" +
-                            "localhost:" +
-                            "3306/" +
-                            "quiz_db?" +
-                            "user=quiz_user&" +
-                            "password=secret");
+                    ConfigGeneral.getDbType() +
+                            ConfigGeneral.getDbHostName() +
+                            ConfigGeneral.getDbPort() +
+                            ConfigGeneral.getDbName() +
+                            ConfigGeneral.getDbLogin() +
+                            ConfigGeneral.getDbPassword());
         } catch (CommunicationsException e) {
             System.out.println("Communication to mysql occurred. Maybe you have not installed mysql server.");
             e.printStackTrace();

@@ -14,6 +14,7 @@ public class ConfigGeneral {
     public static final String SERVER_CONFIG_FILE = "configuration/cfg/server.properties";
     public static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
     public static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
+    public static final String DATABASE_CONFIG_FILE = "configuration/cfg/database.properties";
     public static final int MS_IN_MINUTE = 60 * 1000;
 
     private static int port;
@@ -34,6 +35,13 @@ public class ConfigGeneral {
     private static String clientSecret = "";
     private static String redirectUrl = "";
     private static String grantType = "";
+
+    private static String dbType;
+    private static String dbHostName;
+    private static String dbPort;
+    private static String dbName;
+    private static String dbLogin;
+    private static String dbPassword;
 
     public static void loadConfig() {
         Properties properties = new Properties();
@@ -91,6 +99,23 @@ public class ConfigGeneral {
             System.out.println("IO error occurred while reading file:" + SOCIALS_CONFIG_FILE);
             System.out.println("So you can't use social login!");
             e.printStackTrace();
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream(DATABASE_CONFIG_FILE)) {
+            properties.load(fileInputStream);
+            fileInputStream.close();
+            dbType = properties.getProperty("dbType", "jdbc:mysql://");
+            dbHostName = properties.getProperty("dbHostName", "localhost:");
+            dbPort = properties.getProperty("dbPort", "3306/");
+            dbName = properties.getProperty("dbName", "quiz_db?");
+            dbLogin = properties.getProperty("dbLogin", "user=quiz_user&");
+            dbPassword = properties.getProperty("dbPassword", "password=secret");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + DATABASE_CONFIG_FILE);
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -157,5 +182,29 @@ public class ConfigGeneral {
 
     public static String getGrantType() {
         return grantType;
+    }
+
+    public static String getDbType() {
+        return dbType;
+    }
+
+    public static String getDbHostName() {
+        return dbHostName;
+    }
+
+    public static String getDbPort() {
+        return dbPort;
+    }
+
+    public static String getDbName() {
+        return dbName;
+    }
+
+    public static String getDbLogin() {
+        return dbLogin;
+    }
+
+    public static String getDbPassword() {
+        return dbPassword;
     }
 }

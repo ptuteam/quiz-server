@@ -16,3 +16,4 @@ hs_err_pid*
 tasks.xml
 
 /configuration/cfg/socials.properties
+/configuration/cfg/database.properties
