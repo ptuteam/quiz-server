@@ -17,3 +17,5 @@ tasks.xml
 
 /configuration/cfg/socials.properties
 /configuration/cfg/database.properties
+
+/quiz_db.sql
