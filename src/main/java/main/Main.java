@@ -1,5 +1,6 @@
 package main;
 
+import database.connection.DatabaseConnection;
 import game.RoomManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -16,6 +17,7 @@ import websocket.WebSocketService;
 import websocket.WebSocketServiceImpl;
 
 import java.net.InetSocketAddress;
+import java.sql.Connection;
 
 
 /**
@@ -29,6 +31,12 @@ public class Main {
     @SuppressWarnings("OverlyBroadThrowsClause")
     public static void main(String[] args) throws Exception {
         ConfigGeneral.loadConfig();
+
+        Connection connection = DatabaseConnection.getConnection();
+        if (connection == null) {
+            System.exit(1);
+        }
+        connection.close();
 
         System.out.println(String.format("Starting at port: %d\n", ConfigGeneral.getPort()));
 

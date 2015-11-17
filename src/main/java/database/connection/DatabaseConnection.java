@@ -27,6 +27,8 @@ public class DatabaseConnection {
             System.out.println("Communication to mysql occurred. Maybe you have not installed mysql server.");
             e.printStackTrace();
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            System.out.println("Error while contecting to database was occurred.");
+            System.out.println("Check your database server settings and database configs.");
             e.printStackTrace();
         }
         return null;
