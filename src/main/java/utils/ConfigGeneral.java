@@ -11,11 +11,11 @@ import java.util.Properties;
  */
 public class ConfigGeneral {
 
-    public static final String SERVER_CONFIG_FILE = "configuration/cfg/server.properties";
-    public static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
-    public static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
-    public static final String DATABASE_CONFIG_FILE = "configuration/cfg/database.properties";
-    public static final int MS_IN_MINUTE = 60 * 1000;
+    private static final String SERVER_CONFIG_FILE = "configuration/cfg/server.properties";
+    private static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
+    private static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
+    private static final String DATABASE_CONFIG_FILE = "configuration/cfg/database.properties";
+    private static final int MS_IN_MINUTE = 60 * 1000;
 
     private static int port;
     private static String host;
