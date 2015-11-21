@@ -12,7 +12,15 @@ import java.sql.SQLException;
  * Created by dima on 12.11.15.
  */
 public class DatabaseConnection {
-    public static Connection getConnection() {
+    public static Connection getQuizConnection() {
+        return getConnection(ConfigGeneral.getDbNameQuiz());
+    }
+
+    public static Connection getUsersConnection() {
+        return getConnection(ConfigGeneral.getDbNameUsers());
+    }
+
+    private static Connection getConnection(String dbName) {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
 
@@ -20,9 +28,10 @@ public class DatabaseConnection {
                     ConfigGeneral.getDbType() +
                             ConfigGeneral.getDbHostName() +
                             ConfigGeneral.getDbPort() +
-                            ConfigGeneral.getDbName() +
+                            dbName +
                             ConfigGeneral.getDbLogin() +
-                            ConfigGeneral.getDbPassword());
+                            ConfigGeneral.getDbPassword()
+                            + "&useUnicode=true&characterEncoding=utf8");
         } catch (CommunicationsException e) {
             System.out.println("Communication to mysql occurred. Maybe you have not installed mysql server.");
             e.printStackTrace();

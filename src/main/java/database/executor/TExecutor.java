@@ -25,4 +25,12 @@ public class TExecutor {
 
         return value;
     }
+
+    public void execQuery(Connection connection, String query) throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(query);
+
+            stmt.close();
+        }
+    }
 }

@@ -32,11 +32,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ConfigGeneral.loadConfig();
 
-        Connection connection = DatabaseConnection.getConnection();
-        if (connection == null) {
+        Connection quizConnection = DatabaseConnection.getQuizConnection();
+        Connection usersConnection = DatabaseConnection.getUsersConnection();
+        if (quizConnection == null || usersConnection == null) {
             System.exit(1);
         }
-        connection.close();
+        quizConnection.close();
+        usersConnection.close();
 
         System.out.println(String.format("Starting at port: %d\n", ConfigGeneral.getPort()));
 

@@ -1,5 +1,6 @@
 package database;
 
+import game.Question;
 import model.UserProfile;
 
 import java.util.Collection;
@@ -9,10 +10,11 @@ import java.util.Collection;
  */
 public interface DBService {
 
-    boolean userSignUp(UserProfile user);
-    void deleteUser(String email);
-    UserProfile userGetByEmail(String email);
-    boolean userIsExist(String email);
-    int userGetCount();
-    Collection<UserProfile> userGetAll();
+    boolean signUpUser(UserProfile user);
+    UserProfile getUserByEmail(String email);
+    boolean isUserExist(String email);
+    int getUsersCount();
+    Collection<UserProfile> getAllUsers();
+
+    Question getRandomQuestion();
 }

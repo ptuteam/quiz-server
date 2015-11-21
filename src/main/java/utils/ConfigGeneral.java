@@ -39,7 +39,8 @@ public class ConfigGeneral {
     private static String dbType;
     private static String dbHostName;
     private static String dbPort;
-    private static String dbName;
+    private static String dbNameQuiz;
+    private static String dbNameUsers;
     private static String dbLogin;
     private static String dbPassword;
 
@@ -107,13 +108,14 @@ public class ConfigGeneral {
             dbType = properties.getProperty("dbType", "jdbc:mysql://");
             dbHostName = properties.getProperty("dbHostName", "localhost:");
             dbPort = properties.getProperty("dbPort", "3306/");
-            dbName = properties.getProperty("dbName", "quiz_db?");
+            dbNameQuiz = properties.getProperty("dbNameQuiz", "quiz_db?");
+            dbNameUsers = properties.getProperty("dbNameUsers", "quiz_users_db?");
             dbLogin = properties.getProperty("dbLogin", "user=quiz_user&");
             dbPassword = properties.getProperty("dbPassword", "password=secret");
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + DATABASE_CONFIG_FILE);
             System.out.println("You must have next variables in this file:");
-            System.out.println("dbType, dbHostName, dbPort, dbName, dbLogin, dbPassword");
+            System.out.println("dbType, dbHostName, dbPort, dbNameQuiz, dbNameUsers, dbLogin, dbPassword");
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,8 +200,12 @@ public class ConfigGeneral {
         return dbPort;
     }
 
-    public static String getDbName() {
-        return dbName;
+    public static String getDbNameQuiz() {
+        return dbNameQuiz;
+    }
+
+    public static String getDbNameUsers() {
+        return dbNameUsers;
     }
 
     public static String getDbLogin() {
