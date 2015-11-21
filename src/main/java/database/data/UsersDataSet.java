@@ -11,17 +11,15 @@ public class UsersDataSet {
     private final String email;
     private final String avatarUrl;
     private final int score;
-    private final boolean isGuest;
 
     public UsersDataSet(int userId, String firstName, String lastName,
-                        String email, String avatarUrl, int score, boolean isGuest) {
+                        String email, String avatarUrl, int score) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.avatarUrl = avatarUrl;
         this.score = score;
-        this.isGuest = isGuest;
     }
 
     @SuppressWarnings("unused")
@@ -48,9 +46,5 @@ public class UsersDataSet {
     @SuppressWarnings("unused")
     public int getScore() {
         return score;
-    }
-
-    public boolean isGuest() {
-        return isGuest;
     }
 }

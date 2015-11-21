@@ -23,7 +23,6 @@ public class UsersDAO {
     private static final String COL_EMAIL = "email";
     private static final String COL_AVATAR_URL = "avatarUrl";
     private static final String COL_SCORE = "score";
-    private static final String COL_IS_GUEST = "is_guest";
 
     public UsersDAO(Connection connection) {
         this.connection = connection;
@@ -44,8 +43,7 @@ public class UsersDAO {
                     result.getString(COL_LAST_NAME),
                     result.getString(COL_EMAIL),
                     result.getString(COL_AVATAR_URL),
-                    result.getInt(COL_SCORE),
-                    result.getBoolean(COL_IS_GUEST));
+                    result.getInt(COL_SCORE));
         });
     }
 
@@ -63,8 +61,7 @@ public class UsersDAO {
                     result.getString(COL_LAST_NAME),
                     result.getString(COL_EMAIL),
                     result.getString(COL_AVATAR_URL),
-                    result.getInt(COL_SCORE),
-                    result.getBoolean(COL_IS_GUEST));
+                    result.getInt(COL_SCORE));
         });
     }
 
@@ -96,10 +93,10 @@ public class UsersDAO {
     public void signUpUser(UserProfile user) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME
                 + " (" + COL_FIRST_NAME + ", " + COL_LAST_NAME + ", " + COL_EMAIL + ", " + COL_AVATAR_URL
-                + ", " + COL_SCORE + ", " + COL_IS_GUEST + ')'
+                + ", " + COL_SCORE + ')'
                 + " VALUES (\'" + user.getFirstName() + "\', \'" + user.getLastName() + "\', \'"
                 + user.getEmail() + "\', \'" + user.getAvatarUrl()
-                + "\', " + user.getScore() + ", " + user.isGuest() + ')';
+                + "\', " + user.getScore() + ')';
 
         TExecutor exec = new TExecutor();
         exec.execQuery(connection, query);
@@ -116,10 +113,9 @@ public class UsersDAO {
                 UsersDataSet userDataSet =
                         new UsersDataSet(result.getInt(COL_ID), result.getString(COL_FIRST_NAME),
                             result.getString(COL_LAST_NAME), result.getString(COL_EMAIL),
-                            result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE),
-                            result.getBoolean(COL_IS_GUEST));
+                            result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE));
                 UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
-                        userDataSet.getEmail(), userDataSet.getAvatarUrl(), userDataSet.isGuest());
+                        userDataSet.getEmail(), userDataSet.getAvatarUrl());
                 user.setScore(userDataSet.getScore());
                 resultArray.add(user);
             }

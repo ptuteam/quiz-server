@@ -55,7 +55,7 @@ public class DBServiceImpl implements DBService {
             }
 
             UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
-                    userDataSet.getEmail(), userDataSet.getAvatarUrl(), userDataSet.isGuest());
+                    userDataSet.getEmail(), userDataSet.getAvatarUrl());
             user.setScore(userDataSet.getScore());
             return user;
         } catch (SQLException e) {
