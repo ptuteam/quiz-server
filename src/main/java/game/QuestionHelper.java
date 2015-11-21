@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class QuestionHelper {
 
-    DBService dbService = new DBServiceImpl();
+    final DBService dbService = new DBServiceImpl();
 
     public Question getRandomQuestion() {
         return dbService.getRandomQuestion();

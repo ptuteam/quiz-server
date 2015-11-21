@@ -29,7 +29,8 @@ public class DBServiceImpl implements DBService {
         UsersDAO usersDAO = new UsersDAO(connection);
 
         try {
-            return usersDAO.signUpUser(user);
+            usersDAO.signUpUser(user);
+            return true;
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
                 return false;
@@ -53,8 +54,10 @@ public class DBServiceImpl implements DBService {
                 connection.close();
             }
 
-            return new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
+            UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
                     userDataSet.getEmail(), userDataSet.getAvatarUrl(), userDataSet.isGuest());
+            user.setScore(userDataSet.getScore());
+            return user;
         } catch (SQLException e) {
             e.printStackTrace();
         }

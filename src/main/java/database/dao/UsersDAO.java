@@ -29,6 +29,7 @@ public class UsersDAO {
         this.connection = connection;
     }
 
+    @SuppressWarnings("unused")
     public UsersDataSet get(int id) throws SQLException {
         String query = "SELECT *" +
                 " FROM " + TABLE_NAME +
@@ -92,7 +93,7 @@ public class UsersDAO {
         });
     }
 
-    public boolean signUpUser(UserProfile user) throws SQLException {
+    public void signUpUser(UserProfile user) throws SQLException {
         String query = "INSERT INTO " + TABLE_NAME
                 + " (" + COL_FIRST_NAME + ", " + COL_LAST_NAME + ", " + COL_EMAIL + ", " + COL_AVATAR_URL
                 + ", " + COL_SCORE + ", " + COL_IS_GUEST + ')'
@@ -102,7 +103,6 @@ public class UsersDAO {
 
         TExecutor exec = new TExecutor();
         exec.execQuery(connection, query);
-        return true;
     }
 
     public Collection<UserProfile> getAllUsers() throws SQLException {
@@ -118,8 +118,10 @@ public class UsersDAO {
                             result.getString(COL_LAST_NAME), result.getString(COL_EMAIL),
                             result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE),
                             result.getBoolean(COL_IS_GUEST));
-                resultArray.add(new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
-                        userDataSet.getEmail(), userDataSet.getAvatarUrl(), userDataSet.isGuest()));
+                UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
+                        userDataSet.getEmail(), userDataSet.getAvatarUrl(), userDataSet.isGuest());
+                user.setScore(userDataSet.getScore());
+                resultArray.add(user);
             }
             return resultArray;
         });

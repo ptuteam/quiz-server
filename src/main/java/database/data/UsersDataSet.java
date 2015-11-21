@@ -24,6 +24,7 @@ public class UsersDataSet {
         this.isGuest = isGuest;
     }
 
+    @SuppressWarnings("unused")
     public int getUserId() {
         return userId;
     }
@@ -44,6 +45,7 @@ public class UsersDataSet {
         return avatarUrl;
     }
 
+    @SuppressWarnings("unused")
     public int getScore() {
         return score;
     }
