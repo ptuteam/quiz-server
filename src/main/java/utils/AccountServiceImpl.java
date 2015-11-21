@@ -1,5 +1,7 @@
 package utils;
 
+import database.DBService;
+import database.DBServiceImpl;
 import model.UserProfile;
 
 import java.util.*;
@@ -9,8 +11,9 @@ import java.util.*;
  */
 public class AccountServiceImpl implements AccountService {
 
-    private final Map<String, UserProfile> usersMap = new HashMap<>();
+    private final Map<String, UserProfile> guestsMap = new HashMap<>();
     private final Map<String, UserProfile> sessionsMap = new HashMap<>();
+    private final DBService dbService = new DBServiceImpl();
 
     @Override
     public void signIn(String sessionId, UserProfile user) {
@@ -26,7 +29,11 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
 
-        usersMap.put(user.getEmail(), user);
+        if (user.isGuest()) {
+            guestsMap.put(user.getEmail(), user);
+        } else {
+            dbService.signUpUser(user);
+        }
         return true;
     }
 
@@ -34,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
     public void logout(String sessionId) {
         UserProfile user = sessionsMap.get(sessionId);
         if (user.isGuest()) {
-            usersMap.remove(user.getEmail());
+            guestsMap.remove(user.getEmail());
         }
         sessionsMap.remove(sessionId);
     }
@@ -46,12 +53,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public UserProfile getUser(String email) {
-        return usersMap.get(email);
+        if (dbService.isUserExist(email)){
+            return dbService.getUserByEmail(email);
+        } else {
+            return guestsMap.get(email);
+        }
     }
 
     @Override
     public boolean isUserExist(String email) {
-        return usersMap.containsKey(email);
+        return (dbService.isUserExist(email) || guestsMap.containsKey(email));
     }
 
     @Override
@@ -61,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public int getUsersCount() {
-        return usersMap.size();
+        return (dbService.getUsersCount() + guestsMap.size());
     }
 
     @Override
@@ -71,7 +82,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Collection<UserProfile> getUsers() {
-        return usersMap.values();
+        Collection<UserProfile> users = dbService.getAllUsers();
+        users.addAll(guestsMap.values());
+        return users;
     }
 
     @Override
