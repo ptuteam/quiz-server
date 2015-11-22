@@ -122,4 +122,13 @@ public class UsersDAO {
             return resultArray;
         });
     }
+
+    public void updateUserScore(String email, int score) throws SQLException{
+        String query = "UPDATE " + TABLE_NAME
+                + " SET " + COL_SCORE + " = " + score
+                + " WHERE " + COL_EMAIL + " = \'" + email + "\';";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(connection, query);
+    }
 }

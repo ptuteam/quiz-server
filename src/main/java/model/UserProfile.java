@@ -1,5 +1,8 @@
 package model;
 
+import database.DBService;
+import database.DBServiceImpl;
+
 /**
  * alex on 18.09.15.
  */
@@ -12,6 +15,8 @@ public class UserProfile {
     private final String avatarUrl;
     private int score = 0;
     private final boolean isGuest;
+
+    private final DBService dbService = new DBServiceImpl();
 
     public UserProfile(String firstName, String lastName, String email, String avatarUrl) {
         this(firstName, lastName, email, avatarUrl, false);
@@ -50,6 +55,7 @@ public class UserProfile {
     }
 
     public void setScore(int score) {
+        dbService.updateUserScore(email, score);
         this.score = score;
     }
 

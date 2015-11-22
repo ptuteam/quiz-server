@@ -117,6 +117,22 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
+    public void updateUserScore(String email, int score) {
+        try {
+            Connection connection = DatabaseConnection.getUsersConnection();
+
+            UsersDAO usersDAO = new UsersDAO(connection);
+            usersDAO.updateUserScore(email, score);
+
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Question getRandomQuestion() {
         try {
 

@@ -15,5 +15,7 @@ public interface DBService {
     boolean isUserExist(String email);
     int getUsersCount();
     Collection<UserProfile> getAllUsers();
+    void updateUserScore(String email, int score);
+
     Question getRandomQuestion();
 }
