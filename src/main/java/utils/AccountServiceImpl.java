@@ -94,4 +94,11 @@ public class AccountServiceImpl implements AccountService {
         topUsers = topUsers.isEmpty() ? topUsers : topUsers.subList(0, topUsers.size() > count ? count : topUsers.size());
         return topUsers;
     }
+
+    @Override
+    public void updateUserScore(UserProfile user, int score) {
+        if (!user.isGuest()) {
+            dbService.updateUserScore(user.getEmail(), score);
+        }
+    }
 }

@@ -21,5 +21,6 @@ public interface AccountService {
     int getLoggedUsersCount();
     Collection<UserProfile> getUsers();
     List<UserProfile> getTopUsers(int count);
+    void updateUserScore(UserProfile user, int score);
 
 }
