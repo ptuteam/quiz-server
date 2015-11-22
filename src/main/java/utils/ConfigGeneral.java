@@ -30,6 +30,7 @@ public class ConfigGeneral {
     private static int maxGameTimeMinutes;
     private static int minRoundsPerGameCount;
     private static int ratingUsersCount;
+    private static int timeForShowingPlayersAnswsMS;
 
     private static String clientID = "";
     private static String clientSecret = "";
@@ -72,6 +73,7 @@ public class ConfigGeneral {
             maxGameTimeMinutes = Integer.valueOf(properties.getProperty("maxGameTimeMinutes", "1"));
             minRoundsPerGameCount = Integer.valueOf(properties.getProperty("minRoundsPerGameCount", "1"));
             ratingUsersCount = Integer.valueOf(properties.getProperty("ratingUsersCount", "1"));
+            timeForShowingPlayersAnswsMS = Integer.valueOf(properties.getProperty("timeForShowingPlayersAnswersMS", "0"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + MECHANICS_CONFIG_FILE);
             System.exit(1);
@@ -208,5 +210,9 @@ public class ConfigGeneral {
 
     public static String getDbPassword() {
         return dbPassword;
+    }
+
+    public static int getTimeForShowingPlayersAnswsMS() {
+        return timeForShowingPlayersAnswsMS;
     }
 }

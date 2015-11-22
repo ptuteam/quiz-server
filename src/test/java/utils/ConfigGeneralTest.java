@@ -48,6 +48,7 @@ public class ConfigGeneralTest {
         when(properties.getProperty("redirectUrl", "")).thenReturn("14");
         when(properties.getProperty("grantType", "")).thenReturn("15");
         when(properties.getProperty("ratingUsersCount", "1")).thenReturn("16");
+        when(properties.getProperty("timeForShowingPlayersAnswersMS", "0")).thenReturn("17");
 
         ConfigGeneral.loadConfig();
     }
@@ -138,5 +139,10 @@ public class ConfigGeneralTest {
     @Test
     public void testGetRatingUsersCount() throws Exception {
         assertEquals(ConfigGeneral.getRatingUsersCount(), 16);
+    }
+
+    @Test
+    public void testGetTimeForShowPlayersAnsws() throws Exception {
+        assertEquals(ConfigGeneral.getTimeForShowingPlayersAnswsMS(), 17);
     }
 }

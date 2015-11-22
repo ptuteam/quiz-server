@@ -14,10 +14,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -49,22 +46,22 @@ public class GameWebSocketTest {
     public void setUp() {
         when(session.getRemote()).thenReturn(remoteEndpoint);
 
-        gameWebSocket = new GameWebSocket(user, roomManager);
-        when(roomManager.connectUser(user, gameWebSocket)).thenReturn(room);
+        gameWebSocket = new GameWebSocket(user, roomManager, 0, 0);
+        when(roomManager.connectUser(user, gameWebSocket, 0, false)).thenReturn(room);
         gameWebSocket.onOpen(session);
     }
 
     @Test
     public void testOnOpen() throws Exception {
-        verify(roomManager, atLeastOnce()).connectUser(user, gameWebSocket);
+        verify(roomManager, atLeastOnce()).connectUser(user, gameWebSocket, 0, false);
     }
 
     @Test
     public void testOnOpenWithNoEmptyRooms() throws IOException {
-        gameWebSocket = new GameWebSocket(user, roomManager);
-        when(roomManager.connectUser(user, gameWebSocket)).thenReturn(null);
+        gameWebSocket = new GameWebSocket(user, roomManager, 0, 0);
+        when(roomManager.connectUser(user, gameWebSocket, 0, false)).thenReturn(null);
         gameWebSocket.onOpen(session);
-        verify(roomManager, atLeastOnce()).connectUser(user, gameWebSocket);
+        verify(roomManager, atLeastOnce()).connectUser(user, gameWebSocket, 0, false);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":7,\"description\":\"no empty rooms\"}");
     }
 
@@ -72,18 +69,18 @@ public class GameWebSocketTest {
     public void testOnAnswerMessage() throws Exception {
         when(room.getState()).thenReturn(Room.States.PLAYING);
         gameWebSocket.onMessage("{\"code\":6,\"answer\":\"ans\"}");
-        verify(room, atLeastOnce()).checkAnswer(user, "ans");
+        verify(room, atLeastOnce()).setAnswer(user, "ans");
     }
 
     @Test
     public void testOnMessage() throws Exception {
         when(room.getState()).thenReturn(Room.States.PLAYING);
         gameWebSocket.onMessage("{\"code\":7,\"description\":\"no empty rooms\"}");
-        verify(room, atMost(0)).checkAnswer(any(UserProfile.class), anyString());
+        verify(room, atMost(0)).setAnswer(any(UserProfile.class), anyString());
 
         when(room.getState()).thenReturn(Room.States.WATING);
         gameWebSocket.onMessage("{\"code\":6,\"answer\":\"no empty rooms\"}");
-        verify(room, atMost(0)).checkAnswer(any(UserProfile.class), anyString());
+        verify(room, atMost(0)).setAnswer(any(UserProfile.class), anyString());
     }
 
     @Test
@@ -180,17 +177,15 @@ public class GameWebSocketTest {
     }
 
     @Test
-    public void testOnCorrectAnswer() throws IOException {
-        gameWebSocket.onCorrectAnswer(true);
-        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":10,\"correct\":true," +
-                "\"description\":\"is answer correct?\"}");
-    }
-
-    @Test
-    public void testOnIncorrectAnswer() throws IOException {
-        gameWebSocket.onCorrectAnswer(false);
-        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":10,\"correct\":false," +
-                "\"description\":\"is answer correct?\"}");
+    public void testListPlayersAnswers() throws IOException {
+        Map<String, String> playersAnswers = new HashMap<>();
+        for (int i = 0; i < 3; ++i) {
+            playersAnswers.put("email" + i, "answer" + i);
+        }
+        gameWebSocket.listPlayersAnswers("corr", playersAnswers);
+        verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":10,\"correct\":\"corr\"," +
+                "\"answers\":{\"email2\":\"answer2\",\"email1\":\"answer1\",\"email0\":\"answer0\"}," +
+                "\"description\":\"players answers\"}");
     }
 
     @Test
@@ -200,9 +195,9 @@ public class GameWebSocketTest {
         when(player.getUserProfile()).thenReturn(new UserProfile("first", "last", "email", "avatar"));
         player.getUserProfile().setScore(5);
         players.add(player);
-        gameWebSocket.listPlayersInRoom(players);
+        gameWebSocket.listPlayersInRoom(players, 1);
         verify(remoteEndpoint, atLeastOnce()).sendString("{\"code\":11,\"players\":" +
                 "[{\"first_name\":\"first\",\"last_name\":\"last\",\"email\":\"email\"," +
-                "\"avatar\":\"avatar\",\"score\":5}],\"description\":\"players in room\"}");
+                "\"avatar\":\"avatar\",\"score\":5}],\"description\":\"players in room\",\"roomId\":1}");
     }
 }

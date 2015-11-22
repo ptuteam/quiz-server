@@ -39,24 +39,30 @@ public class GameWebSocket {
     private static final int CODE_NO_EMPTY_ROOMS = 7;
     private static final int CODE_NEW_PLAYER_CONNECT = 8;
     private static final int CODE_NEW_ROUND_START = 9;
-    private static final int CODE_ANSWER_CORRECTNESS_RESPONSE = 10;
+    private static final int CODE_LIST_PLAYERS_ANSWERS = 10;
     private static final int CODE_LIST_PLAYERS_IN_ROOM = 11;
+
+    private static final int ROOM_PRIVATE_TYPE = 1;
 
     private final UserProfile userProfile;
     private Session mySession;
     private Room room;
     private final RoomManager roomManager;
+    private final long connectToRoomId;
+    private final int roomType;
 
-    public GameWebSocket(UserProfile userProfile, RoomManager roomManager) {
+    public GameWebSocket(UserProfile userProfile, RoomManager roomManager, long connectToRoomId, int roomType) {
         this.userProfile = userProfile;
         this.roomManager = roomManager;
+        this.connectToRoomId = connectToRoomId;
+        this.roomType = roomType;
     }
 
     @SuppressWarnings("unused")
     @OnWebSocketConnect
     public void onOpen(Session session) {
         mySession = session;
-        room = roomManager.connectUser(userProfile, this);
+        room = roomManager.connectUser(userProfile, this, connectToRoomId, roomType == ROOM_PRIVATE_TYPE);
         if (room == null) {
             onNoEmptyRooms();
         }
@@ -70,7 +76,7 @@ public class GameWebSocket {
             if (room.getState() == Room.States.PLAYING) {
                 switch (message.get("code").getAsInt()) {
                     case CODE_PLAYER_ANSWER:
-                        room.checkAnswer(userProfile, message.get("answer").getAsString());
+                        room.setAnswer(userProfile, message.get("answer").getAsString());
                         break;
                     default:
                         break;
@@ -97,6 +103,7 @@ public class GameWebSocket {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public void onStartGame(Player player, Collection<Player> opponents) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_START);
@@ -172,23 +179,25 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
-    @SuppressWarnings("Duplicates")
-    public void onCorrectAnswer(boolean correct) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("code", CODE_ANSWER_CORRECTNESS_RESPONSE);
-        parameters.put("description", "is answer correct?");
-        parameters.put("correct", correct);
-
-        sendMessage(new SimpleMessage(parameters));
-    }
-
-    public void listPlayersInRoom(Collection<Player> players) {
+    public void listPlayersInRoom(Collection<Player> players, long roomId) {
         List<UserProfile> users = players.stream().map(Player::getUserProfile).collect(Collectors.toList());
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_LIST_PLAYERS_IN_ROOM);
         parameters.put("description", "players in room");
         parameters.put("players", users);
+        parameters.put("roomId", roomId);
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void listPlayersAnswers(String correctAnswer, Map<String, String> playersAnswers) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_LIST_PLAYERS_ANSWERS);
+        parameters.put("description", "players answers");
+        parameters.put("answers", playersAnswers);
+        parameters.put("correct", correctAnswer);
 
         sendMessage(new SimpleMessage(parameters));
     }

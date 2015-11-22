@@ -34,7 +34,7 @@ public class PlayerTest {
     @Test
     public void testConnection() throws Exception {
         RoomManager roomManager = new RoomManager(new WebSocketServiceImpl());
-        GameWebSocket gameWebSocket = new GameWebSocket(player.getUserProfile(), roomManager);
+        GameWebSocket gameWebSocket = new GameWebSocket(player.getUserProfile(), roomManager, 0, 0);
 
         player.setConnection(gameWebSocket);
         assertEquals(gameWebSocket, player.getConnection());

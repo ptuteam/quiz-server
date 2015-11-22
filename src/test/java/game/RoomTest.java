@@ -34,7 +34,7 @@ public class RoomTest {
 
     @Before
     public void setUp() {
-        room = new Room(webSocketService);
+        room = new Room(1, webSocketService, false);
         user = new UserProfile("first", "last", "email", "avatar");
     }
 
@@ -103,8 +103,8 @@ public class RoomTest {
 
         room.connectUser(user, webSocket);
         room.startGame();
-        room.checkAnswer(user, "answer");
-        verify(gameField, atLeastOnce()).checkPlayerAnswer(room.getPlayerByUser(user), "answer");
+        room.setAnswer(user, "answer");
+        verify(gameField, atLeastOnce()).setPlayerAnswer(room.getPlayerByUser(user), "answer");
     }
 
     @Test

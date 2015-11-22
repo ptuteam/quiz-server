@@ -5,15 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import utils.ConfigGeneral;
 import websocket.WebSocketService;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,36 +40,39 @@ public class GameFieldImplTest {
     }
 
     @Test
-    public void testCheckPlayerCorrectAnswer() throws Exception {
-        QuestionHelper questionHelper = mock(QuestionHelper.class);
-        PowerMockito.whenNew(QuestionHelper.class).withNoArguments().thenReturn(questionHelper);
-        when(questionHelper.checkAnswer(any(Question.class), anyString())).thenReturn(true);
-
-        gameField = new GameFieldImpl(webSocketService, session);
-
+    public void testSetPlayerAnswer() throws Exception {
+        Room room = mock(Room.class);
         Player player = mock(Player.class);
-        UserProfile userProfile = mock(UserProfile.class);
-        when(player.getUserProfile()).thenReturn(userProfile);
+        when(player.getUserEmail()).thenReturn("mail");
+        Map<String, Player> playerMap = new HashMap<>();
+        playerMap.put(player.getUserEmail(), player);
+        GameSession session1 = new GameSession(playerMap, room);
 
-        PowerMockito.mockStatic(ConfigGeneral.class);
-        when(ConfigGeneral.getPointsPerQuestion()).thenReturn(1);
-
-        gameField.checkPlayerAnswer(player, "answer");
-        verify(webSocketService, atLeastOnce()).notifyOnCorrectAnswer(player, true);
-        verify(session, atLeastOnce()).increaseScore(player.getUserProfile(), ConfigGeneral.getPointsPerQuestion());
+        gameField = new GameFieldImpl(webSocketService, session1);
+        gameField.setPlayerAnswer(player, "answer");
+        assertTrue(session1.getPlayersAnswers(0).get(player.getUserEmail()).equals("answer"));
     }
 
     @Test
-    public void testCheckPlayerIncorrectAnswer() throws Exception {
-        QuestionHelper questionHelper = mock(QuestionHelper.class);
-        PowerMockito.whenNew(QuestionHelper.class).withNoArguments().thenReturn(questionHelper);
-        when(questionHelper.checkAnswer(any(Question.class), anyString())).thenReturn(false);
+    public void testPlayerAnswerCorrect() throws Exception {
+        Room room = mock(Room.class);
+        Player player1 = mock(Player.class);
+        when(player1.getUserProfile()).thenReturn(new UserProfile("1", "1", "1", "1"));
+        when(player1.getUserEmail()).thenReturn("1");
+        when(player1.getScore()).thenReturn(0);
+        Player player2 = mock(Player.class);
+        when(player1.getUserProfile()).thenReturn(new UserProfile("2", "2", "2", "2"));
+        when(player2.getUserEmail()).thenReturn("2");
+        when(player2.getScore()).thenReturn(0);
+        Map<String, Player> playerMap = new HashMap<>();
+        playerMap.put(player1.getUserEmail(), player1);
+        playerMap.put(player2.getUserEmail(), player2);
 
+        session = new GameSession(playerMap, room);
         gameField = new GameFieldImpl(webSocketService, session);
-
-        Player player = mock(Player.class);
-        gameField.checkPlayerAnswer(player, "answer");
-        verify(webSocketService, atLeastOnce()).notifyOnCorrectAnswer(player, false);
+        gameField.setPlayerAnswer(player1, "answer1");
+        gameField.setPlayerAnswer(player2, "answer2");
+        assertTrue(session.getPlayersAnswers(0).get(player1.getUserEmail()).equals("answer1") && session.getPlayersAnswers(0).get(player2.getUserEmail()).equals("answer2"));
     }
 
     @Test

@@ -11,6 +11,7 @@ public class GameFieldImpl implements GameField {
     private boolean playing;
     private int currentRound;
     private Question currentQuestion;
+    private int nextQuestionType;
 
     private final WebSocketService webSocketService;
     private final GameSession session;
@@ -21,6 +22,7 @@ public class GameFieldImpl implements GameField {
         this.webSocketService = webSocketService;
         this.session = session;
         currentRound = 0;
+        nextQuestionType = Question.DEFAULT_QUESTION_TYPE;
     }
 
     private void newRoundStart() {
@@ -35,17 +37,19 @@ public class GameFieldImpl implements GameField {
     }
 
     @Override
-    public void checkPlayerAnswer(Player player, String answer) {
-        if (questionHelper.checkAnswer(currentQuestion, answer)) {
-            webSocketService.notifyOnCorrectAnswer(player, true);
-            increasePlayerScore(player);
-        } else {
-            webSocketService.notifyOnCorrectAnswer(player, false);
-        }
+    public void setPlayerAnswer(Player player, String answer) {
+        session.setPlayerAnswer(player, answer, currentRound);
+    }
+
+    private void checkPlayersAnswers() {
+        session.getPlayers().stream().filter(player -> questionHelper.checkAnswer(
+                currentQuestion, session.getPlayerAnswer(player, currentRound))
+        ).forEach(this::increasePlayerScore);
+        nextQuestionType = Question.DEFAULT_QUESTION_TYPE;
     }
 
     private void askQuestion() {
-        currentQuestion = questionHelper.getRandomQuestion();
+        currentQuestion = questionHelper.getRandomQuestion(nextQuestionType, session.getAskedQuestions());
         webSocketService.notifyNewQuestion(session.getPlayers(), currentQuestion);
     }
 
@@ -70,12 +74,22 @@ public class GameFieldImpl implements GameField {
     private void run() {
         while (playing) {
             gameStep();
+            if (!playing) {
+                break;
+            }
             try {
                 Thread.sleep(ConfigGeneral.getTimePerQuestionMS());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            checkPlayersAnswers();
+            webSocketService.notifyPlayersAnswers(session.getPlayers(), currentQuestion.getCorrectAnswer(), session.getPlayersAnswers(currentRound));
             webSocketService.notifyNewScores(session.getPlayers());
+            try {
+                Thread.sleep(ConfigGeneral.getTimeForShowingPlayersAnswsMS());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

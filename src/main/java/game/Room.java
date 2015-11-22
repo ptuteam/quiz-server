@@ -19,15 +19,19 @@ public class Room {
         PLAYING
     }
 
+    private final long roomId;
+    private final boolean isPrivate;
     private final Map<String, Player> playerByUser = new HashMap<>();
     private States state = States.WATING;
     GameSession session;
     GameField gameField;
     final WebSocketService webSocketService;
 
-    public Room(WebSocketService webSocketService) {
+    public Room(long roomId, WebSocketService webSocketService, boolean isPrivate) {
+        this.roomId = roomId;
         state = States.WATING;
         this.webSocketService = webSocketService;
+        this.isPrivate = isPrivate;
     }
 
     public States getState() {
@@ -47,7 +51,7 @@ public class Room {
         player.setConnection(gameWebSocket);
         webSocketService.notifyNewPlayerConnect(getPlayers(), player);
         playerByUser.put(userProfile.getEmail(), player);
-        webSocketService.notifyAboutPlayersInRoom(player, getPlayers());
+        webSocketService.notifyAboutPlayersInRoom(player, getPlayers(), roomId);
         if (playerByUser.size() == ConfigGeneral.getMaxPlayersPerRoom()) {
             startGame();
         }
@@ -84,7 +88,16 @@ public class Room {
         return playerByUser.size();
     }
 
-    public void checkAnswer(UserProfile userProfile, String answer) {
-        gameField.checkPlayerAnswer(getPlayerByUser(userProfile), answer);
+    public void setAnswer(UserProfile userProfile, String answer) {
+        gameField.setPlayerAnswer(getPlayerByUser(userProfile), answer);
     }
+
+    public long getRoomId() {
+        return roomId;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
 }

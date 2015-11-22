@@ -24,7 +24,25 @@ public class GameWebSocketCreator implements WebSocketCreator {
         String sessionId = request.getHttpServletRequest().getSession().getId();
         if (accountService.isLogged(sessionId)) {
             UserProfile user = accountService.getUserBySession(sessionId);
-            return new GameWebSocket(user, roomManager);
+            String roomIdStr = request.getHttpServletRequest().getParameter("roomId");
+            String typeStr = request.getHttpServletRequest().getParameter("type");
+            long roomId = 0;
+            if (roomIdStr != null) {
+                try {
+                    roomId = Long.valueOf(roomIdStr);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+            int type = 0;
+            if (typeStr != null) {
+                try {
+                    type = Integer.valueOf(typeStr);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+            return new GameWebSocket(user, roomManager, roomId, type);
         }
         return null;
     }
