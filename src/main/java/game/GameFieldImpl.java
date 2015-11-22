@@ -1,5 +1,6 @@
 package game;
 
+import database.DBService;
 import database.DBServiceImpl;
 import utils.ConfigGeneral;
 import websocket.WebSocketService;
@@ -17,6 +18,7 @@ public class GameFieldImpl implements GameField {
     private final GameSession session;
 
     private final QuestionHelper questionHelper = new QuestionHelper();
+    private final DBService dbService = new DBServiceImpl();
 
     public GameFieldImpl(WebSocketService webSocketService, GameSession session) {
         this.webSocketService = webSocketService;
@@ -46,7 +48,7 @@ public class GameFieldImpl implements GameField {
     }
 
     private void askQuestion() {
-        currentQuestion = new DBServiceImpl().getRandomQuestion();
+        currentQuestion = dbService.getRandomQuestion();
         webSocketService.notifyNewQuestion(session.getPlayers(), currentQuestion);
     }
 

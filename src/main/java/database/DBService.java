@@ -10,11 +10,10 @@ import java.util.Collection;
  */
 public interface DBService {
 
-    boolean signUpUser(UserProfile user);
+    void signUpUser(UserProfile user);
     UserProfile getUserByEmail(String email);
     boolean isUserExist(String email);
     int getUsersCount();
     Collection<UserProfile> getAllUsers();
-
     Question getRandomQuestion();
 }

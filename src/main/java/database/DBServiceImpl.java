@@ -24,22 +24,17 @@ public class DBServiceImpl implements DBService {
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
     @Override
-    public boolean signUpUser(UserProfile user) {
+    public void signUpUser(UserProfile user) {
         Connection connection = DatabaseConnection.getUsersConnection();
         UsersDAO usersDAO = new UsersDAO(connection);
 
         try {
             usersDAO.signUpUser(user);
-            return true;
         } catch (SQLException e) {
-            if (e.getErrorCode() == DUPLICATE_ENTRY_ERROR_CODE) {
-                return false;
-            } else {
+            if (e.getErrorCode() != DUPLICATE_ENTRY_ERROR_CODE) {
                 e.printStackTrace();
             }
         }
-
-        return false;
     }
 
     @Override
