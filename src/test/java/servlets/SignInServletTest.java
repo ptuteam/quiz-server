@@ -13,6 +13,7 @@ import templater.PageGenerator;
 import utils.AccountService;
 import utils.AccountServiceImpl;
 import utils.AuthHelper;
+import utils.ConfigGeneral;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertFalse;
  */
 @SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AuthHelper.class })
+@PrepareForTest({ AuthHelper.class, ConfigGeneral.class})
 public class SignInServletTest extends Mockito {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -41,6 +42,16 @@ public class SignInServletTest extends Mockito {
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();

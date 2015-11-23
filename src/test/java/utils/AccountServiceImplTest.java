@@ -3,25 +3,42 @@ package utils;
 import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 /**
  * alex on 27.09.15.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Magic number"})
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ConfigGeneral.class})
 public class AccountServiceImplTest {
+    public static final int SCORE = 20;
     private AccountService accountService;
-    private UserProfile user;
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         accountService = new AccountServiceImpl();
-        user = new UserProfile("test", "Test", "test@email.com", "avatarUrl");
+        UserProfile user = new UserProfile("test", "Test", "test@email.com", "avatarUrl");
         accountService.signUp(user);
         accountService.signIn("session", user);
     }
@@ -60,7 +77,7 @@ public class AccountServiceImplTest {
 
     @Test
     public void testGetUsersCount() throws Exception {
-        assertEquals(1, accountService.getUsersCount());
+        assertTrue(accountService.getUsersCount() >= 1);
     }
 
     @Test
@@ -72,21 +89,20 @@ public class AccountServiceImplTest {
     public void testGetUsers() throws Exception {
         Collection<UserProfile> users = accountService.getUsers();
         assertEquals(accountService.getUsersCount(), users.size());
-        assertTrue(users.contains(user));
     }
 
     @Test
     public void testGetTopUsers() throws Exception {
         UserProfile user1 = new UserProfile("first1", "last1", "email1", "avatar1");
-        user1.setScore(1);
+        user1.setScore(SCORE + 1);
         UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
-        user2.setScore(2);
+        user2.setScore(SCORE + 2);
         UserProfile user3 = new UserProfile("first3", "last3", "email3", "avatar3");
-        user3.setScore(0);
+        user3.setScore(SCORE);
         UserProfile user4 = new UserProfile("first4", "last4", "email4", "avatar4");
-        user4.setScore(4);
+        user4.setScore(SCORE + 3);
         UserProfile user5 = new UserProfile("first5", "last5", "email5", "avatar5");
-        user5.setScore(5);
+        user5.setScore(SCORE + 4);
 
         accountService.signUp(user1);
         accountService.signUp(user2);
@@ -95,12 +111,16 @@ public class AccountServiceImplTest {
         accountService.signUp(user5);
 
         List<UserProfile> actual =  accountService.getTopUsers(3);
+        List<String> actualEmails = new ArrayList<>();
+        actualEmails.add(actual.get(0).getEmail());
+        actualEmails.add(actual.get(1).getEmail());
+        actualEmails.add(actual.get(2).getEmail());
 
-        List<UserProfile> expected = new ArrayList<>();
-        expected.add(user5);
-        expected.add(user4);
-        expected.add(user2);
+        List<String> expected = new ArrayList<>();
+        expected.add(user5.getEmail());
+        expected.add(user4.getEmail());
+        expected.add(user2.getEmail());
 
-        assertEquals(expected, actual);
+        assertEquals(expected, actualEmails);
     }
 }

@@ -1,6 +1,8 @@
 package game;
 
 import model.UserProfile;
+import utils.AccountService;
+import utils.AccountServiceImpl;
 import websocket.GameWebSocket;
 
 /**
@@ -10,10 +12,12 @@ public class Player {
     private int score;
     private final UserProfile userProfile;
     private GameWebSocket connection;
+    private final AccountService accountService;
 
     public Player(UserProfile userProfile) {
         this.userProfile = userProfile;
         score = 0;
+        accountService = new AccountServiceImpl();
     }
 
     public UserProfile getUserProfile() {
@@ -41,6 +45,6 @@ public class Player {
     }
 
     public void updateUserGlobalScore() {
-        userProfile.setScore(userProfile.getScore() + score);
+        accountService.updateUserScore(userProfile, userProfile.getScore() + score);
     }
 }

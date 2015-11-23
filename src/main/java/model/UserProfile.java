@@ -55,7 +55,6 @@ public class UserProfile {
     }
 
     public void setScore(int score) {
-        accountService.updateUserScore(this, score);
         this.score = score;
     }
 

@@ -26,10 +26,11 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Magic number"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ScoresServlet.class, ConfigGeneral.class})
 public class ScoresServletTest {
+    public static final int SCORE = 20;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private AccountService accountService;
@@ -38,21 +39,30 @@ public class ScoresServletTest {
     public void setUp() {
         PowerMockito.mockStatic(ConfigGeneral.class);
         when(ConfigGeneral.getRatingUsersCount()).thenReturn(3);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();
         accountService.signIn("session", new UserProfile("first", "last", "email", "avatar"));
 
         UserProfile user1 = new UserProfile("first1", "last1", "email1", "avatar1");
-        user1.setScore(1);
+        user1.setScore(SCORE + 1);
         UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
-        user2.setScore(2);
+        user2.setScore(SCORE + 2);
         UserProfile user3 = new UserProfile("first3", "last3", "email3", "avatar3");
-        user3.setScore(0);
+        user3.setScore(SCORE);
         UserProfile user4 = new UserProfile("first4", "last4", "email4", "avatar4");
-        user4.setScore(4);
+        user4.setScore(SCORE + 3);
         UserProfile user5 = new UserProfile("first5", "last5", "email5", "avatar5");
-        user5.setScore(5);
+        user5.setScore(SCORE + 4);
 
         accountService.signUp(user1);
         accountService.signUp(user2);
@@ -72,27 +82,27 @@ public class ScoresServletTest {
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first4\"," +
                                     "\"last_name\":\"last4\"," +
-                                    "\"score\":4")
+                                    "\"score\":23")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first5\"," +
                                     "\"last_name\":\"last5\"," +
-                                    "\"score\":5")
+                                    "\"score\":24")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first2\"," +
                                     "\"last_name\":\"last2\"," +
-                                    "\"score\":2")
+                                    "\"score\":22")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first1\"," +
                                     "\"last_name\":\"last1\"," +
-                                    "\"score\":1")
+                                    "\"score\":21")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first3\"," +
                                     "\"last_name\":\"last3\"," +
-                                    "\"score\":0")
+                                    "\"score\":20")
             );
         }
     }

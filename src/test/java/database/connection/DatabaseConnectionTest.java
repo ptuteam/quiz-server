@@ -29,15 +29,13 @@ public class DatabaseConnectionTest {
         when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
         when(ConfigGeneral.getDbPort()).thenReturn("3306/");
         when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
         when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
         when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
-
-
     }
 
     @Test
     public void testGetQuizConnection() throws SQLException {
-
         Connection connection = DatabaseConnection.getQuizConnection();
 
         if (connection == null) {
@@ -45,19 +43,12 @@ public class DatabaseConnectionTest {
                     " from root in your mysql server.");
         } else {
             assertEquals("test_quiz_user@localhost", connection.getMetaData().getUserName());
+            assertEquals("test_quiz_db", connection.getCatalog());
         }
     }
 
     @Test
     public void testGetUsersConnection() throws SQLException {
-        PowerMockito.mockStatic(ConfigGeneral.class);
-        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
-        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
-        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
-        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
-        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
-        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
-
         Connection connection = DatabaseConnection.getUsersConnection();
 
         if (connection == null) {
@@ -65,18 +56,13 @@ public class DatabaseConnectionTest {
                     " from root in your mysql server.");
         } else {
             assertEquals("test_quiz_user@localhost", connection.getMetaData().getUserName());
+            assertEquals("test_quiz_users_db", connection.getCatalog());
         }
     }
 
     @Test
     public void testGetConnectionWrongDB() throws SQLException {
-        PowerMockito.mockStatic(ConfigGeneral.class);
-        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
-        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
-        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
         when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db1?");
-        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
-        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
 
         Connection connection = DatabaseConnection.getUsersConnection();
 

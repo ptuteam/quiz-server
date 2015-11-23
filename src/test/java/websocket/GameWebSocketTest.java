@@ -1,5 +1,6 @@
 package websocket;
 
+import database.connection.DatabaseConnection;
 import game.Player;
 import game.Question;
 import game.Room;
@@ -12,6 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import utils.ConfigGeneral;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +30,8 @@ import static org.mockito.Mockito.*;
  * alex on 06.11.15.
  */
 @SuppressWarnings("unused")
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ConfigGeneral.class})
 public class GameWebSocketTest {
 
     @Mock
@@ -52,6 +58,16 @@ public class GameWebSocketTest {
         gameWebSocket = new GameWebSocket(user, roomManager);
         when(roomManager.connectUser(user, gameWebSocket)).thenReturn(room);
         gameWebSocket.onOpen(session);
+
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
     }
 
     @Test

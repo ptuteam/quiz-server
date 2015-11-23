@@ -3,21 +3,39 @@ package game;
 import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import utils.ConfigGeneral;
 import websocket.GameWebSocket;
 import websocket.WebSocketServiceImpl;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by dima on 02.11.15.
  */
 @SuppressWarnings("unused")
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ConfigGeneral.class})
 public class PlayerTest {
 
     private Player player;
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         player = new Player(new UserProfile("first", "last", "email", "avatar"));
     }
 

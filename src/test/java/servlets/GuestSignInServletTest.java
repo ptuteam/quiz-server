@@ -10,6 +10,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import utils.AccountService;
 import utils.AccountServiceImpl;
 import utils.AuthHelper;
+import utils.ConfigGeneral;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
  */
 @SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AuthHelper.class })
+@PrepareForTest({ AuthHelper.class, ConfigGeneral.class })
 public class GuestSignInServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -38,6 +39,16 @@ public class GuestSignInServletTest {
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();
@@ -48,7 +59,7 @@ public class GuestSignInServletTest {
     public void testGuestSignIn() throws ServletException, IOException {
         try (StringWriter stringWriter = new StringWriter()) {
             PowerMockito.mockStatic(AuthHelper.class);
-            PowerMockito.when(AuthHelper.getGuestUser()).thenReturn(new UserProfile("first", "last", "email", "avatar", true));
+            PowerMockito.when(AuthHelper.getGuestUser()).thenReturn(new UserProfile("first11", "last11", "email11", "avatar11", true));
             when(session.getId()).thenReturn("session");
             when(request.getSession()).thenReturn(session);
             when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
@@ -57,7 +68,7 @@ public class GuestSignInServletTest {
 
             assertTrue(accountService.isLogged("session"));
             assertTrue(accountService.getUserBySession("session").isGuest());
-            assertEquals(accountService.getUserBySession("session").getEmail(), "email");
+            assertEquals(accountService.getUserBySession("session").getEmail(), "email11");
         }
     }
 }

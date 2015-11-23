@@ -97,6 +97,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void updateUserScore(UserProfile user, int score) {
+        user.setScore(score);
         if (!user.isGuest()) {
             dbService.updateUserScore(user.getEmail(), score);
         }

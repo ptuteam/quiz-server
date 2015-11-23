@@ -3,8 +3,13 @@ package servlets;
 import model.UserProfile;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import utils.AccountService;
 import utils.AccountServiceImpl;
+import utils.ConfigGeneral;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +27,8 @@ import static org.mockito.Mockito.when;
  * Created by Dima on 26.10.2015.
  */
 @SuppressWarnings("unused")
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ConfigGeneral.class})
 public class UserServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -30,6 +37,16 @@ public class UserServletTest {
 
     @Before
     public void setUp() {
+        PowerMockito.mockStatic(ConfigGeneral.class);
+        when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
+        when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");
+        when(ConfigGeneral.getDbPort()).thenReturn("3306/");
+        when(ConfigGeneral.getDbNameQuiz()).thenReturn("test_quiz_db?");
+        when(ConfigGeneral.getDbNameUsers()).thenReturn("test_quiz_users_db?");
+        when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
+        when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
+        ConfigGeneral.loadConfig();
+
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();
