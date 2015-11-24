@@ -18,12 +18,13 @@ import static org.mockito.Mockito.when;
 /**
  * Created by dima on 23.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DatabaseConnection.class, ConfigGeneral.class})
 public class DatabaseConnectionTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         PowerMockito.mockStatic(ConfigGeneral.class);
         when(ConfigGeneral.getDbType()).thenReturn("jdbc:mysql://");
         when(ConfigGeneral.getDbHostName()).thenReturn("localhost:");

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * alex on 27.09.15.
  */
-@SuppressWarnings({"unused", "Magic number"})
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigGeneral.class})
 public class AccountServiceImplTest {

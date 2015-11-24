@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Dima on 26.10.2015.
  */
-@SuppressWarnings({"unused", "Magic number"})
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ScoresServlet.class, ConfigGeneral.class})
 public class ScoresServletTest {

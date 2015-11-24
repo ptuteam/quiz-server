@@ -37,6 +37,7 @@ public class GuestSignInServletTest {
     private AccountService accountService;
     private HttpSession session;
 
+    @SuppressWarnings("Duplicates")
     @Before
     public void setUp() {
         PowerMockito.mockStatic(ConfigGeneral.class);

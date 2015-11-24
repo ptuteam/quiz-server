@@ -1,8 +1,5 @@
 package model;
 
-import utils.AccountService;
-import utils.AccountServiceImpl;
-
 /**
  * alex on 18.09.15.
  */
@@ -15,8 +12,6 @@ public class UserProfile {
     private final String avatarUrl;
     private int score = 0;
     private final boolean isGuest;
-
-    private final AccountService accountService = new AccountServiceImpl();
 
     public UserProfile(String firstName, String lastName, String email, String avatarUrl) {
         this(firstName, lastName, email, avatarUrl, false);
