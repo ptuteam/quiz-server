@@ -26,11 +26,15 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public void signUpUser(UserProfile user) {
-        Connection connection = DatabaseConnection.getUsersConnection();
-        UsersDAO usersDAO = new UsersDAO(connection);
-
         try {
+            Connection connection = DatabaseConnection.getUsersConnection();
+            UsersDAO usersDAO = new UsersDAO(connection);
+
             usersDAO.signUpUser(user);
+
+            if (connection != null) {
+                connection.close();
+            }
         } catch (SQLException e) {
             if (e.getErrorCode() != DUPLICATE_ENTRY_ERROR_CODE) {
                 e.printStackTrace();

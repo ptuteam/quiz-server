@@ -45,6 +45,7 @@ public class DatabaseConnectionTest {
         } else {
             assertEquals("test_quiz_user@localhost", connection.getMetaData().getUserName());
             assertEquals("test_quiz_db", connection.getCatalog());
+            connection.close();
         }
     }
 
@@ -58,6 +59,7 @@ public class DatabaseConnectionTest {
         } else {
             assertEquals("test_quiz_user@localhost", connection.getMetaData().getUserName());
             assertEquals("test_quiz_users_db", connection.getCatalog());
+            connection.close();
         }
     }
 

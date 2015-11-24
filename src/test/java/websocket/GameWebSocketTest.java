@@ -1,6 +1,7 @@
 package websocket;
 
 import database.connection.DatabaseConnection;
+import database.executor.TExecutor;
 import game.Player;
 import game.Question;
 import game.Room;
@@ -8,17 +9,18 @@ import game.RoomManager;
 import model.UserProfile;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import utils.ConfigGeneral;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -65,6 +67,14 @@ public class GameWebSocketTest {
         when(ConfigGeneral.getDbLogin()).thenReturn("user=test_quiz_user&");
         when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
         ConfigGeneral.loadConfig();
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        String query = "TRUNCATE TABLE users;";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test

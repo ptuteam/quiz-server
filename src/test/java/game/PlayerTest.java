@@ -1,6 +1,9 @@
 package game;
 
+import database.connection.DatabaseConnection;
+import database.executor.TExecutor;
 import model.UserProfile;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +13,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import utils.ConfigGeneral;
 import websocket.GameWebSocket;
 import websocket.WebSocketServiceImpl;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -37,6 +42,14 @@ public class PlayerTest {
         ConfigGeneral.loadConfig();
 
         player = new Player(new UserProfile("first", "last", "email", "avatar"));
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        String query = "TRUNCATE TABLE users;";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test

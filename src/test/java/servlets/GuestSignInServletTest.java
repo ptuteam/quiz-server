@@ -1,6 +1,9 @@
 package servlets;
 
+import database.connection.DatabaseConnection;
+import database.executor.TExecutor;
 import model.UserProfile;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -54,6 +58,14 @@ public class GuestSignInServletTest {
         response = mock(HttpServletResponse.class);
         accountService = new AccountServiceImpl();
         session = mock(HttpSession.class);
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        String query = "TRUNCATE TABLE users;";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test

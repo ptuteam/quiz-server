@@ -1,7 +1,9 @@
 package servlets;
 
-import database.DBServiceImpl;
+import database.connection.DatabaseConnection;
+import database.executor.TExecutor;
 import model.UserProfile;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -59,6 +62,14 @@ public class AdministrationServletTest {
         accountService.signIn("session", new UserProfile("admin", "admin", "sashaudalv@gmail.com", "avatar"));
     }
 
+    @After
+    public void tearDown() throws SQLException {
+        String query = "TRUNCATE TABLE users;";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
+    }
+
     @Test
     public void testNotLoggedIn() throws ServletException, IOException {
         try (StringWriter stringWriter = new StringWriter()) {
@@ -83,8 +94,7 @@ public class AdministrationServletTest {
             AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
             administrationServlet.doGet(request, response);
 
-            assertTrue(stringWriter.toString().contains("Users: "
-                    + new DBServiceImpl().getUsersCount()));
+            assertTrue(stringWriter.toString().contains("Users: 1"));
             assertTrue(stringWriter.toString().contains("Logged users: 1"));
         }
     }

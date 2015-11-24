@@ -1,6 +1,9 @@
 package servlets;
 
+import database.connection.DatabaseConnection;
+import database.executor.TExecutor;
 import model.UserProfile;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +34,6 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ScoresServlet.class, ConfigGeneral.class})
 public class ScoresServletTest {
-    public static final int SCORE = 20;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private AccountService accountService;
@@ -54,21 +57,29 @@ public class ScoresServletTest {
         accountService.signIn("session", new UserProfile("first", "last", "email", "avatar"));
 
         UserProfile user1 = new UserProfile("first1", "last1", "email1", "avatar1");
-        user1.setScore(SCORE + 1);
+        user1.setScore(1);
         UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
-        user2.setScore(SCORE + 2);
+        user2.setScore(2);
         UserProfile user3 = new UserProfile("first3", "last3", "email3", "avatar3");
-        user3.setScore(SCORE);
+        user3.setScore(0);
         UserProfile user4 = new UserProfile("first4", "last4", "email4", "avatar4");
-        user4.setScore(SCORE + 3);
+        user4.setScore(3);
         UserProfile user5 = new UserProfile("first5", "last5", "email5", "avatar5");
-        user5.setScore(SCORE + 4);
+        user5.setScore(4);
 
         accountService.signUp(user1);
         accountService.signUp(user2);
         accountService.signUp(user3);
         accountService.signUp(user4);
         accountService.signUp(user5);
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        String query = "TRUNCATE TABLE users;";
+
+        TExecutor exec = new TExecutor();
+        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test
@@ -82,27 +93,27 @@ public class ScoresServletTest {
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first4\"," +
                                     "\"last_name\":\"last4\"," +
-                                    "\"score\":23")
+                                    "\"score\":3")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first5\"," +
                                     "\"last_name\":\"last5\"," +
-                                    "\"score\":24")
+                                    "\"score\":4")
             );
             assertTrue(stringWriter.toString().contains(
                             "\"first_name\":\"first2\"," +
                                     "\"last_name\":\"last2\"," +
-                                    "\"score\":22")
+                                    "\"score\":2")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first1\"," +
                                     "\"last_name\":\"last1\"," +
-                                    "\"score\":21")
+                                    "\"score\":1")
             );
             assertFalse(stringWriter.toString().contains(
                             "\"first_name\":\"first3\"," +
                                     "\"last_name\":\"last3\"," +
-                                    "\"score\":20")
+                                    "\"score\":0")
             );
         }
     }
