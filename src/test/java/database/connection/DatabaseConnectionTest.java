@@ -35,6 +35,7 @@ public class DatabaseConnectionTest {
         when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
     }
 
+    @SuppressWarnings("Duplicates")
     @Test
     public void testGetQuizConnection() throws SQLException {
         Connection connection = DatabaseConnection.getQuizConnection();
@@ -49,6 +50,7 @@ public class DatabaseConnectionTest {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Test
     public void testGetUsersConnection() throws SQLException {
         Connection connection = DatabaseConnection.getUsersConnection();
