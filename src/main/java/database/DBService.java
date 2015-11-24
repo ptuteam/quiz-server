@@ -4,6 +4,7 @@ import game.Question;
 import model.UserProfile;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by dima on 19.11.15.
@@ -17,5 +18,5 @@ public interface DBService {
     Collection<UserProfile> getAllUsers();
     void updateUserScore(String email, int score);
 
-    Question getRandomQuestion();
+    Question getRandomQuestion(int type, Set<Integer> askedQuestions);
 }

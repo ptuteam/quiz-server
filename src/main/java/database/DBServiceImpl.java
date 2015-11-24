@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by dima on 20.11.15.
@@ -133,20 +134,20 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public Question getRandomQuestion() {
+    public Question getRandomQuestion(int type, Set<Integer> askedQuestions) {
         try {
 
             Connection connection = DatabaseConnection.getQuizConnection();
 
             QuestionsDAO questionsDAO = new QuestionsDAO(connection);
-            QuestionsDataSet question = questionsDAO.getRandom();
-
+            QuestionsDataSet question = questionsDAO.getRandom(type, askedQuestions);
+            askedQuestions.add(question.getQuestionId());
             AnswersDAO answersDAO = new AnswersDAO(connection);
 
             String[] answers = null;
             String correctAnswer = null;
 
-            if (question.getType() == 1) {
+            if (question.getType() == Question.DEFAULT_QUESTION_TYPE) {
 
                 List<String> answersList = new ArrayList<>();
                 for (AnswersDataSet a : answersDAO.getByQuestionId(question.getQuestionId())) {
@@ -159,7 +160,7 @@ public class DBServiceImpl implements DBService {
                 answers = new String[answersList.size()];
                 answers = answersList.toArray(answers);
 
-            } else {
+            } else if (question.getType() == Question.SPECIAL_QUESTION_TYPE) {
 
                 AnswersDataSet answer = answersDAO.getCorrectByQuestionId(question.getQuestionId());
                 correctAnswer = answer.getText();

@@ -5,6 +5,8 @@ import database.DBServiceImpl;
 import utils.ConfigGeneral;
 import websocket.WebSocketService;
 
+import java.util.Objects;
+
 /**
  * alex on 22.10.15.
  */
@@ -18,7 +20,6 @@ public class GameFieldImpl implements GameField {
     private final WebSocketService webSocketService;
     private final GameSession session;
 
-    private final QuestionHelper questionHelper = new QuestionHelper();
     private final DBService dbService = new DBServiceImpl();
 
     public GameFieldImpl(WebSocketService webSocketService, GameSession session) {
@@ -45,8 +46,11 @@ public class GameFieldImpl implements GameField {
     }
 
     private void checkPlayersAnswers() {
-        session.getPlayers().stream().filter(player -> questionHelper.checkAnswer(
-                currentQuestion, session.getPlayerAnswer(player, currentRound))
+        session.getPlayers().stream().filter(player ->
+                Objects.equals(
+                        currentQuestion.getCorrectAnswer(),
+                        session.getPlayerAnswer(player, currentRound)
+                )
         ).forEach(this::increasePlayerScore);
         nextQuestionType = Question.DEFAULT_QUESTION_TYPE;
     }
