@@ -64,12 +64,14 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyOnCorrectAnswer(Player player, boolean correct) {
-        player.getConnection().onCorrectAnswer(correct);
+    public void notifyAboutPlayersInRoom(Player player, Collection<Player> players, long roomId) {
+        player.getConnection().listPlayersInRoom(players, roomId);
     }
 
     @Override
-    public void notifyAboutPlayersInRoom(Player player, Collection<Player> players) {
-        player.getConnection().listPlayersInRoom(players);
+    public void notifyPlayersAnswers(Collection<Player> players, String correctAnswer, Map<String, String> playersAnswers) {
+        for (Player player : players) {
+            player.getConnection().listPlayersAnswers(correctAnswer, playersAnswers);
+        }
     }
 }

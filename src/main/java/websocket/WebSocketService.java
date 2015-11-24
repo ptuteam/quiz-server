@@ -4,6 +4,7 @@ import game.Player;
 import game.Question;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * alex on 22.10.15.
@@ -23,7 +24,7 @@ public interface WebSocketService {
 
     void notifyNewPlayerConnect(Collection<Player> players, Player newPlayer);
 
-    void notifyOnCorrectAnswer(Player player, boolean correct);
+    void notifyAboutPlayersInRoom(Player player, Collection<Player> players, long roomId);
 
-    void notifyAboutPlayersInRoom(Player player, Collection<Player> players);
+    void notifyPlayersAnswers(Collection<Player> players, String correctAnswer, Map<String, String> playersAnswers);
 }

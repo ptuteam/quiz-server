@@ -5,6 +5,7 @@ import database.executor.TExecutor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created by dima on 12.11.15.
@@ -37,9 +38,22 @@ public class QuestionsDAO {
         });
     }
 
-    public QuestionsDataSet getRandom() throws SQLException {
+    public QuestionsDataSet getRandom(int type, Set<Integer> askedQuestions) throws SQLException {
+        StringBuilder alreadyAskedBuilder = new StringBuilder();
+        alreadyAskedBuilder.append('(');
+        if (askedQuestions.isEmpty()) {
+            alreadyAskedBuilder.append("-1,");
+        }
+        for (int id : askedQuestions) {
+            alreadyAskedBuilder.append(id).append(',');
+        }
+        alreadyAskedBuilder.deleteCharAt(alreadyAskedBuilder.length() - 1);
+        alreadyAskedBuilder.append(')');
+
         String randOffsetQuery = "SELECT FLOOR(RAND() * COUNT(*)) as \'offset\'" +
-                " FROM " + TABLE_NAME;
+                " FROM " + TABLE_NAME +
+                " WHERE type = " + type +
+                " AND id NOT IN " + alreadyAskedBuilder;
 
         TExecutor exec = new TExecutor();
         int randOffset = exec.execQuery(connection, randOffsetQuery, result -> {
@@ -49,6 +63,8 @@ public class QuestionsDAO {
 
         String query = "SELECT *" +
                 " FROM " + TABLE_NAME +
+                " WHERE type = " + type +
+                " AND id NOT IN " + alreadyAskedBuilder +
                 " LIMIT " + randOffset + ", 1;";
 
         return exec.execQuery(connection, query, result -> {

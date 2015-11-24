@@ -5,6 +5,9 @@ package game;
  */
 public class Question {
 
+    public static final int DEFAULT_QUESTION_TYPE = 1;
+    public static final int SPECIAL_QUESTION_TYPE = 2;
+
     private final String title;
     private final String[] answers;
     private final int type;

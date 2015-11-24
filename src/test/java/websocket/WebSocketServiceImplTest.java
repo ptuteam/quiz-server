@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -105,14 +106,17 @@ public class WebSocketServiceImplTest {
     }
 
     @Test
-    public void testNotifyOnCorrectAnswer() throws Exception {
-        webSocketService.notifyOnCorrectAnswer(player1, true);
-        verify(webSocket1, atMost(1)).onCorrectAnswer(true);
+    public void testNotifyPlayersAnswers() throws Exception {
+        @SuppressWarnings("unchecked") Map<String, String> playersAnswers = mock(Map.class);
+        String correctAnswer = "correctAnswer";
+        webSocketService.notifyPlayersAnswers(players, correctAnswer, playersAnswers);
+        verify(webSocket1, atLeastOnce()).listPlayersAnswers(correctAnswer, playersAnswers);
+        verify(webSocket2, atLeastOnce()).listPlayersAnswers(correctAnswer, playersAnswers);
     }
 
     @Test
     public void testNotifyAboutPlayersInRoom() throws Exception {
-        webSocketService.notifyAboutPlayersInRoom(player1, players);
-        verify(webSocket1, atMost(1)).listPlayersInRoom(players);
+        webSocketService.notifyAboutPlayersInRoom(player1, players, 1);
+        verify(webSocket1, atMost(1)).listPlayersInRoom(players, 1);
     }
 }

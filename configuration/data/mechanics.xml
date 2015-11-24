@@ -12,5 +12,6 @@
     <entry key="maxGameTimeMinutes">9</entry>
     <entry key="minRoundsPerGameCount">5</entry>
     <entry key="ratingUsersCount">10</entry>
+    <entry key="timeForShowingPlayersAnswersMS">3000</entry>
 
 </properties>

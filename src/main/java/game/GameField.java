@@ -5,7 +5,7 @@ package game;
  */
 public interface GameField {
 
-    void checkPlayerAnswer(Player player, String answer);
+    void setPlayerAnswer(Player player, String answer);
 
     void play();
 
