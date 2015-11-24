@@ -22,13 +22,14 @@ import static org.mockito.Mockito.when;
 /**
  * Created by dima on 24.11.15.
  */
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigGeneral.class})
 public class DBServiceImplTest {
 
-    DBService dbService = new DBServiceImpl();
-    UserProfile user = new UserProfile("first", "last", "email", "avatar");
-    UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
+    private final DBService dbService = new DBServiceImpl();
+    private final UserProfile user = new UserProfile("first", "last", "email", "avatar");
+    private final UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
 
     @Before
     public void setUp() {
