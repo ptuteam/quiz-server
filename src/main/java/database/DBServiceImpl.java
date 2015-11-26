@@ -12,10 +12,7 @@ import model.UserProfile;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by dima on 20.11.15.
@@ -24,17 +21,14 @@ public class DBServiceImpl implements DBService {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
+    private final Connection connectionUsers = DatabaseConnection.getUsersConnection();
+    private final Connection connectionQuiz = DatabaseConnection.getQuizConnection();
+
     @Override
     public void signUpUser(UserProfile user) {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-            UsersDAO usersDAO = new UsersDAO(connection);
-
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
             usersDAO.signUpUser(user);
-
-            if (connection != null) {
-                connection.close();
-            }
         } catch (SQLException e) {
             if (e.getErrorCode() != DUPLICATE_ENTRY_ERROR_CODE) {
                 e.printStackTrace();
@@ -45,14 +39,8 @@ public class DBServiceImpl implements DBService {
     @Override
     public UserProfile getUserByEmail(String email) {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-
-            UsersDAO usersDAO = new UsersDAO(connection);
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
             UsersDataSet userDataSet = usersDAO.getByEmail(email);
-
-            if (connection != null) {
-                connection.close();
-            }
 
             UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
                     userDataSet.getEmail(), userDataSet.getAvatarUrl());
@@ -67,16 +55,8 @@ public class DBServiceImpl implements DBService {
     @Override
     public boolean isUserExist(String email) {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-
-            UsersDAO usersDAO = new UsersDAO(connection);
-            boolean result = usersDAO.isUserExists(email);
-
-            if (connection != null) {
-                connection.close();
-            }
-
-            return result;
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            return usersDAO.isUserExists(email);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -86,16 +66,8 @@ public class DBServiceImpl implements DBService {
     @Override
     public int getUsersCount() {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-
-            UsersDAO usersDAO = new UsersDAO(connection);
-            int usersCount = usersDAO.getUsersCount();
-
-            if (connection != null) {
-                connection.close();
-            }
-
-            return usersCount;
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            return usersDAO.getUsersCount();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -105,16 +77,8 @@ public class DBServiceImpl implements DBService {
     @Override
     public Collection<UserProfile> getAllUsers() {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-
-            UsersDAO usersDAO = new UsersDAO(connection);
-            Collection<UserProfile> users = usersDAO.getAllUsers();
-
-            if (connection != null) {
-                connection.close();
-            }
-
-            return users;
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            return usersDAO.getAllUsers();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -124,14 +88,9 @@ public class DBServiceImpl implements DBService {
     @Override
     public void updateUserScore(String email, int score) {
         try {
-            Connection connection = DatabaseConnection.getUsersConnection();
-
-            UsersDAO usersDAO = new UsersDAO(connection);
+            UsersDAO usersDAO = new UsersDAO(connectionUsers);
             usersDAO.updateUserScore(email, score);
 
-            if (connection != null) {
-                connection.close();
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -140,13 +99,10 @@ public class DBServiceImpl implements DBService {
     @Override
     public Question getRandomQuestion(int type, Set<Integer> askedQuestions) {
         try {
-
-            Connection connection = DatabaseConnection.getQuizConnection();
-
-            QuestionsDAO questionsDAO = new QuestionsDAO(connection);
+            QuestionsDAO questionsDAO = new QuestionsDAO(connectionQuiz);
             QuestionsDataSet question = questionsDAO.getRandom(type, askedQuestions);
             askedQuestions.add(question.getQuestionId());
-            AnswersDAO answersDAO = new AnswersDAO(connection);
+            AnswersDAO answersDAO = new AnswersDAO(connectionQuiz);
 
             String[] answers = null;
             String correctAnswer = null;
@@ -171,12 +127,7 @@ public class DBServiceImpl implements DBService {
 
             }
 
-            if (connection != null) {
-                connection.close();
-            }
-
             return new Question(question.getTitle(), question.getType(), answers, correctAnswer);
-
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }

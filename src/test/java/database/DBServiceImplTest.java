@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @PrepareForTest({ConfigGeneral.class})
 public class DBServiceImplTest {
 
-    private final DBService dbService = new DBServiceImpl();
+    private DBService dbService;
     private final UserProfile user = new UserProfile("first", "last", "email", "avatar");
     private final UserProfile user2 = new UserProfile("first2", "last2", "email2", "avatar2");
 
@@ -43,6 +43,7 @@ public class DBServiceImplTest {
         when(ConfigGeneral.getDbPassword()).thenReturn("password=secret");
         ConfigGeneral.loadConfig();
 
+        dbService = new DBServiceImpl();
         dbService.signUpUser(user);
         dbService.signUpUser(user2);
     }
@@ -51,8 +52,7 @@ public class DBServiceImplTest {
     public void tearDown() throws SQLException {
         String query = "TRUNCATE TABLE users;";
 
-        TExecutor exec = new TExecutor();
-        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
+        TExecutor.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test
