@@ -67,8 +67,7 @@ public class SignInServletTest extends Mockito {
     public void tearDown() throws SQLException {
         String query = "TRUNCATE TABLE users;";
 
-        TExecutor exec = new TExecutor();
-        exec.execQuery(DatabaseConnection.getUsersConnection(), query);
+        TExecutor.execQuery(DatabaseConnection.getUsersConnection(), query);
     }
 
     @Test
