@@ -29,8 +29,7 @@ public class QuestionsDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new QuestionsDataSet(result.getInt(COL_ID),
                     result.getString(COL_TEXT),
@@ -55,8 +54,7 @@ public class QuestionsDAO {
                 " WHERE type = " + type +
                 " AND id NOT IN " + alreadyAskedBuilder;
 
-        TExecutor exec = new TExecutor();
-        int randOffset = exec.execQuery(connection, randOffsetQuery, result -> {
+        int randOffset = TExecutor.execQuery(connection, randOffsetQuery, result -> {
             result.next();
             return result.getInt("offset");
         });
@@ -67,7 +65,7 @@ public class QuestionsDAO {
                 " AND id NOT IN " + alreadyAskedBuilder +
                 " LIMIT " + randOffset + ", 1;";
 
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new QuestionsDataSet(result.getInt(COL_ID),
                     result.getString(COL_TEXT),

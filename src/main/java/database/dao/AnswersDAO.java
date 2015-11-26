@@ -30,8 +30,7 @@ public class AnswersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new AnswersDataSet(
                     result.getInt(COL_ID),
@@ -47,10 +46,9 @@ public class AnswersDAO {
                 " WHERE " + COL_QUESTION_ID + " = " + questionId + ';';
 
         ArrayList<AnswersDataSet> resultArray = new ArrayList<>();
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
-            while(result.next())
-            {
+
+        return TExecutor.execQuery(connection, query, result -> {
+            while (result.next()) {
                 resultArray.add(new AnswersDataSet(
                         result.getInt(COL_ID),
                         result.getString(COL_TEXT),
@@ -67,8 +65,7 @@ public class AnswersDAO {
                         " WHERE " + COL_QUESTION_ID + " = " + questionId +
                         " AND " + COL_IS_CORRECT + " = true;";
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new AnswersDataSet(
                     result.getInt(COL_ID),

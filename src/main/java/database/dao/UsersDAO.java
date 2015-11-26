@@ -34,8 +34,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new UsersDataSet(
                     result.getInt(COL_ID),
@@ -52,8 +51,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_EMAIL + " = \'" + email + "\';";
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return new UsersDataSet(
                     result.getInt(COL_ID),
@@ -70,8 +68,7 @@ public class UsersDAO {
         String query = "SELECT COUNT(*) as " + colCount +
                 " FROM " + TABLE_NAME + ';';
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return result.getInt(colCount);
         });
@@ -83,8 +80,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_EMAIL + " = \'" + email +"\';";
 
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(connection, query, result -> {
             result.next();
             return (result.getInt(colCount) > 0);
         });
@@ -98,22 +94,20 @@ public class UsersDAO {
                 + user.getEmail() + "\', \'" + user.getAvatarUrl()
                 + "\', " + user.getScore() + ')';
 
-        TExecutor exec = new TExecutor();
-        exec.execQuery(connection, query);
+        TExecutor.execQuery(connection, query);
     }
 
     public Collection<UserProfile> getAllUsers() throws SQLException {
         String query = "SELECT * " + " FROM " + TABLE_NAME;
 
         ArrayList<UserProfile> resultArray = new ArrayList<>();
-        TExecutor exec = new TExecutor();
-        return exec.execQuery(connection, query, result -> {
-            while(result.next())
-            {
+
+        return TExecutor.execQuery(connection, query, result -> {
+            while (result.next()) {
                 UsersDataSet userDataSet =
                         new UsersDataSet(result.getInt(COL_ID), result.getString(COL_FIRST_NAME),
-                            result.getString(COL_LAST_NAME), result.getString(COL_EMAIL),
-                            result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE));
+                                result.getString(COL_LAST_NAME), result.getString(COL_EMAIL),
+                                result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE));
                 UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
                         userDataSet.getEmail(), userDataSet.getAvatarUrl());
                 user.setScore(userDataSet.getScore());
@@ -128,7 +122,6 @@ public class UsersDAO {
                 + " SET " + COL_SCORE + " = " + score
                 + " WHERE " + COL_EMAIL + " = \'" + email + "\';";
 
-        TExecutor exec = new TExecutor();
-        exec.execQuery(connection, query);
+        TExecutor.execQuery(connection, query);
     }
 }
