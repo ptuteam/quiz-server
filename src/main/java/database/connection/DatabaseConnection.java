@@ -31,7 +31,7 @@ public class DatabaseConnection {
                             dbName +
                             ConfigGeneral.getDbLogin() +
                             ConfigGeneral.getDbPassword()
-                            + "&useUnicode=true&characterEncoding=utf8");
+                            + "&useUnicode=true&characterEncoding=utf8&autoReconnect=true");
         } catch (CommunicationsException e) {
             System.out.println("Communication to mysql occurred. Maybe you have not installed mysql server.");
             e.printStackTrace();
