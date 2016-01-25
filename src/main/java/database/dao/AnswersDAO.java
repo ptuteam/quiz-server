@@ -3,7 +3,7 @@ package database.dao;
 import database.data.AnswersDataSet;
 import database.executor.TExecutor;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by dima on 12.11.15.
  */
 public class AnswersDAO {
-    private final Connection connection;
+    private final DataSource dataSource;
 
     private static final String TABLE_NAME = "answers";
 
@@ -20,8 +20,8 @@ public class AnswersDAO {
     private static final String COL_QUESTION_ID = "q_id";
     private static final String COL_IS_CORRECT = "is_correct";
 
-    public AnswersDAO(Connection connection) {
-        this.connection = connection;
+    public AnswersDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @SuppressWarnings("unused")
@@ -30,7 +30,7 @@ public class AnswersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new AnswersDataSet(
                     result.getInt(COL_ID),
@@ -47,7 +47,7 @@ public class AnswersDAO {
 
         ArrayList<AnswersDataSet> resultArray = new ArrayList<>();
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             while (result.next()) {
                 resultArray.add(new AnswersDataSet(
                         result.getInt(COL_ID),
@@ -65,7 +65,7 @@ public class AnswersDAO {
                         " WHERE " + COL_QUESTION_ID + " = " + questionId +
                         " AND " + COL_IS_CORRECT + " = true;";
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new AnswersDataSet(
                     result.getInt(COL_ID),

@@ -1,6 +1,6 @@
 package database;
 
-import database.connection.DatabaseConnection;
+import database.connection.DatabaseSource;
 import database.dao.AnswersDAO;
 import database.dao.QuestionsDAO;
 import database.dao.UsersDAO;
@@ -10,7 +10,7 @@ import database.data.UsersDataSet;
 import game.Question;
 import model.UserProfile;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -21,13 +21,13 @@ public class DBServiceImpl implements DBService {
 
     private static final int DUPLICATE_ENTRY_ERROR_CODE = 1062;
 
-    private final Connection connectionUsers = DatabaseConnection.getUsersConnection();
-    private final Connection connectionQuiz = DatabaseConnection.getQuizConnection();
+    private final DataSource usersDataSource = DatabaseSource.getUsersDataSource();
+    private final DataSource quizDataSource = DatabaseSource.getQuizDataSource();
 
     @Override
     public void signUpUser(UserProfile user) {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             usersDAO.signUpUser(user);
         } catch (SQLException e) {
             if (e.getErrorCode() != DUPLICATE_ENTRY_ERROR_CODE) {
@@ -39,7 +39,7 @@ public class DBServiceImpl implements DBService {
     @Override
     public UserProfile getUserByEmail(String email) {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             UsersDataSet userDataSet = usersDAO.getByEmail(email);
 
             UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
@@ -55,7 +55,7 @@ public class DBServiceImpl implements DBService {
     @Override
     public boolean isUserExist(String email) {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             return usersDAO.isUserExists(email);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class DBServiceImpl implements DBService {
     @Override
     public int getUsersCount() {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             return usersDAO.getUsersCount();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class DBServiceImpl implements DBService {
     @Override
     public Collection<UserProfile> getAllUsers() {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             return usersDAO.getAllUsers();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,7 +88,7 @@ public class DBServiceImpl implements DBService {
     @Override
     public void updateUserScore(String email, int score) {
         try {
-            UsersDAO usersDAO = new UsersDAO(connectionUsers);
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
             usersDAO.updateUserScore(email, score);
 
         } catch (SQLException e) {
@@ -97,12 +97,23 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
+    public Collection<UserProfile> getTopUsers(int count) {
+        try {
+            UsersDAO usersDAO = new UsersDAO(usersDataSource);
+            return usersDAO.getTopUsers(count);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public Question getRandomQuestion(int type, Set<Integer> askedQuestions) {
         try {
-            QuestionsDAO questionsDAO = new QuestionsDAO(connectionQuiz);
+            QuestionsDAO questionsDAO = new QuestionsDAO(quizDataSource);
             QuestionsDataSet question = questionsDAO.getRandom(type, askedQuestions);
             askedQuestions.add(question.getQuestionId());
-            AnswersDAO answersDAO = new AnswersDAO(connectionQuiz);
+            AnswersDAO answersDAO = new AnswersDAO(quizDataSource);
 
             String[] answers = null;
             String correctAnswer = null;

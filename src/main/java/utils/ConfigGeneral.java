@@ -37,13 +37,14 @@ public class ConfigGeneral {
     private static String redirectUrl = "";
     private static String grantType = "";
 
-    private static String dbType;
-    private static String dbHostName;
-    private static String dbPort;
-    private static String dbNameQuiz;
-    private static String dbNameUsers;
-    private static String dbLogin;
+    private static String dbDriver;
+    private static String dbQuizUrl;
+    private static String dbUsersUrl;
+    private static String dbUsername;
     private static String dbPassword;
+    private static String dbValidationQuery;
+    private static int dbMaxActive;
+    private static int dbInitialSize;
 
     public static void loadConfig() {
         Properties properties = new Properties();
@@ -107,17 +108,18 @@ public class ConfigGeneral {
         try (FileInputStream fileInputStream = new FileInputStream(DATABASE_CONFIG_FILE)) {
             properties.load(fileInputStream);
             fileInputStream.close();
-            dbType = properties.getProperty("dbType", "jdbc:mysql://");
-            dbHostName = properties.getProperty("dbHostName", "localhost:");
-            dbPort = properties.getProperty("dbPort", "3306/");
-            dbNameQuiz = properties.getProperty("dbNameQuiz", "quiz_db?");
-            dbNameUsers = properties.getProperty("dbNameUsers", "quiz_users_db?");
-            dbLogin = properties.getProperty("dbLogin", "user=quiz_user&");
-            dbPassword = properties.getProperty("dbPassword", "password=secret");
+            dbDriver = properties.getProperty("dbDriver", "com.mysql.jdbc.Driver");
+            dbQuizUrl = properties.getProperty("dbQuizUrl", "jdbc:mysql://localhost:3306/quiz_db?useUnicode=true&characterEncoding=utf8");
+            dbUsersUrl = properties.getProperty("dbUsersUrl", "jdbc:mysql://localhost:3306/quiz_users_db?useUnicode=true&characterEncoding=utf8");
+            dbValidationQuery = properties.getProperty("dbValidationQuery", "SELECT 1");
+            dbMaxActive = Integer.parseInt(properties.getProperty("dbMaxActive", "1"));
+            dbUsername = properties.getProperty("dbUsername", "quiz_user");
+            dbPassword = properties.getProperty("dbPassword", "secret");
+            dbInitialSize = Integer.parseInt(properties.getProperty("dbInitialSize", "0"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + DATABASE_CONFIG_FILE);
             System.out.println("You must have next variables in this file:");
-            System.out.println("dbType, dbHostName, dbPort, dbNameQuiz, dbNameUsers, dbLogin, dbPassword");
+            System.out.println("dbDriver, dbQuizUrl, dbUsersUrl, dbValidationQuery, dbMaxActive, dbInitialSize, dbUsername, dbPassword");
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,28 +192,28 @@ public class ConfigGeneral {
         return grantType;
     }
 
-    public static String getDbType() {
-        return dbType;
+    public static String getDbDriver() {
+        return dbDriver;
     }
 
-    public static String getDbHostName() {
-        return dbHostName;
+    public static String getDbQuizUrl() {
+        return dbQuizUrl;
     }
 
-    public static String getDbPort() {
-        return dbPort;
+    public static String getDbUsersUrl() {
+        return dbUsersUrl;
     }
 
-    public static String getDbNameQuiz() {
-        return dbNameQuiz;
+    public static String getDbValidationQuery() {
+        return dbValidationQuery;
     }
 
-    public static String getDbNameUsers() {
-        return dbNameUsers;
+    public static int getDbMaxActive() {
+        return dbMaxActive;
     }
 
-    public static String getDbLogin() {
-        return dbLogin;
+    public static String getDbUsername() {
+        return dbUsername;
     }
 
     public static String getDbPassword() {
@@ -220,5 +222,9 @@ public class ConfigGeneral {
 
     public static int getTimeForShowingPlayersAnswsMS() {
         return timeForShowingPlayersAnswsMS;
+    }
+
+    public static int getDbInitialSize() {
+        return dbInitialSize;
     }
 }

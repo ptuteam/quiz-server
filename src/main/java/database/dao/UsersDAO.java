@@ -4,7 +4,7 @@ import database.data.UsersDataSet;
 import database.executor.TExecutor;
 import model.UserProfile;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Collection;
  * Created by dima on 19.11.15.
  */
 public class UsersDAO {
-    private final Connection connection;
+    private final DataSource dataSource;
 
     private static final String TABLE_NAME = "users";
 
@@ -24,8 +24,8 @@ public class UsersDAO {
     private static final String COL_AVATAR_URL = "avatarUrl";
     private static final String COL_SCORE = "score";
 
-    public UsersDAO(Connection connection) {
-        this.connection = connection;
+    public UsersDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @SuppressWarnings("unused")
@@ -34,7 +34,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new UsersDataSet(
                     result.getInt(COL_ID),
@@ -51,7 +51,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_EMAIL + " = \'" + email + "\';";
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new UsersDataSet(
                     result.getInt(COL_ID),
@@ -68,7 +68,7 @@ public class UsersDAO {
         String query = "SELECT COUNT(*) as " + colCount +
                 " FROM " + TABLE_NAME + ';';
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return result.getInt(colCount);
         });
@@ -80,7 +80,7 @@ public class UsersDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_EMAIL + " = \'" + email +"\';";
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return (result.getInt(colCount) > 0);
         });
@@ -94,7 +94,7 @@ public class UsersDAO {
                 + user.getEmail() + "\', \'" + user.getAvatarUrl()
                 + "\', " + user.getScore() + ')';
 
-        TExecutor.execQuery(connection, query);
+        TExecutor.execQuery(dataSource, query);
     }
 
     public Collection<UserProfile> getAllUsers() throws SQLException {
@@ -102,7 +102,7 @@ public class UsersDAO {
 
         ArrayList<UserProfile> resultArray = new ArrayList<>();
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             while (result.next()) {
                 UsersDataSet userDataSet =
                         new UsersDataSet(result.getInt(COL_ID), result.getString(COL_FIRST_NAME),
@@ -122,6 +122,29 @@ public class UsersDAO {
                 + " SET " + COL_SCORE + " = " + score
                 + " WHERE " + COL_EMAIL + " = \'" + email + "\';";
 
-        TExecutor.execQuery(connection, query);
+        TExecutor.execQuery(dataSource, query);
+    }
+
+    public Collection<UserProfile> getTopUsers(int count) throws SQLException {
+        String query = "SELECT * " + " FROM " + TABLE_NAME
+                + " WHERE " + COL_SCORE + " > 0 "
+                + "ORDER BY " + COL_SCORE + " DESC "
+                + "LIMIT " + count;
+
+        ArrayList<UserProfile> resultArray = new ArrayList<>();
+
+        return TExecutor.execQuery(dataSource, query, result -> {
+            while (result.next()) {
+                UsersDataSet userDataSet =
+                        new UsersDataSet(result.getInt(COL_ID), result.getString(COL_FIRST_NAME),
+                                result.getString(COL_LAST_NAME), result.getString(COL_EMAIL),
+                                result.getString(COL_AVATAR_URL), result.getInt(COL_SCORE));
+                UserProfile user = new UserProfile(userDataSet.getFirstName(), userDataSet.getLastName(),
+                        userDataSet.getEmail(), userDataSet.getAvatarUrl());
+                user.setScore(userDataSet.getScore());
+                resultArray.add(user);
+            }
+            return resultArray;
+        });
     }
 }

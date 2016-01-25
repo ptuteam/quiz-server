@@ -2,6 +2,7 @@ package database.executor;
 
 import database.handlers.TResultHandler;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +12,9 @@ import java.sql.Statement;
  * Created by dima on 12.11.15.
  */
 public class TExecutor {
-    public static <T> T execQuery(Connection connection, String query, TResultHandler<T> handler) throws SQLException {
+    public static <T> T execQuery(DataSource dataSource, String query, TResultHandler<T> handler) throws SQLException {
         T value;
-        try (Statement stmt = connection.createStatement()) {
+        try (Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()) {
             stmt.execute(query);
             try (ResultSet result = stmt.getResultSet()) {
                 value = handler.handle(result);
@@ -23,8 +24,8 @@ public class TExecutor {
         return value;
     }
 
-    public static void execQuery(Connection connection, String query) throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
+    public static void execQuery(DataSource dataSource, String query) throws SQLException {
+        try (Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()) {
             stmt.execute(query);
         }
     }

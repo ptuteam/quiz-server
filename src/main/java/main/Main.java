@@ -1,6 +1,6 @@
 package main;
 
-import database.connection.DatabaseConnection;
+import database.connection.DatabaseSource;
 import game.RoomManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -17,7 +17,6 @@ import websocket.WebSocketService;
 import websocket.WebSocketServiceImpl;
 
 import java.net.InetSocketAddress;
-import java.sql.Connection;
 
 
 /**
@@ -32,13 +31,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ConfigGeneral.loadConfig();
 
-        Connection quizConnection = DatabaseConnection.getQuizConnection();
-        Connection usersConnection = DatabaseConnection.getUsersConnection();
-        if (quizConnection == null || usersConnection == null) {
+        boolean isQizDBConnected = DatabaseSource.checkQuizConnection();
+        boolean isUsersDBConnected = DatabaseSource.checkUsersConnection();
+        if (!isQizDBConnected || !isUsersDBConnected) {
+            System.out.println("Error while contecting to database was occurred.");
+            System.out.println("Check your database server settings and database configs.");
             System.exit(1);
         }
-        quizConnection.close();
-        usersConnection.close();
 
         System.out.println(String.format("Starting at port: %d\n", ConfigGeneral.getPort()));
 

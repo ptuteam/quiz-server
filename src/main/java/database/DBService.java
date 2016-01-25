@@ -17,6 +17,7 @@ public interface DBService {
     int getUsersCount();
     Collection<UserProfile> getAllUsers();
     void updateUserScore(String email, int score);
+    Collection<UserProfile> getTopUsers(int count);
 
     Question getRandomQuestion(int type, Set<Integer> askedQuestions);
 }

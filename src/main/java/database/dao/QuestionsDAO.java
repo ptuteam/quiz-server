@@ -3,7 +3,7 @@ package database.dao;
 import database.data.QuestionsDataSet;
 import database.executor.TExecutor;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by dima on 12.11.15.
  */
 public class QuestionsDAO {
-    private final Connection connection;
+    private final DataSource dataSource;
 
     private static final String TABLE_NAME = "questions";
 
@@ -19,8 +19,8 @@ public class QuestionsDAO {
     private static final String COL_TEXT = "title";
     private static final String COL_TYPE = "type";
 
-    public QuestionsDAO(Connection connection) {
-        this.connection = connection;
+    public QuestionsDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @SuppressWarnings("unused")
@@ -29,7 +29,7 @@ public class QuestionsDAO {
                 " FROM " + TABLE_NAME +
                 " WHERE " + COL_ID + " = " + id + ';';
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new QuestionsDataSet(result.getInt(COL_ID),
                     result.getString(COL_TEXT),
@@ -54,7 +54,7 @@ public class QuestionsDAO {
                 " WHERE type = " + type +
                 " AND id NOT IN " + alreadyAskedBuilder;
 
-        int randOffset = TExecutor.execQuery(connection, randOffsetQuery, result -> {
+        int randOffset = TExecutor.execQuery(dataSource, randOffsetQuery, result -> {
             result.next();
             return result.getInt("offset");
         });
@@ -65,7 +65,7 @@ public class QuestionsDAO {
                 " AND id NOT IN " + alreadyAskedBuilder +
                 " LIMIT " + randOffset + ", 1;";
 
-        return TExecutor.execQuery(connection, query, result -> {
+        return TExecutor.execQuery(dataSource, query, result -> {
             result.next();
             return new QuestionsDataSet(result.getInt(COL_ID),
                     result.getString(COL_TEXT),
