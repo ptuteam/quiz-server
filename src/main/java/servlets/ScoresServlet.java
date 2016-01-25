@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,16 +31,17 @@ public class ScoresServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
 
-        List<UserProfile> users = new ArrayList<>(accountService.getTopUsers(ConfigGeneral.getRatingUsersCount()));
+        List<UserProfile> users = accountService.getTopUsers(ConfigGeneral.getRatingUsersCount());
 
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         jsonObject.add("users", jsonArray);
 
-        users.stream().filter(user -> user.getScore() > 0).forEach(user -> {
+        users.forEach(user -> {
             JsonObject userJsonObject = new JsonObject();
             userJsonObject.addProperty("first_name", user.getFirstName());
             userJsonObject.addProperty("last_name", user.getLastName());
+            userJsonObject.addProperty("avatar", user.getAvatarUrl());
             userJsonObject.addProperty("score", user.getScore());
             jsonArray.add(userJsonObject);
         });

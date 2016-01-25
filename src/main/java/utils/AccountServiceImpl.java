@@ -5,6 +5,7 @@ import database.DBServiceImpl;
 import model.UserProfile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * alex on 25.09.15.
@@ -89,10 +90,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<UserProfile> getTopUsers(int count) {
-        List<UserProfile> topUsers = new ArrayList<>(getUsers());
+        List<UserProfile> topUsers = new ArrayList<>(dbService.getTopUsers(count));
+        topUsers.addAll(guestsMap.values().stream().filter(guest -> guest.getScore() > 0).collect(Collectors.toList()));
         Collections.sort(topUsers, (o1, o2) -> -Integer.valueOf(o1.getScore()).compareTo(o2.getScore()));
-        topUsers = topUsers.isEmpty() ? topUsers : topUsers.subList(0, topUsers.size() > count ? count : topUsers.size());
-        return topUsers;
+        return topUsers.isEmpty() ? topUsers : topUsers.subList(0, topUsers.size() > count ? count : topUsers.size());
     }
 
     @Override
