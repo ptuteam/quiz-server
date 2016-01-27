@@ -1,9 +1,16 @@
 package utils;
 
+import com.google.gson.*;
+import game.MapSegment;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -15,6 +22,7 @@ public class ConfigGeneral {
     private static final String MECHANICS_CONFIG_FILE = "configuration/data/mechanics.xml";
     private static final String SOCIALS_CONFIG_FILE = "configuration/cfg/socials.properties";
     private static final String DATABASE_CONFIG_FILE = "configuration/cfg/database.properties";
+    private static final String MAP_SEGMENTS_FILE = "configuration/data/map_segments.json";
     private static final int MS_IN_MINUTE = 60 * 1000;
 
     private static int port;
@@ -31,6 +39,7 @@ public class ConfigGeneral {
     private static int minRoundsPerGameCount;
     private static int ratingUsersCount;
     private static int timeForShowingPlayersAnswsMS;
+    private static int defaultSegmentValue;
 
     private static String clientID = "";
     private static String clientSecret = "";
@@ -46,6 +55,9 @@ public class ConfigGeneral {
     private static int dbMaxActive;
     private static int dbInitialSize;
 
+    private static List<MapSegment> mapSegmentList;
+
+    @SuppressWarnings({"OverlyComplexMethod", "OverlyBroadCatchBlock"})
     public static void loadConfig() {
         Properties properties = new Properties();
 
@@ -76,6 +88,7 @@ public class ConfigGeneral {
             minRoundsPerGameCount = Integer.valueOf(properties.getProperty("minRoundsPerGameCount", "1"));
             ratingUsersCount = Integer.valueOf(properties.getProperty("ratingUsersCount", "1"));
             timeForShowingPlayersAnswsMS = Integer.valueOf(properties.getProperty("timeForShowingPlayersAnswersMS", "0"));
+            defaultSegmentValue = Integer.valueOf(properties.getProperty("defaultSegmentValue", "1"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + MECHANICS_CONFIG_FILE);
             System.exit(1);
@@ -123,6 +136,39 @@ public class ConfigGeneral {
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
+        }
+
+        mapSegmentList = new ArrayList<>();
+        String mapSegmentsJsonString = "";
+        try {
+            mapSegmentsJsonString = new String(Files.readAllBytes(Paths.get(MAP_SEGMENTS_FILE)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("File not found: " + MAP_SEGMENTS_FILE);
+            System.out.println("It must contain data like whis: {\"segments\":[{\"id\":1, \"neighborSegments\": [2, 3]}]}");
+            System.exit(1);
+        }
+
+        try {
+            JsonObject mapSegmentsJsonObject = new JsonParser().parse(mapSegmentsJsonString).getAsJsonObject();
+            JsonArray segmentArray = mapSegmentsJsonObject.get("segments").getAsJsonArray();
+            for (JsonElement segmentElement : segmentArray) {
+                JsonObject segmentObject = segmentElement.getAsJsonObject();
+                JsonArray neighborSegmentsJsonArray = segmentObject.get("neighborSegments").getAsJsonArray();
+                int[] neighborSegmentsArray = new int[neighborSegmentsJsonArray.size()];
+                for (int i = 0; i < neighborSegmentsArray.length; ++i) {
+                    neighborSegmentsArray[i] = neighborSegmentsJsonArray.get(i).getAsInt();
+                }
+                mapSegmentList.add(new MapSegment(
+                        segmentObject.get("id").getAsInt(),
+                        defaultSegmentValue,
+                        neighborSegmentsArray
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("File " + MAP_SEGMENTS_FILE + " must contain data like whis: {\"segments\":[{\"id\":1, \"neighborSegments\": [2, 3]}]}");
             System.exit(1);
         }
     }
@@ -226,5 +272,14 @@ public class ConfigGeneral {
 
     public static int getDbInitialSize() {
         return dbInitialSize;
+    }
+
+    @SuppressWarnings("unused")
+    public static int getDefaultSegmentValue() {
+        return defaultSegmentValue;
+    }
+
+    public static List<MapSegment> getMapSegmentList() {
+        return mapSegmentList;
     }
 }

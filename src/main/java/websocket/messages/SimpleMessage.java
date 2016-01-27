@@ -3,9 +3,11 @@ package websocket.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import game.MapSegment;
 import game.Player;
 import game.Question;
 import model.UserProfile;
+import utils.serialisers.MapSegmentSerialiser;
 import utils.serialisers.PlayerSerialiser;
 import utils.serialisers.QuestionSerialiser;
 import utils.serialisers.UserProfileSerialiser;
@@ -29,6 +31,7 @@ public class SimpleMessage implements Message {
         builder.registerTypeAdapter(UserProfile.class, new UserProfileSerialiser());
         builder.registerTypeAdapter(Player.class, new PlayerSerialiser());
         builder.registerTypeAdapter(Question.class, new QuestionSerialiser());
+        builder.registerTypeAdapter(MapSegment.class, new MapSegmentSerialiser());
         Gson gson = builder.create();
         return gson.toJsonTree(parameters).getAsJsonObject();
     }

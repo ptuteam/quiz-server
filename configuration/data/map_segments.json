@@ -1,0 +1,52 @@
+{
+  "segments": [
+    {
+      "id": 1,
+      "neighborSegments": [2, 3]
+    },
+    {
+      "id": 2,
+      "neighborSegments": [1, 3, 4, 5]
+    },
+    {
+      "id": 3,
+      "neighborSegments": [1, 2, 5, 6]
+    },
+    {
+      "id": 4,
+      "neighborSegments": [2, 5, 7]
+    },
+    {
+      "id": 5,
+      "neighborSegments": [2, 3, 4, 6, 8]
+    },
+    {
+      "id": 6,
+      "neighborSegments": [3, 5, 9]
+    },
+    {
+      "id": 7,
+      "neighborSegments": [4, 8, 10]
+    },
+    {
+      "id": 8,
+      "neighborSegments": [5, 7, 9, 10, 11]
+    },
+    {
+      "id": 9,
+      "neighborSegments": [6, 8, 11]
+    },
+    {
+      "id": 10,
+      "neighborSegments": [7, 8, 11, 12]
+    },
+    {
+      "id": 11,
+      "neighborSegments": [8, 9, 10, 12]
+    },
+    {
+      "id": 12,
+      "neighborSegments": [10, 11]
+    }
+  ]
+}
