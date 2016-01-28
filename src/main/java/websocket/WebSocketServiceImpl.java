@@ -24,7 +24,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         for (Player player : players) {
             Set<Player> opponents = new HashSet<>(players);
             opponents.remove(player);
-            player.getConnection().onStartGame(player, opponents);
+            player.getConnection().onStartBlitzGame(player, opponents);
         }
     }
 

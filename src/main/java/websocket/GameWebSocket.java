@@ -2,10 +2,7 @@ package websocket;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import game.Player;
-import game.Question;
-import game.Room;
-import game.RoomManager;
+import game.*;
 import model.UserProfile;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -41,6 +38,12 @@ public class GameWebSocket {
     private static final int CODE_NEW_ROUND_START = 9;
     private static final int CODE_LIST_PLAYERS_ANSWERS = 10;
     private static final int CODE_LIST_PLAYERS_IN_ROOM = 11;
+    private static final int CODE_PLAYER_TURN_START = 12;
+    private static final int CODE_PLAYER_SELECT_SEGMENT = 13;
+    private static final int CODE_SELECTED_SEGMENT = 14;
+    private static final int CODE_INCORRECT_SELECT_SEGMENT = 15;
+    private static final int CODE_PLAYER_TURN_FINISH = 16;
+    private static final int CODE_ROUND_FINISH = 17;
 
     private static final int ROOM_PRIVATE_TYPE = 1;
 
@@ -78,6 +81,9 @@ public class GameWebSocket {
                     case CODE_PLAYER_ANSWER:
                         room.setAnswer(userProfile, message.get("answer").getAsString());
                         break;
+                    case CODE_PLAYER_SELECT_SEGMENT:
+                        // TODO
+                        break;
                     default:
                         break;
                 }
@@ -104,10 +110,11 @@ public class GameWebSocket {
     }
 
     @SuppressWarnings("Duplicates")
-    public void onStartGame(Player player, Collection<Player> opponents) {
+    public void onStartBlitzGame(Player player, Collection<Player> opponents) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_START);
         parameters.put("description", "start");
+        parameters.put("type", GameType.BLITZ);
         parameters.put("player", player);
         parameters.put("opponents", opponents);
 
@@ -148,6 +155,7 @@ public class GameWebSocket {
         parameters.put("code", CODE_NEW_QUESTION);
         parameters.put("description", "new question");
         parameters.put("question", question);
+        parameters.put("type", question.getType());
 
         sendMessage(new SimpleMessage(parameters));
     }
@@ -198,6 +206,64 @@ public class GameWebSocket {
         parameters.put("description", "players answers");
         parameters.put("answers", playersAnswers);
         parameters.put("correct", correctAnswer);
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onStartMapGame(Player player, Collection<Player> opponents, List<MapSegment> mapData) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_START);
+        parameters.put("description", "start");
+        parameters.put("type", GameType.MAPGAME);
+        parameters.put("player", player);
+        parameters.put("opponents", opponents);
+        parameters.put("map", mapData);
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onPlayerTurnStart(Player player, List<MapSegment> allowableMove) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_PLAYER_TURN_START);
+        parameters.put("player", player.getUserEmail());
+        parameters.put("allowableMove", allowableMove);
+        parameters.put("description", "player turn start");
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onPlayerSelectedSegment(int segmentId) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_SELECTED_SEGMENT);
+        parameters.put("segmentId", segmentId);
+        parameters.put("description", "selected segment");
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onIncorrectSelectSegment() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_INCORRECT_SELECT_SEGMENT);
+        parameters.put("description", "incorrect select segment");
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onPlayerTurnFinish(Player player, Integer invadedSegment) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_PLAYER_TURN_FINISH);
+        parameters.put("player", player.getUserEmail());
+        parameters.put("score", player.getScore());
+        parameters.put("invadedSegment", invadedSegment);
+        parameters.put("description", "player turn finish");
+
+        sendMessage(new SimpleMessage(parameters));
+    }
+
+    public void onRoundFinish() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("code", CODE_ROUND_FINISH);
+        parameters.put("description", "round finish");
 
         sendMessage(new SimpleMessage(parameters));
     }
