@@ -51,12 +51,14 @@ public class GameWebSocket {
     private Session mySession;
     private Room room;
     private final RoomManager roomManager;
+    private final String mode;
     private final long connectToRoomId;
     private final int roomType;
 
-    public GameWebSocket(UserProfile userProfile, RoomManager roomManager, long connectToRoomId, int roomType) {
+    public GameWebSocket(UserProfile userProfile, RoomManager roomManager, String mode, long connectToRoomId, int roomType) {
         this.userProfile = userProfile;
         this.roomManager = roomManager;
+        this.mode = mode == null ?  GameMode.BLITZ.name() : mode;
         this.connectToRoomId = connectToRoomId;
         this.roomType = roomType;
     }
@@ -65,7 +67,7 @@ public class GameWebSocket {
     @OnWebSocketConnect
     public void onOpen(Session session) {
         mySession = session;
-        room = roomManager.connectUser(userProfile, this, connectToRoomId, roomType == ROOM_PRIVATE_TYPE);
+        room = roomManager.connectUser(userProfile, this, mode, connectToRoomId, roomType == ROOM_PRIVATE_TYPE);
         if (room == null) {
             onNoEmptyRooms();
         }
@@ -82,7 +84,7 @@ public class GameWebSocket {
                         room.setAnswer(userProfile, message.get("answer").getAsString());
                         break;
                     case CODE_PLAYER_SELECT_SEGMENT:
-                        // TODO
+                        room.setSelectedSegment(message.get("segmentId").getAsInt());
                         break;
                     default:
                         break;
@@ -114,7 +116,7 @@ public class GameWebSocket {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_START);
         parameters.put("description", "start");
-        parameters.put("type", GameType.BLITZ);
+        parameters.put("mode", GameMode.BLITZ);
         parameters.put("player", player);
         parameters.put("opponents", opponents);
 
@@ -210,11 +212,11 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
-    public void onStartMapGame(Player player, Collection<Player> opponents, List<MapSegment> mapData) {
+    public void onStartMapGame(Player player, Collection<Player> opponents, Collection<MapSegment> mapData) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_START);
         parameters.put("description", "start");
-        parameters.put("type", GameType.MAPGAME);
+        parameters.put("mode", GameMode.MAPGAME);
         parameters.put("player", player);
         parameters.put("opponents", opponents);
         parameters.put("map", mapData);
@@ -222,7 +224,7 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
-    public void onPlayerTurnStart(Player player, List<MapSegment> allowableMove) {
+    public void onPlayerTurnStart(Player player, Collection<Integer> allowableMove) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_PLAYER_TURN_START);
         parameters.put("player", player.getUserEmail());
@@ -232,10 +234,12 @@ public class GameWebSocket {
         sendMessage(new SimpleMessage(parameters));
     }
 
-    public void onPlayerSelectedSegment(int segmentId) {
+    @SuppressWarnings("Duplicates")
+    public void onPlayerSelectedSegment(int segmentId, String owner) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("code", CODE_SELECTED_SEGMENT);
         parameters.put("segmentId", segmentId);
+        parameters.put("owner", owner);
         parameters.put("description", "selected segment");
 
         sendMessage(new SimpleMessage(parameters));

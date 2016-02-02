@@ -1,6 +1,5 @@
 package game;
 
-import model.UserProfile;
 import utils.ConfigGeneral;
 
 import java.util.*;
@@ -21,8 +20,8 @@ public class GameMap {
         return segmentList;
     }
 
-    public int invadeSegment(UserProfile invader, int segmentId) {
-        String user = invader.getEmail();
+    public int invadeSegment(Player invader, int segmentId) {
+        String user = invader.getUserEmail();
         for (MapSegment segment : segmentList) {
             if (segment.getId() == segmentId) {
                 segment.setUser(user);
@@ -32,7 +31,8 @@ public class GameMap {
         return 0;
     }
 
-    public Set<Integer> getAllowableMoveForUser(String user) {
+    public Set<Integer> getAllowableMoveForPlayer(Player player) {
+        String user = player.getUserEmail();
         Set<Integer> allowableMoveSet = new HashSet<>();
         segmentList.stream()
                 .filter(segment -> Objects.equals(segment.getUser(), user))
@@ -44,5 +44,9 @@ public class GameMap {
                 .forEach(segment -> allowableMoveSet.remove(segment.getId()));
 
         return allowableMoveSet;
+    }
+
+    public String getSegmentOwner(int segmentId) {
+        return segmentList.get(segmentId).getUser();
     }
 }

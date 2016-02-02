@@ -22,21 +22,21 @@ public class RoomManager {
         this.webSocketService = webSocketService;
     }
 
-    private Room createRoom(boolean isPrivate) {
-        Room room = new Room(roomIdIncrement.incrementAndGet(), webSocketService, isPrivate);
+    private Room createRoom(String gameMode, boolean isPrivate) {
+        Room room = new Room(roomIdIncrement.incrementAndGet(), webSocketService, gameMode, isPrivate);
         rooms.add(room);
         return room;
     }
 
-    public Room connectUser(UserProfile user, GameWebSocket socket, long roomId, boolean isRoomPrivate) {
+    public Room connectUser(UserProfile user, GameWebSocket socket, String gameMode, long roomId, boolean isRoomPrivate) {
         Room room;
 
         if (roomId > 0) {
             room = getNotPlayingRoom(roomId);
         } else if (isRoomPrivate) {
-            room = getFreePrivateRoom();
+            room = getFreePrivateRoom(gameMode);
         } else {
-            room = getNotPlayingPublicRoom();
+            room = getNotPlayingPublicRoom(gameMode);
         }
 
         if (room == null) {
@@ -56,29 +56,31 @@ public class RoomManager {
         return null;
     }
 
-    private Room getFreePrivateRoom() {
+    @SuppressWarnings("OverlyComplexBooleanExpression")
+    private Room getFreePrivateRoom(String gameMode) {
         for (Room room : rooms) {
-            if (room.isPrivate() && room.getState() == Room.States.WATING && room.getPlayers().isEmpty()) {
+            if (room.getGameMode().equals(gameMode) && room.isPrivate() && room.getState() == Room.States.WATING && room.getPlayers().isEmpty()) {
                 return room;
             }
         }
 
         if (rooms.size() < ConfigGeneral.getRoomsCount()) {
-            return createRoom(true);
+            return createRoom(gameMode, true);
         } else {
             return null;
         }
     }
 
-    private Room getNotPlayingPublicRoom() {
+    @SuppressWarnings("OverlyComplexBooleanExpression")
+    private Room getNotPlayingPublicRoom(String gameMode) {
         for (Room room : rooms) {
-            if (!room.isPrivate() && room.getState() == Room.States.WATING && room.getPlayers().size() < ConfigGeneral.getMaxPlayersPerRoom()) {
+            if (room.getGameMode().equals(gameMode) && !room.isPrivate() && room.getState() == Room.States.WATING && room.getPlayers().size() < ConfigGeneral.getMaxPlayersPerRoom()) {
                 return room;
             }
         }
 
         if (rooms.size() < ConfigGeneral.getRoomsCount()) {
-            return createRoom(false);
+            return createRoom(gameMode, false);
         } else {
             return null;
         }

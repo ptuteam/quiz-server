@@ -40,6 +40,10 @@ public class ConfigGeneral {
     private static int ratingUsersCount;
     private static int timeForShowingPlayersAnswsMS;
     private static int defaultSegmentValue;
+    private static int timeForWaitingPlayerTurnStartMS;
+    private static int timeForWaitingPlayerTurnFinishMS;
+    private static int timeForWaitingRoundFinishMS;
+    private static int timeForWaitingPlayerSegmentSelect;
 
     private static String clientID = "";
     private static String clientSecret = "";
@@ -89,6 +93,10 @@ public class ConfigGeneral {
             ratingUsersCount = Integer.valueOf(properties.getProperty("ratingUsersCount", "1"));
             timeForShowingPlayersAnswsMS = Integer.valueOf(properties.getProperty("timeForShowingPlayersAnswersMS", "0"));
             defaultSegmentValue = Integer.valueOf(properties.getProperty("defaultSegmentValue", "1"));
+            timeForWaitingPlayerTurnStartMS = Integer.valueOf(properties.getProperty("timeForWaitingPlayerTurnStartMS", "0"));
+            timeForWaitingPlayerTurnFinishMS = Integer.valueOf(properties.getProperty("timeForWaitingPlayerTurnFinishMS", "0"));
+            timeForWaitingRoundFinishMS = Integer.valueOf(properties.getProperty("timeForWaitingRoundFinishMS", "0"));
+            timeForWaitingPlayerSegmentSelect = Integer.valueOf(properties.getProperty("timeForWaitingPlayerSegmentSelect", "1000"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + MECHANICS_CONFIG_FILE);
             System.exit(1);
@@ -281,5 +289,23 @@ public class ConfigGeneral {
 
     public static List<MapSegment> getMapSegmentList() {
         return mapSegmentList;
+    }
+
+    @SuppressWarnings("StaticMethodNamingConvention")
+    public static int getTimeForWaitingPlayerTurnStartMS() {
+        return timeForWaitingPlayerTurnStartMS;
+    }
+
+    @SuppressWarnings("StaticMethodNamingConvention")
+    public static int getTimeForWaitingPlayerTurnFinishMS() {
+        return timeForWaitingPlayerTurnFinishMS;
+    }
+
+    public static int getTimeForWaitingRoundFinishMS() {
+        return timeForWaitingRoundFinishMS;
+    }
+
+    public static int getTimeForWaitingPlayerSegmentSelect() {
+        return timeForWaitingPlayerSegmentSelect;
     }
 }

@@ -1,9 +1,11 @@
-package game;
+package game.interfaces;
+
+import game.Player;
 
 /**
  * alex on 22.10.15.
  */
-public interface GameField {
+public interface BlitzGameInterface {
 
     void setPlayerAnswer(Player player, String answer);
 

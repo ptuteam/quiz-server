@@ -1,5 +1,6 @@
 package websocket;
 
+import game.MapSegment;
 import game.Player;
 import game.Question;
 
@@ -20,7 +21,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void notifyStartGame(Collection<Player> players) {
+    public void notifyStartBlitzGame(Collection<Player> players) {
         for (Player player : players) {
             Set<Player> opponents = new HashSet<>(players);
             opponents.remove(player);
@@ -73,5 +74,47 @@ public class WebSocketServiceImpl implements WebSocketService {
         for (Player player : players) {
             player.getConnection().listPlayersAnswers(correctAnswer, playersAnswers);
         }
+    }
+
+    @Override
+    public void notifyPlayerTurnStart(Collection<Player> players, Player player, Collection<Integer> allowableMoveForPlayer) {
+        for (Player p : players) {
+            p.getConnection().onPlayerTurnStart(player, allowableMoveForPlayer);
+        }
+    }
+
+    @Override
+    public void notifyPlayerTurnFinish(Collection<Player> players, Player player, Integer invadedSegmentId) {
+        for (Player p : players) {
+            p.getConnection().onPlayerTurnFinish(player, invadedSegmentId);
+        }
+    }
+
+    @Override
+    public void notifyRoundFinish(Collection<Player> players) {
+        for (Player player : players) {
+            player.getConnection().onRoundFinish();
+        }
+    }
+
+    @Override
+    public void notifyStartMapGame(Collection<Player> players, Collection<MapSegment> mapSegments) {
+        for (Player player : players) {
+            Set<Player> opponents = new HashSet<>(players);
+            opponents.remove(player);
+            player.getConnection().onStartMapGame(player, opponents, mapSegments);
+        }
+    }
+
+    @Override
+    public void notifyPlayerSelectSegment(Collection<Player> players, int segmentId, String owner) {
+        for (Player p : players) {
+            p.getConnection().onPlayerSelectedSegment(segmentId, owner);
+        }
+    }
+
+    @Override
+    public void notifyPlayerIncorrectSelectSegment(Player player) {
+        player.getConnection().onIncorrectSelectSegment();
     }
 }

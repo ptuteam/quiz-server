@@ -6,13 +6,17 @@
     <entry key="maxPlayersPerRoom">2</entry>
     <entry key="minPlayersPerRoom">2</entry>
     <entry key="pointsPerQuestion">1</entry>
-    <entry key="timePerQuestionMS">10000</entry>
-    <entry key="timeForWaitingStartGameMS">3000</entry>
-    <entry key="timeForWaitingNewRoundStartMS">3000</entry>
+    <entry key="timePerQuestionMS">7000</entry>
+    <entry key="timeForWaitingStartGameMS">2000</entry>
+    <entry key="timeForWaitingNewRoundStartMS">1000</entry>
     <entry key="maxGameTimeMinutes">9</entry>
     <entry key="minRoundsPerGameCount">5</entry>
     <entry key="ratingUsersCount">10</entry>
-    <entry key="timeForShowingPlayersAnswersMS">3000</entry>
+    <entry key="timeForShowingPlayersAnswersMS">2000</entry>
     <entry key="defaultSegmentValue">100</entry>
+    <entry key="timeForWaitingPlayerTurnStartMS">1500</entry>
+    <entry key="timeForWaitingPlayerTurnFinishMS">1500</entry>
+    <entry key="timeForWaitingRoundFinishMS">0</entry>
+    <entry key="timeForWaitingPlayerSegmentSelect">3500</entry>
 
 </properties>

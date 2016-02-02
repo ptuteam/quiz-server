@@ -20,15 +20,17 @@ public class Room {
     }
 
     private final long roomId;
+    private final String gameMode;
     private final boolean isPrivate;
     private final Map<String, Player> playerByUser = new HashMap<>();
     private States state = States.WATING;
     GameSession session;
-    GameField gameField;
+    AbstractGame game;
     final WebSocketService webSocketService;
 
-    public Room(long roomId, WebSocketService webSocketService, boolean isPrivate) {
+    public Room(long roomId, WebSocketService webSocketService, String gameMode, boolean isPrivate) {
         this.roomId = roomId;
+        this.gameMode = gameMode;
         state = States.WATING;
         this.webSocketService = webSocketService;
         this.isPrivate = isPrivate;
@@ -63,7 +65,7 @@ public class Room {
             playerByUser.remove(userProfile.getEmail());
             webSocketService.notifyPlayerDisconnect(getPlayers(), disconnectedPlayer);
             if (state == States.PLAYING && playerByUser.size() < ConfigGeneral.getMinPlayersPerRoom()) {
-                gameField.gameOver();
+                game.gameOver();
             }
         }
     }
@@ -76,20 +78,20 @@ public class Room {
     public void startGame() {
         state = States.PLAYING;
         session = new GameSession(playerByUser, this);
-        gameField = new GameFieldImpl(webSocketService, session);
-        gameField.play();
+        switch (gameMode) {
+            case "blitz": game = new BlitzGame(webSocketService, session); break;
+            case "mapGame": game = new MapGame(webSocketService, session); break;
+            default: game = new BlitzGame(webSocketService, session);
+        }
+        game.play();
     }
 
     public Collection<Player> getPlayers() {
         return playerByUser.values();
     }
 
-    public int getPlayersCount() {
-        return playerByUser.size();
-    }
-
     public void setAnswer(UserProfile userProfile, String answer) {
-        gameField.setPlayerAnswer(getPlayerByUser(userProfile), answer);
+        game.setPlayerAnswer(getPlayerByUser(userProfile), answer);
     }
 
     public long getRoomId() {
@@ -98,6 +100,14 @@ public class Room {
 
     public boolean isPrivate() {
         return isPrivate;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setSelectedSegment(int segmentId) {
+        game.setSelectedSegment(segmentId);
     }
 
 }

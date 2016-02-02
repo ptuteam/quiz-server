@@ -83,4 +83,8 @@ public class GameSession {
     public Set<Integer> getAskedQuestions() {
         return askedQuestions;
     }
+
+    public void clearPlayerAnswers() {
+        playerAnswers.clear();
+    }
 }
