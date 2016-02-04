@@ -34,6 +34,15 @@ public abstract class AbstractGame implements BlitzGameInterface, MapGameInterfa
 
     protected abstract void newRoundStart();
 
+    protected void roundFinish() {
+        webSocketService.notifyRoundFinish(session.getPlayers());
+        try {
+            Thread.sleep(ConfigGeneral.getTimeForWaitingRoundFinishMS());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void setPlayerAnswer(Player player, String answer) {
         session.setPlayerAnswer(player, answer, currentRound);

@@ -62,6 +62,7 @@ public class BlitzGame extends AbstractGame {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            roundFinish();
         }
     }
 

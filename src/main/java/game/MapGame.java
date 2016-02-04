@@ -77,15 +77,6 @@ public class MapGame extends AbstractGame {
         }
     }
 
-    private void roundFinish() {
-        webSocketService.notifyRoundFinish(session.getPlayers());
-        try {
-            Thread.sleep(ConfigGeneral.getTimeForWaitingRoundFinishMS());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void attackSegment(int segmentId) {
         nextQuestionType = Question.DEFAULT_QUESTION_TYPE;
         currentBlitzScores.put(currentPlayer.getUserEmail(), 0);
