@@ -1,5 +1,6 @@
 package websocket;
 
+import game.GameMode;
 import game.RoomManager;
 import model.UserProfile;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
@@ -27,6 +28,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
             String mode = request.getHttpServletRequest().getParameter("mode");
             String roomIdStr = request.getHttpServletRequest().getParameter("roomId");
             String typeStr = request.getHttpServletRequest().getParameter("type");
+            mode = mode == null ? GameMode.BLITZ.name() : mode;
             long roomId = 0;
             if (roomIdStr != null) {
                 try {

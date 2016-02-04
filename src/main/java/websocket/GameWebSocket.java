@@ -58,7 +58,7 @@ public class GameWebSocket {
     public GameWebSocket(UserProfile userProfile, RoomManager roomManager, String mode, long connectToRoomId, int roomType) {
         this.userProfile = userProfile;
         this.roomManager = roomManager;
-        this.mode = mode == null ?  GameMode.BLITZ.name() : mode;
+        this.mode = mode;
         this.connectToRoomId = connectToRoomId;
         this.roomType = roomType;
     }
