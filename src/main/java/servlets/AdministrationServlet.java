@@ -1,7 +1,9 @@
 package servlets;
 
+import game.RoomManager;
 import templater.PageGenerator;
 import utils.AccountService;
+import utils.ConfigGeneral;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,9 +21,11 @@ public class AdministrationServlet extends HttpServlet {
     public static final String PAGE_URL = "/admin";
 
     private final AccountService accountService;
+    private final RoomManager roomManager;
 
-    public AdministrationServlet(AccountService accountService) {
+    public AdministrationServlet(AccountService accountService, RoomManager roomManager) {
         this.accountService = accountService;
+        this.roomManager = roomManager;
     }
 
     @Override
@@ -63,6 +67,15 @@ public class AdministrationServlet extends HttpServlet {
                     System.exit(0);
                 }
 
+                String reloadConfigString = request.getParameter("reloadConfig");
+
+                if (reloadConfigString != null) {
+                    ConfigGeneral.loadConfig();
+                    System.out.print("Configuration reloaded\n");
+                }
+
+                pageVariables.put("playingRoomsCount", roomManager.getPlayingRoomsCount());
+                pageVariables.put("roomsCount", roomManager.getRoomsCount());
                 pageVariables.put("usersCount", accountService.getUsersCount());
                 pageVariables.put("loggedUsersCount", accountService.getLoggedUsersCount());
                 templateFile = "admin.html";

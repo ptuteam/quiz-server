@@ -50,7 +50,7 @@ public class Main {
         SignInServlet signInServlet = new SignInServlet(accountService);
         GuestSignInServlet guestSignInServlet = new GuestSignInServlet(accountService);
         LogoutServlet logoutServlet = new LogoutServlet(accountService);
-        AdministrationServlet administrationServlet = new AdministrationServlet(accountService);
+        AdministrationServlet administrationServlet = new AdministrationServlet(accountService, roomManager);
         UserServlet userServlet = new UserServlet(accountService);
         ScoresServlet scoresServlet = new ScoresServlet(accountService);
         WebSocketGameServlet webSocketGameServlet = new WebSocketGameServlet(accountService, roomManager);

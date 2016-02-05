@@ -7,10 +7,17 @@
 <body>
     <p>Users: ${usersCount}</p>
     <p>Logged users: ${loggedUsersCount}</p>
+    <p>Rooms count: ${roomsCount}</p>
+    <p>Playing rooms count: ${playingRoomsCount}</p>
     <form action="" method="get">
         <label for="shutdown">Server shutdown after:</label>
         <input id="shutdown" name="shutdown" type="text" placeholder="time in ms"/>
         <button type="submit" value="shutdown">Shutdown</button>
+    </form>
+    <p></p>
+    <form action="" method="get">
+        <label>Reload config:</label>
+        <button type="submit" name="reloadConfig" value="reloadConfig">reload</button>
     </form>
 </body>
 </html>

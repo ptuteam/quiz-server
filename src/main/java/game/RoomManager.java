@@ -85,4 +85,18 @@ public class RoomManager {
             return null;
         }
     }
+
+    public int getPlayingRoomsCount() {
+        int count = 0;
+        for (Room room : rooms) {
+            if (room.getState() == Room.States.PLAYING) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    public int getRoomsCount() {
+        return rooms.size();
+    }
 }
