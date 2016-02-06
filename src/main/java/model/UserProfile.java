@@ -4,7 +4,7 @@ package model;
  * alex on 18.09.15.
  */
 public class UserProfile {
-    private static final String ADMINISTATOR_EMAILS = "sashaudalv@gmail.com";
+    private static final String ADMINISTATOR_EMAILS = "sashaudalv@gmail.com, rgnlax96@gmail.com";
 
     private final String firstName;
     private final String lastName;
