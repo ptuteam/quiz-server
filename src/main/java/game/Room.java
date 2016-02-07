@@ -79,8 +79,8 @@ public class Room {
         state = States.PLAYING;
         session = new GameSession(playerByUser, this);
         switch (gameMode) {
-            case "blitz": game = new BlitzGame(webSocketService, session); break;
-            case "mapGame": game = new MapGame(webSocketService, session); break;
+            case "BLITZ": game = new BlitzGame(webSocketService, session); break;
+            case "MAPGAME": game = new MapGame(webSocketService, session); break;
             default: game = new BlitzGame(webSocketService, session);
         }
         game.play();
