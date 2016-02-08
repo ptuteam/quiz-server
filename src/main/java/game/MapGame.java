@@ -29,7 +29,7 @@ public class MapGame extends AbstractGame {
         int i = 0;
         int segmentsPerPlayerCount = gameMap.getMapSegments().size() / session.getPlayers().size();
         for (Player player : session.getPlayers()) {
-            for (int j = i * segmentsPerPlayerCount; j < (i + 1) * segmentsPerPlayerCount; ++j) {
+            for (int j = i * segmentsPerPlayerCount + 1; j <= (i + 1) * segmentsPerPlayerCount; ++j) {
                 player.increaseScore(gameMap.invadeSegment(player, j));
             }
             ++i;
