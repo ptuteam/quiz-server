@@ -1,10 +1,11 @@
 package model;
 
+import utils.ConfigGeneral;
+
 /**
  * alex on 18.09.15.
  */
 public class UserProfile {
-    private static final String ADMINISTATOR_EMAILS = "sashaudalv@gmail.com, rgnlax96@gmail.com";
 
     private final String firstName;
     private final String lastName;
@@ -38,7 +39,7 @@ public class UserProfile {
     }
 
     public boolean isAdministrator() {
-        return ADMINISTATOR_EMAILS.contains(email);
+        return ConfigGeneral.getAdmins().contains(email);
     }
 
     public boolean isGuest() {

@@ -27,6 +27,7 @@ public class ConfigGeneral {
 
     private static int port;
     private static String host;
+    private static String admins;
 
     private static int roomsCount;
     private static int maxPlayersPerRoom;
@@ -70,6 +71,7 @@ public class ConfigGeneral {
             fileInputStream.close();
             port = Integer.valueOf(properties.getProperty("port", "80"));
             host = properties.getProperty("host", "127.0.0.1");
+            admins = properties.getProperty("admins", "");
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + SERVER_CONFIG_FILE);
             System.exit(1);
@@ -307,5 +309,9 @@ public class ConfigGeneral {
 
     public static int getTimeForWaitingPlayerSegmentSelect() {
         return timeForWaitingPlayerSegmentSelect;
+    }
+
+    public static String getAdmins() {
+        return admins;
     }
 }
